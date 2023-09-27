@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#AFAFAF</color>
     <color name="light_gray">#F0ECE1</color>
+    <color name="trans_light_gray">#80F0ECE1</color>
     <color name="yellow">#EDCF8F</color>
     <color name="orange">#C97F4E</color>
     <color name="brown">#6F4A38</color>
