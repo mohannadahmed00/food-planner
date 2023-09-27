@@ -6,62 +6,62 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.giraffe.foodplannerapplication.features.splash.SplashFragment"
+        android:name="com.giraffe.foodplannerapplication.features.splash.view.SplashFragment"
         android:label="@string/splash"
         tools:layout="@layout/fragment_splash" />
     <fragment
         android:id="@+id/categoriesFragment"
-        android:name="com.giraffe.foodplannerapplication.features.categories.CategoriesFragment"
+        android:name="com.giraffe.foodplannerapplication.features.categories.view.CategoriesFragment"
         android:label="@string/categories"
         tools:layout="@layout/fragment_categories" />
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.giraffe.foodplannerapplication.features.details.DetailsFragment"
+        android:name="com.giraffe.foodplannerapplication.features.details.view.DetailsFragment"
         android:label="@string/meal_details"
         tools:layout="@layout/fragment_details" />
     <fragment
         android:id="@+id/editProfileFragment"
-        android:name="com.giraffe.foodplannerapplication.features.editprofile.EditProfileFragment"
+        android:name="com.giraffe.foodplannerapplication.features.editprofile.view.EditProfileFragment"
         android:label="@string/edit_profile"
         tools:layout="@layout/fragment_edit_profile" />
     <fragment
         android:id="@+id/favoritesFragment"
-        android:name="com.giraffe.foodplannerapplication.features.favorites.FavoritesFragment"
+        android:name="com.giraffe.foodplannerapplication.features.favorites.view.FavoritesFragment"
         android:label="@string/favorite"
         tools:layout="@layout/fragment_favorites" />
     <fragment
         android:id="@+id/forgottenFragment"
-        android:name="com.giraffe.foodplannerapplication.features.forgotten.ForgottenFragment"
+        android:name="com.giraffe.foodplannerapplication.features.forgotten.view.ForgottenFragment"
         android:label="@string/forgotten_password"
         tools:layout="@layout/fragment_forgotten" />
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.giraffe.foodplannerapplication.features.home.HomeFragment"
+        android:name="com.giraffe.foodplannerapplication.features.home.view.HomeFragment"
         android:label="@string/home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.giraffe.foodplannerapplication.features.login.LoginFragment"
+        android:name="com.giraffe.foodplannerapplication.features.login.view.LoginFragment"
         android:label="@string/login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/planFragment"
-        android:name="com.giraffe.foodplannerapplication.features.plan.PlanFragment"
+        android:name="com.giraffe.foodplannerapplication.features.plan.view.PlanFragment"
         android:label="@string/plan"
         tools:layout="@layout/fragment_plan" />
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.giraffe.foodplannerapplication.features.search.SearchFragment"
+        android:name="com.giraffe.foodplannerapplication.features.search.view.SearchFragment"
         android:label="@string/search"
         tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.giraffe.foodplannerapplication.features.settings.SettingsFragment"
+        android:name="com.giraffe.foodplannerapplication.features.settings.view.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.giraffe.foodplannerapplication.features.signup.SignUpFragment"
+        android:name="com.giraffe.foodplannerapplication.features.signup.view.SignUpFragment"
         android:label="@string/sign_up"
         tools:layout="@layout/fragment_sign_up" />
 </navigation>

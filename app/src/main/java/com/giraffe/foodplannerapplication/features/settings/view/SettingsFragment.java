@@ -1,4 +1,4 @@
-package com.giraffe.foodplannerapplication.features.settings;
+package com.giraffe.foodplannerapplication.features.settings.view;
 
 import android.os.Bundle;
 

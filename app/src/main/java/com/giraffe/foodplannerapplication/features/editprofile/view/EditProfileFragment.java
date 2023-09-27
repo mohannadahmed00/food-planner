@@ -1,4 +1,4 @@
-package com.giraffe.foodplannerapplication.features.forgotten;
+package com.giraffe.foodplannerapplication.features.editprofile.view;
 
 import android.os.Bundle;
 
@@ -12,7 +12,8 @@ import android.view.ViewGroup;
 
 import com.giraffe.foodplannerapplication.R;
 
-public class ForgottenFragment extends Fragment {
+public class EditProfileFragment extends Fragment {
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,7 +22,7 @@ public class ForgottenFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_forgotten, container, false);
+        return inflater.inflate(R.layout.fragment_edit_profile, container, false);
     }
 
     @Override

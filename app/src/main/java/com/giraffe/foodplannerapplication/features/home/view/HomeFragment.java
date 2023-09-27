@@ -1,4 +1,4 @@
-package com.giraffe.foodplannerapplication.features.home;
+package com.giraffe.foodplannerapplication.features.home.view;
 
 import android.os.Bundle;
 

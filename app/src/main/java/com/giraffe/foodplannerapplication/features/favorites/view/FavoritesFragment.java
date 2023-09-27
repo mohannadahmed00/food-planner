@@ -1,4 +1,4 @@
-package com.giraffe.foodplannerapplication.features.signup;
+package com.giraffe.foodplannerapplication.features.favorites.view;
 
 import android.os.Bundle;
 
@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.giraffe.foodplannerapplication.R;
 
-public class SignUpFragment extends Fragment {
+public class FavoritesFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,7 +21,7 @@ public class SignUpFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sign_up, container, false);
+        return inflater.inflate(R.layout.fragment_favorites, container, false);
     }
 
     @Override
