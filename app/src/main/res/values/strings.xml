@@ -19,4 +19,17 @@
     <string name="onboard">Onboard</string>
     <string name="skip">Skip</string>
     <string name="as_a_guest">as a Guest</string>
+    <string name="confirm_your_password">confirm your password</string>
+    <string name="create_your_free_account">Create your free account</string>
+    <string name="email">Email</string>
+    <string name="enter_your_email">enter your email</string>
+    <string name="password">Password</string>
+    <string name="enter_your_password">enter your password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="enter_a_valid_mail">enter a valid mail</string>
+    <string name="required">required</string>
+    <string name="passwords_do_not_match">passwords do not match</string>
+    <string name="i_already_have_an_account">I already have an account.</string>
+    <string name="i_do_not_have_an_account">I do not have an account.</string>
 </resources>
