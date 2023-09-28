@@ -5,23 +5,32 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.giraffe.foodplannerapplication.R;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignUpFragment extends Fragment {
+    private final static String TAG = "SignUpFragment";
 
     private EditText edtEmail, edtPassword, edtConfirmPassword;
-    private TextView tvEmailError, tvPasswordError, tvConfirmPasswordError;
+    private TextView tvEmailError, tvPasswordError, tvConfirmPasswordError,tvLogin;
+
+    private ImageView ivPassEye,ivConfirmPassEye;
+
+    private boolean isShownPass,isShownConfirmPass;
     private Button btnCreate;
 
     @Override
@@ -42,51 +51,89 @@ public class SignUpFragment extends Fragment {
         edtConfirmPassword = view.findViewById(R.id.edt_confirm_password);
         tvEmailError = view.findViewById(R.id.tv_email_error);
         tvPasswordError = view.findViewById(R.id.tv_password_error);
+        ivPassEye = view.findViewById(R.id.iv_eye_pass);
         tvConfirmPasswordError = view.findViewById(R.id.tv_confirm_password_error);
+        ivConfirmPassEye = view.findViewById(R.id.iv_eye_confirm_pass);
         btnCreate = view.findViewById(R.id.btn_create_account);
+        tvLogin = view.findViewById(R.id.tv_login);
+        isShownPass = false;
+        isShownConfirmPass = false;
+        ivPassEye.setOnClickListener(v->{
+            if(!isShownPass){
+                edtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                ivPassEye.setImageResource(R.drawable.ic_close_eye);
+            } else{
+                edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                ivPassEye.setImageResource(R.drawable.ic_open_eye);
+            }
+            edtPassword.setSelection(edtPassword.getText().length());
+            isShownPass = !isShownPass;
+        });
+        ivConfirmPassEye.setOnClickListener(v->{
+            if(!isShownConfirmPass){
+                edtConfirmPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                ivConfirmPassEye.setImageResource(R.drawable.ic_close_eye);
+            } else{
+                edtConfirmPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                ivConfirmPassEye.setImageResource(R.drawable.ic_open_eye);
+            }
+            edtConfirmPassword.setSelection(edtConfirmPassword.getText().length());
+            isShownConfirmPass = !isShownConfirmPass;
+        });
+
         btnCreate.setOnClickListener(v -> {
             if (isValidData()){
+                Log.i(TAG,"valid data");
                 //firebase auth
             }
         });
+        tvLogin.setOnClickListener(v-> Navigation.findNavController(v).navigateUp());
     }
 
     boolean isValidData() {
+        boolean isValidFlag = true;
         String email = edtEmail.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
         String confirmPassword = edtConfirmPassword.getText().toString().trim();
+
         if (email.isEmpty()) {
+            Log.i(TAG,getString(R.string.required));
             setErrorMsg(tvEmailError, getString(R.string.required));
-            return false;
+            isValidFlag =  false;
+        }else if (!isValidEmail(email)) {
+            Log.i(TAG,getString(R.string.enter_a_valid_mail));
+            setErrorMsg(tvEmailError, getString(R.string.enter_a_valid_mail));
+            isValidFlag =  false;
+        }else {
+            tvEmailError.setVisibility(View.INVISIBLE);
         }
-        if (!isValidEmail(email)) {
-            setErrorMsg(tvPasswordError, getString(R.string.enter_a_valid_mail));
-            return false;
-        }
-        tvEmailError.setVisibility(View.INVISIBLE);
+
 
         if (password.isEmpty()) {
+            Log.i(TAG,getString(R.string.required));
             setErrorMsg(tvPasswordError, getString(R.string.required));
-            return false;
-        }
-        String passwordErrorMsg = isValidPassword(password);
-        if (!passwordErrorMsg.equals("")) {
+            isValidFlag =  false;
+        }else if (!isValidPassword(password).equals("")) {
+            String passwordErrorMsg = isValidPassword(password);
+            Log.i(TAG,passwordErrorMsg);
             setErrorMsg(tvPasswordError, passwordErrorMsg);
-            return false;
+            isValidFlag =  false;
+        }else {
+            tvPasswordError.setVisibility(View.INVISIBLE);
         }
-        tvPasswordError.setVisibility(View.INVISIBLE);
+
 
         if (confirmPassword.isEmpty()) {
             setErrorMsg(tvConfirmPasswordError, getString(R.string.required));
-            return false;
+            isValidFlag = false;
+        }else if (!confirmPassword.equals(password)) {
+            setErrorMsg(tvConfirmPasswordError, getString(R.string.passwords_do_not_match));
+            isValidFlag = false;
+        }else {
+            tvConfirmPasswordError.setVisibility(View.INVISIBLE);
         }
-        if (!confirmPassword.equals(password)) {
-            setErrorMsg(tvPasswordError, getString(R.string.passwords_do_not_match));
-            return false;
-        }
-        tvConfirmPasswordError.setVisibility(View.INVISIBLE);
 
-        return true;
+        return isValidFlag;
     }
 
     boolean isValidEmail(String email) {

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray"
+    android:background="@color/white"
     tools:context=".features.login.view.LoginFragment">
 
     <TextView
@@ -48,11 +48,11 @@
     <TextView
         android:id="@+id/tv_email_error"
         android:layout_width="wrap_content"
-        android:visibility="invisible"
         android:layout_height="wrap_content"
         android:text="email error"
         android:textColor="@color/red"
         android:textSize="16sp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/edt_email"
         app:layout_constraintTop_toBottomOf="@+id/edt_email" />
 
@@ -71,6 +71,7 @@
         style="@style/edit_text_style"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingEnd="56dp"
         android:background="@drawable/edt_rounded"
         android:hint="@string/enter_your_password"
         android:inputType="textPassword"
@@ -91,14 +92,15 @@
 
 
     <Button
-        android:id="@+id/btn_create_account"
+        android:id="@+id/btn_login"
         style="@style/yellow_button"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="100dp"
         android:layout_marginTop="50dp"
 
         android:background="@drawable/ripple_effect"
-        android:text="@string/create_an_account"
+        android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_password_error" />
@@ -107,23 +109,22 @@
         android:id="@+id/tv_not_have_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="@string/i_do_not_have_an_account"
         android:textColor="@color/gray"
         android:textSize="16sp"
-        android:layout_marginTop="32dp"
-
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_login"
+        app:layout_constraintEnd_toStartOf="@id/tv_sign_up"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_create_account"
+        app:layout_constraintTop_toBottomOf="@+id/btn_login"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/tv_login"
+        android:id="@+id/tv_sign_up"
         android:layout_width="wrap_content"
-        android:layout_marginHorizontal="8dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
         android:text="@string/sign_up"
         android:textColor="@color/orange"
         android:textSize="16sp"
@@ -131,5 +132,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_not_have_account"
         app:layout_constraintTop_toTopOf="@+id/tv_not_have_account" />
+
+    <ImageView
+        android:id="@+id/iv_eye"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:src="@drawable/ic_open_eye"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_password"
+        app:layout_constraintEnd_toEndOf="@+id/edt_password"
+        app:layout_constraintTop_toTopOf="@+id/edt_password" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

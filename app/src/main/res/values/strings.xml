@@ -32,4 +32,8 @@
     <string name="passwords_do_not_match">passwords do not match</string>
     <string name="i_already_have_an_account">I already have an account.</string>
     <string name="i_do_not_have_an_account">I do not have an account.</string>
+    <string name="password_must_contain_at_least_one_capital_letter">password must contain at least one capital letter</string>
+    <string name="password_must_contain_at_least_one_digit">password must contain at least one digit</string>
+    <string name="special_characters_are_not_allowed_in_the_password">special characters are not allowed in the password</string>
+    <string name="password_must_be_at_least_8_characters_long">password must be at least 8 characters long</string>
 </resources>
