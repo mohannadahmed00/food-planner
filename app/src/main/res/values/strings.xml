@@ -14,4 +14,9 @@
     <string name="search">Search</string>
     <string name="sign_up">Sign Up</string>
     <string name="categories">Categories</string>
+    <string name="swipe">Swipe Right ></string>
+    <string name="continue_str">Continue</string>
+    <string name="onboard">Onboard</string>
+    <string name="skip">Skip</string>
+    <string name="as_a_guest">as a Guest</string>
 </resources>

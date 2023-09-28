@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_graph"
+    app:startDestination="@id/loginFragment">
+    <fragment
+        android:id="@+id/forgottenFragment"
+        android:name="com.giraffe.foodplannerapplication.features.forgotten.view.ForgottenFragment"
+        android:label="@string/forgotten_password"
+        tools:layout="@layout/fragment_forgotten" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.giraffe.foodplannerapplication.features.login.view.LoginFragment"
+        android:label="@string/login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_forgottenFragment"
+            app:destination="@id/forgottenFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_main_graph"
+            app:destination="@id/main_graph" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.giraffe.foodplannerapplication.features.signup.view.SignUpFragment"
+        android:label="@string/sign_up"
+        tools:layout="@layout/fragment_sign_up" />
+    <include app:graph="@navigation/main_graph" />
+</navigation>

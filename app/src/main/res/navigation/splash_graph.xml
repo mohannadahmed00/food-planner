@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/splash_graph"
+    app:startDestination="@id/splashFragment">
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.giraffe.foodplannerapplication.features.splash.view.SplashFragment"
+        android:label="@string/splash"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splashFragment_to_auth_graph"
+            app:destination="@id/auth_graph" />
+        <action
+            android:id="@+id/action_splashFragment_to_on_board_graph"
+            app:destination="@id/on_board_graph" />
+        <action
+            android:id="@+id/action_splashFragment_to_main_graph"
+            app:destination="@id/main_graph" />
+    </fragment>
+    <include app:graph="@navigation/main_graph" />
+    <include app:graph="@navigation/auth_graph" />
+    <include app:graph="@navigation/on_board_graph" />
+</navigation>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/on_board_graph"
+    app:startDestination="@id/onBoardFragment">
+    <fragment
+        android:id="@+id/onBoardFragment"
+        android:name="com.giraffe.foodplannerapplication.features.onboard.view.OnBoardFragment"
+        android:label="@string/onboard"
+        tools:layout="@layout/fragment_on_board" >
+        <action
+            android:id="@+id/action_onBoardFragment_to_main_graph"
+            app:destination="@id/main_graph" />
+        <action
+            android:id="@+id/action_onBoardFragment_to_auth_graph"
+            app:destination="@id/auth_graph" />
+    </fragment>
+    <include app:graph="@navigation/auth_graph" />
+    <include app:graph="@navigation/main_graph" />
+
+</navigation>

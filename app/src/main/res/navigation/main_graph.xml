@@ -2,13 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
+    android:id="@+id/main_graph"
     app:startDestination="@id/homeFragment">
-    <fragment
-        android:id="@+id/splashFragment"
-        android:name="com.giraffe.foodplannerapplication.features.splash.view.SplashFragment"
-        android:label="@string/splash"
-        tools:layout="@layout/fragment_splash" />
     <fragment
         android:id="@+id/categoriesFragment"
         android:name="com.giraffe.foodplannerapplication.features.categories.view.CategoriesFragment"
@@ -30,20 +25,10 @@
         android:label="@string/favorite"
         tools:layout="@layout/fragment_favorites" />
     <fragment
-        android:id="@+id/forgottenFragment"
-        android:name="com.giraffe.foodplannerapplication.features.forgotten.view.ForgottenFragment"
-        android:label="@string/forgotten_password"
-        tools:layout="@layout/fragment_forgotten" />
-    <fragment
         android:id="@+id/homeFragment"
         android:name="com.giraffe.foodplannerapplication.features.home.view.HomeFragment"
         android:label="@string/home"
         tools:layout="@layout/fragment_home" />
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.giraffe.foodplannerapplication.features.login.view.LoginFragment"
-        android:label="@string/login"
-        tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/planFragment"
         android:name="com.giraffe.foodplannerapplication.features.plan.view.PlanFragment"
@@ -59,9 +44,4 @@
         android:name="com.giraffe.foodplannerapplication.features.settings.view.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
-    <fragment
-        android:id="@+id/signUpFragment"
-        android:name="com.giraffe.foodplannerapplication.features.signup.view.SignUpFragment"
-        android:label="@string/sign_up"
-        tools:layout="@layout/fragment_sign_up" />
 </navigation>

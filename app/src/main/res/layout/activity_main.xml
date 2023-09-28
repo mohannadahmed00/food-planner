@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_graph"
+            app:navGraph="@navigation/splash_graph"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -32,16 +32,14 @@
         android:id="@+id/bottom_nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
         android:layout_margin="5dp"
-        android:layout_marginEnd="0dp"
         android:background="@drawable/bottom_nav_background"
         android:fitsSystemWindows="true"
-        app:labelVisibilityMode="selected"
-        app:itemActiveIndicatorStyle="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:itemActiveIndicatorStyle="@color/trans"
         app:itemRippleColor="@color/trans"
         android:layout_gravity="bottom"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        app:itemIconSize="30dp"
         app:menu="@menu/bottom_nav_menu"
         app:elevation="5dp"
         app:itemTextColor="@color/bottom_nav_selector"
