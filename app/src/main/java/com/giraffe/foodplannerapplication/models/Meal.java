@@ -1,6 +1,12 @@
 package com.giraffe.foodplannerapplication.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "meals_table")
 public class Meal{
+
+    @PrimaryKey
     private final String idMeal;
     private final String strMeal;
     private final String strDrinkAlternate;
