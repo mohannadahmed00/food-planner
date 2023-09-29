@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment implements HomeView {
 
 
     void handleRandomMealImg(String imgUrl) {
-        Glide.with(getContext()).load(imgUrl).into(ivRandom);
+        Glide.with(requireContext()).load(imgUrl).into(ivRandom);
     }
 
     void handleRandomMealTitle(String mealTitle) {
@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment implements HomeView {
         Spannable spannableString = new SpannableString(title);
         int startIndex = title.indexOf(mealTitle);
         int endIndex = startIndex + mealTitle.length();
-        int color = ContextCompat.getColor(getContext(), R.color.yellow);
+        int color = ContextCompat.getColor(requireContext(), R.color.yellow);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(color);
         spannableString.setSpan(colorSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvRandom.setText(spannableString);

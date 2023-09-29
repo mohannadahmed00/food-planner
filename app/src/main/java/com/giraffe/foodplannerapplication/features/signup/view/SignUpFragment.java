@@ -41,8 +41,6 @@ public class SignUpFragment extends Fragment implements SignUpView {
 
     private SignUpPresenter presenter;
 
-    private View mView;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +60,6 @@ public class SignUpFragment extends Fragment implements SignUpView {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mView = view;
         inflateViews(view);
         initClicks();
     }
@@ -106,18 +103,14 @@ public class SignUpFragment extends Fragment implements SignUpView {
             isShownConfirmPass = !isShownConfirmPass;
         });
         btnCreate.setOnClickListener(v -> {
-            boolean isConnected = NetworkConnection.isConnected(getContext());
-            if (isConnected) {
+            if (isConnected()) {
                 if (isValidData()) {
                     String email = edtEmail.getText().toString().trim();
                     String password = edtPassword.getText().toString().trim();
                     showDialog();
                     presenter.createAccount(email, password);
                 }
-            } else {
-                Toast.makeText(getContext(), R.string.check_your_internet_connection_and_try_again, Toast.LENGTH_SHORT).show();
             }
-
         });
         tvLogin.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
     }
@@ -126,7 +119,7 @@ public class SignUpFragment extends Fragment implements SignUpView {
     public void onCreateAccount(Boolean isRegistered) {
         dismissDialog();
         if (isRegistered) {
-            Navigation.findNavController(mView).navigateUp();
+            Navigation.findNavController(requireView()).navigateUp();
         } else {
             Toast.makeText(getContext(), R.string.the_email_address_is_already_in_use_by_another_account, Toast.LENGTH_SHORT).show();
         }
@@ -211,5 +204,14 @@ public class SignUpFragment extends Fragment implements SignUpView {
 
     public void dismissDialog() {
         LoadingDialog.getInstance(getParentFragmentManager()).dismissLoading();
+    }
+
+    private boolean isConnected() {
+        if (NetworkConnection.isConnected(requireContext())) {
+            return true;
+        } else {
+            Toast.makeText(getContext(), R.string.check_your_internet_connection_and_try_again, Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 }

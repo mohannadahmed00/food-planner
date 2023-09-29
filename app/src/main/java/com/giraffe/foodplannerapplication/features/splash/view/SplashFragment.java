@@ -16,15 +16,26 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.giraffe.foodplannerapplication.R;
+import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
+import com.giraffe.foodplannerapplication.features.splash.presenter.SplashPresenter;
+import com.giraffe.foodplannerapplication.models.repository.Repo;
+import com.giraffe.foodplannerapplication.network.ApiClient;
 
-public class SplashFragment extends Fragment {
+public class SplashFragment extends Fragment implements SplashView {
     private final static String TAG = "SplashFragment";
-    Animation fadeIn;
-    ImageView logo;
+    private Animation fadeIn;
+    private ImageView logo;
+
+    private SplashPresenter presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter = new SplashPresenter(this,
+                Repo.getInstance(
+                        ApiClient.getInstance(),
+                        ConcreteLocalSource.getInstance(getContext())
+                ));
     }
 
     @Override
@@ -38,14 +49,17 @@ public class SplashFragment extends Fragment {
         fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
         logo = view.findViewById(R.id.iv_logo);
         logo.startAnimation(fadeIn);
-        //Navigation.findNavController(view).setGraph(R.navigation.main_graph)
         Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            //i use it just for passing data
-            //Navigation.findNavController(view).navigate(SplashFragmentDirections.actionSplashFragmentToMainGraph());
-            //i use it to never go back
-            //Navigation.findNavController(view).setGraph(R.navigation.main_graph);
-            Navigation.findNavController(view).setGraph(R.navigation.on_board_graph);
-        }, 4000);
+        handler.postDelayed(() -> presenter.isLoggedIn(), 4000);
+    }
+
+    @Override
+    public void onGetLoggedInFlag(boolean isLoggedIn) {
+        if (isLoggedIn) {
+            Navigation.findNavController(requireView()).setGraph(R.navigation.main_graph);
+        } else {
+            //check it is your first time or not
+            Navigation.findNavController(requireView()).setGraph(R.navigation.on_board_graph);
+        }
     }
 }

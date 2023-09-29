@@ -8,9 +8,6 @@ import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.MealsResponse;
 import com.giraffe.foodplannerapplication.network.NetworkCallback;
 import com.giraffe.foodplannerapplication.network.RemoteSource;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -20,7 +17,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Repo implements RepoInterface {
-    private final static String TAG = "Repo";
     RemoteSource remoteSource;
     LocalSource localSource;
     FirebaseAuth mAuth;
@@ -83,7 +79,18 @@ public class Repo implements RepoInterface {
                 });
     }
 
+    @Override
+    public boolean logout() {
+        mAuth.signOut();
+        return mAuth.getCurrentUser() == null;
+    }
+
     //=================local functions=================
+    @Override
+    public boolean isLoggedIn() {
+        return mAuth.getCurrentUser() != null;
+    }
+
     @Override
     public LiveData<List<Meal>> getLocalMeals() {
         return localSource.getMeals();

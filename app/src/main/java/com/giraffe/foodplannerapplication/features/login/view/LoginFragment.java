@@ -9,7 +9,6 @@ import androidx.navigation.Navigation;
 
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +23,8 @@ import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
 import com.giraffe.foodplannerapplication.features.login.presenter.LoginPresenter;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
-import com.giraffe.foodplannerapplication.network.RemoteSource;
 import com.giraffe.foodplannerapplication.util.LoadingDialog;
 import com.giraffe.foodplannerapplication.util.NetworkConnection;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 
@@ -40,8 +36,6 @@ public class LoginFragment extends Fragment implements LoginView {
     private boolean isShownPass;
     private Button btnLogin;
     private LoginPresenter presenter;
-
-    private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +58,6 @@ public class LoginFragment extends Fragment implements LoginView {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mView = view;
         inflateViews(view);
         initClicks();
 
@@ -112,7 +105,7 @@ public class LoginFragment extends Fragment implements LoginView {
     public void onLogin(Boolean isLoggedIn) {
         dismissDialog();
         if (isLoggedIn) {
-            Navigation.findNavController(mView).navigate(LoginFragmentDirections.actionLoginFragmentToMainGraph());
+            Navigation.findNavController(requireView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainGraph());
         } else {
             Toast.makeText(getContext(), R.string.please_enter_a_valid_username_and_password, Toast.LENGTH_SHORT).show();
         }
@@ -187,7 +180,7 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     private boolean isConnected() {
-        if (NetworkConnection.isConnected(getContext())) {
+        if (NetworkConnection.isConnected(requireContext())) {
             return true;
         } else {
             Toast.makeText(getContext(), R.string.check_your_internet_connection_and_try_again, Toast.LENGTH_SHORT).show();

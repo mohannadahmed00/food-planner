@@ -98,7 +98,6 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="70dp"
         android:layout_marginTop="50dp"
-
         android:background="@drawable/ripple_effect"
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"

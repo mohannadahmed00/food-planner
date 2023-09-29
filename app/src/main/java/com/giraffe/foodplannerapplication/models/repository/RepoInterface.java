@@ -14,9 +14,14 @@ public interface RepoInterface {
     void getRandomMeal(NetworkCallback<MealsResponse> callback);
 
     void createAccount(String email, String password, NetworkCallback<Boolean> callback);
+
     void login(String email, String password, NetworkCallback<Boolean> callback);
 
+    boolean logout();
+
     //=================local functions=================
+    boolean isLoggedIn();
+
     LiveData<List<Meal>> getLocalMeals();
 
     void insertMeal(Meal meal);

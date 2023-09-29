@@ -2,7 +2,6 @@ package com.giraffe.foodplannerapplication.features.onboard.view;
 
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -26,17 +25,10 @@ public class OnBoardFragment extends Fragment implements OnBoardClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                getActivity().finish();
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
         list = new ArrayList<>();
         list.add(new OnBoardData(R.raw.on_board_1, "Various meals throughout the week", "Users can easily create personalized meal plans by selecting recipes from a vast database."));
         list.add(new OnBoardData(R.raw.on_board_2, "Easy meals to prepare step by step", "The app provides smart grocery lists based on the selected meals, ensuring users have all the necessary ingredients on hand."));
-        adapter = new OnBoardPagerAdapter(getContext(), list, this);
+        adapter = new OnBoardPagerAdapter(requireContext(), list, this);
     }
 
     @Override
