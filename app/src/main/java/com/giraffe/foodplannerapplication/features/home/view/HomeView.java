@@ -5,5 +5,6 @@ import com.giraffe.foodplannerapplication.models.Meal;
 public interface HomeView {
 
     void onGetRandomMeal(Meal meal);
+
     void onFailGetRandomMeal(String errorMsg);
 }

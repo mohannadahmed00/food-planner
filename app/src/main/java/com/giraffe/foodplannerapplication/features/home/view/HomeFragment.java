@@ -4,14 +4,25 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
 import com.giraffe.foodplannerapplication.features.home.presenter.HomePresenter;
@@ -26,6 +37,13 @@ public class HomeFragment extends Fragment implements HomeView {
     LoadingDialog loading;
 
     HomePresenter presenter;
+
+    ImageView ivRandom;
+    TextView tvRandom;
+
+    EditText edtSearch;
+
+    View viewBlur;
 
 
     @Override
@@ -45,14 +63,60 @@ public class HomeFragment extends Fragment implements HomeView {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewBlur = view.findViewById(R.id.v_blur);
+        edtSearch = view.findViewById(R.id.edt_search);
+        ivRandom = view.findViewById(R.id.iv_random);
+        tvRandom = view.findViewById(R.id.tv_random);
         presenter.getRandomMeal();
         showDialog();
+        handleSearch();
+    }
+
+    void handleSearch() {
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 0) {
+                    viewBlur.setVisibility(View.INVISIBLE);
+                } else {
+                    viewBlur.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+
+    void handleRandomMealImg(String imgUrl) {
+        Glide.with(getContext()).load(imgUrl).into(ivRandom);
+    }
+
+    void handleRandomMealTitle(String mealTitle) {
+        String title = "What about trying " + mealTitle + " today?";
+        Spannable spannableString = new SpannableString(title);
+        int startIndex = title.indexOf(mealTitle);
+        int endIndex = startIndex + mealTitle.length();
+        int color = ContextCompat.getColor(getContext(), R.color.yellow);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(color);
+        spannableString.setSpan(colorSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvRandom.setText(spannableString);
     }
 
 
     @Override
     public void onGetRandomMeal(Meal meal) {
         dismissDialog();
+        handleRandomMealTitle(meal.getStrMeal());
+        handleRandomMealImg(meal.getStrMealThumb());
         Log.i(TAG, meal.getStrMeal());
     }
 
@@ -66,10 +130,6 @@ public class HomeFragment extends Fragment implements HomeView {
         FragmentManager fragmentManager = getParentFragmentManager();
         loading = new LoadingDialog();
         loading.show(fragmentManager, "dialog");
-
-        //just for try
-        //Handler handler = new Handler();
-        //handler.postDelayed(newFragment::dismiss, 4000);
     }
 
     public void dismissDialog() {
@@ -77,4 +137,6 @@ public class HomeFragment extends Fragment implements HomeView {
             loading.dismiss();
         }
     }
+
+
 }

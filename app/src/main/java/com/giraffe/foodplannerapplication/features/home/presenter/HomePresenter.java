@@ -1,9 +1,7 @@
 package com.giraffe.foodplannerapplication.features.home.presenter;
 
-import android.util.Log;
 
 import com.giraffe.foodplannerapplication.features.home.view.HomeView;
-import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.MealsResponse;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.NetworkCallback;
@@ -19,7 +17,7 @@ public class HomePresenter {
         this.repo = repo;
     }
 
-    public void getRandomMeal(){
+    public void getRandomMeal() {
         repo.getRandomMeal(new NetworkCallback<MealsResponse>() {
             @Override
             public void onSuccess(MealsResponse response) {
