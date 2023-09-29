@@ -17,23 +17,43 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.giraffe.foodplannerapplication.R;
+import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
+import com.giraffe.foodplannerapplication.features.login.presenter.LoginPresenter;
+import com.giraffe.foodplannerapplication.models.repository.Repo;
+import com.giraffe.foodplannerapplication.network.ApiClient;
+import com.giraffe.foodplannerapplication.network.RemoteSource;
+import com.giraffe.foodplannerapplication.util.LoadingDialog;
+import com.giraffe.foodplannerapplication.util.NetworkConnection;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 
-public class LoginFragment extends Fragment {
-    private final static String TAG = "LoginFragment";
-
+public class LoginFragment extends Fragment implements LoginView {
+    public final static String TAG = "LoginFragment";
     private EditText edtEmail, edtPassword;
     private TextView tvEmailError, tvPasswordError, tvSignUp;
     private ImageView ivPassEye;
     private boolean isShownPass;
     private Button btnLogin;
+    private LoginPresenter presenter;
+
+    private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter = new LoginPresenter(
+                this,
+                Repo.getInstance(
+                        ApiClient.getInstance(),
+                        ConcreteLocalSource.getInstance(getContext())
+                )
+        );
+        isShownPass = false;
     }
 
     @Override
@@ -44,6 +64,15 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mView = view;
+        inflateViews(view);
+        initClicks();
+
+
+    }
+
+    @Override
+    public void inflateViews(View view) {
         edtEmail = view.findViewById(R.id.edt_email);
         edtPassword = view.findViewById(R.id.edt_password);
         tvEmailError = view.findViewById(R.id.tv_email_error);
@@ -51,7 +80,10 @@ public class LoginFragment extends Fragment {
         ivPassEye = view.findViewById(R.id.iv_eye);
         btnLogin = view.findViewById(R.id.btn_login);
         tvSignUp = view.findViewById(R.id.tv_sign_up);
-        isShownPass = false;
+    }
+
+    @Override
+    public void initClicks() {
         ivPassEye.setOnClickListener(v -> {
             if (!isShownPass) {
                 edtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
@@ -64,41 +96,48 @@ public class LoginFragment extends Fragment {
             isShownPass = !isShownPass;
         });
         btnLogin.setOnClickListener(v -> {
-            if (isValidData()) {
-                Log.i(TAG, "valid data");
-                //firebase auth
+            if (isConnected()) {
+                if (isValidData()) {
+                    String email = edtEmail.getText().toString().trim();
+                    String password = edtPassword.getText().toString().trim();
+                    showDialog();
+                    presenter.login(email, password);
+                }
             }
         });
         tvSignUp.setOnClickListener(v -> Navigation.findNavController(v).navigate(LoginFragmentDirections.actionLoginFragmentToSignUpFragment()));
     }
 
-    boolean isValidData() {
+    @Override
+    public void onLogin(Boolean isLoggedIn) {
+        dismissDialog();
+        if (isLoggedIn) {
+            Navigation.findNavController(mView).navigate(LoginFragmentDirections.actionLoginFragmentToMainGraph());
+        } else {
+            Toast.makeText(getContext(), R.string.please_enter_a_valid_username_and_password, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isValidData() {
         boolean isValidFlag = true;
         String email = edtEmail.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
-        Log.i(TAG, email);
-        Log.i(TAG, password);
 
         if (email.isEmpty()) {
-            Log.i(TAG, getString(R.string.required));
             setErrorMsg(tvEmailError, getString(R.string.required));
             isValidFlag = false;
         } else if (!isValidEmail(email)) {
-            Log.i(TAG, getString(R.string.enter_a_valid_mail));
             setErrorMsg(tvEmailError, getString(R.string.enter_a_valid_mail));
             isValidFlag = false;
         } else {
             tvEmailError.setVisibility(View.INVISIBLE);
         }
 
-
         if (password.isEmpty()) {
-            Log.i(TAG, getString(R.string.required));
             setErrorMsg(tvPasswordError, getString(R.string.required));
             isValidFlag = false;
         } else if (!isValidPassword(password).equals("")) {
             String passwordErrorMsg = isValidPassword(password);
-            Log.i(TAG, passwordErrorMsg);
             setErrorMsg(tvPasswordError, passwordErrorMsg);
             isValidFlag = false;
         } else {
@@ -108,38 +147,51 @@ public class LoginFragment extends Fragment {
         return isValidFlag;
     }
 
-    boolean isValidEmail(String email) {
+    private boolean isValidEmail(String email) {
         String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         Pattern pattern = Pattern.compile(emailPattern);
         return pattern.matcher(email).matches();
     }
 
-    String isValidPassword(String password) {
+    private String isValidPassword(String password) {
         StringBuilder strBuilder = new StringBuilder();
         String capital = ".*[A-Z].*";
         String number = ".*\\d.*";
         String special = ".*[^A-Za-z0-9].*";
         if (!Pattern.matches(capital, password)) {
-            Log.i(TAG, getString(R.string.password_must_contain_at_least_one_capital_letter));
             strBuilder.append(getString(R.string.password_must_contain_at_least_one_capital_letter)).append("\n");
         }
         if (!Pattern.matches(number, password)) {
-            Log.i(TAG, getString(R.string.password_must_contain_at_least_one_digit));
             strBuilder.append(getString(R.string.password_must_contain_at_least_one_digit)).append("\n");
         }
         if (Pattern.matches(special, password)) {
-            Log.i(TAG, getString(R.string.special_characters_are_not_allowed_in_the_password));
             strBuilder.append(getString(R.string.special_characters_are_not_allowed_in_the_password)).append("\n");
         }
         if (password.length() < 8) {
-            Log.i(TAG, getString(R.string.password_must_be_at_least_8_characters_long));
             strBuilder.append(getString(R.string.password_must_be_at_least_8_characters_long)).append("\n");
         }
         return strBuilder.toString();
     }
 
-    void setErrorMsg(TextView tvError, String msg) {
+    private void setErrorMsg(TextView tvError, String msg) {
         tvError.setVisibility(View.VISIBLE);
         tvError.setText(msg);
+    }
+
+    private void showDialog() {
+        LoadingDialog.getInstance(getParentFragmentManager()).showLoading();
+    }
+
+    private void dismissDialog() {
+        LoadingDialog.getInstance(getParentFragmentManager()).dismissLoading();
+    }
+
+    private boolean isConnected() {
+        if (NetworkConnection.isConnected(getContext())) {
+            return true;
+        } else {
+            Toast.makeText(getContext(), R.string.check_your_internet_connection_and_try_again, Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 }

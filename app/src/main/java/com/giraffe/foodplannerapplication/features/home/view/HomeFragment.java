@@ -128,8 +128,6 @@ public class HomeFragment extends Fragment implements HomeView {
     }
 
     public void dismissDialog() {
-        LoadingDialog.getInstance(getParentFragmentManager()).showLoading();
+        LoadingDialog.getInstance(getParentFragmentManager()).dismissLoading();
     }
-
-
 }
