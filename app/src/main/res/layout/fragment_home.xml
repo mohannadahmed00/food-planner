@@ -6,35 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".features.home.view.HomeFragment">
 
-    <ImageView
+
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_random"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:layout_margin="16dp"
-        android:background="@drawable/image_rounded"
-        android:clipToOutline="true"
-        android:foreground="@drawable/image_rounded"
+        android:foreground="@drawable/text_protection"
         android:scaleType="centerCrop"
+        android:src="@drawable/cr"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edt_search" />
+        app:layout_constraintTop_toBottomOf="@id/edt_search"
+        app:shapeAppearanceOverlay="@style/rounded_square" />
 
     <TextView
         android:id="@+id/tv_random"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
-        android:ellipsize="end"
         android:gravity="bottom"
-        android:maxLines="4"
         android:textColor="@color/white"
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/iv_random"
         app:layout_constraintEnd_toEndOf="@+id/iv_random"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@+id/iv_random"
-        app:layout_constraintTop_toTopOf="@+id/iv_random" />
-
+        app:layout_constraintTop_toTopOf="@+id/iv_random"
+        app:layout_constraintVertical_bias="1" />
 
     <View
         android:id="@+id/v_blur"
@@ -59,4 +59,4 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout><!---->

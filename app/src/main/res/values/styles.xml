@@ -35,4 +35,8 @@
         <item name="android:textColor">@color/brown</item>
         <item name="android:padding">16dp</item>
     </style>
+
+    <style name="rounded_square">
+        <item name="cornerSize">15dp</item>
+    </style>
 </resources>
