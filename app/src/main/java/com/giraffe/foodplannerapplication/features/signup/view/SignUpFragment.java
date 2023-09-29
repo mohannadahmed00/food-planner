@@ -9,7 +9,6 @@ import androidx.navigation.Navigation;
 
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,25 +16,42 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.giraffe.foodplannerapplication.R;
+import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
+import com.giraffe.foodplannerapplication.features.signup.presenter.SignUpPresenter;
+import com.giraffe.foodplannerapplication.models.repository.Repo;
+import com.giraffe.foodplannerapplication.network.ApiClient;
+import com.giraffe.foodplannerapplication.util.LoadingDialog;
+import com.giraffe.foodplannerapplication.util.NetworkConnection;
 
 import java.util.regex.Pattern;
 
-public class SignUpFragment extends Fragment {
+public class SignUpFragment extends Fragment implements SignUpView {
     private final static String TAG = "SignUpFragment";
 
     private EditText edtEmail, edtPassword, edtConfirmPassword;
-    private TextView tvEmailError, tvPasswordError, tvConfirmPasswordError,tvLogin;
+    private TextView tvEmailError, tvPasswordError, tvConfirmPasswordError, tvLogin;
 
-    private ImageView ivPassEye,ivConfirmPassEye;
+    private ImageView ivPassEye, ivConfirmPassEye;
 
-    private boolean isShownPass,isShownConfirmPass;
+    private boolean isShownPass, isShownConfirmPass;
     private Button btnCreate;
+
+    private SignUpPresenter presenter;
+
+    private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter = new SignUpPresenter(this, Repo.getInstance(
+                ApiClient.getInstance(),
+                ConcreteLocalSource.getInstance(getContext())
+        ));
+        isShownPass = false;
+        isShownConfirmPass = false;
     }
 
     @Override
@@ -46,6 +62,13 @@ public class SignUpFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mView = view;
+        inflateViews(view);
+        initClicks();
+    }
+
+    @Override
+    public void inflateViews(View view) {
         edtEmail = view.findViewById(R.id.edt_email);
         edtPassword = view.findViewById(R.id.edt_password);
         edtConfirmPassword = view.findViewById(R.id.edt_confirm_password);
@@ -56,38 +79,57 @@ public class SignUpFragment extends Fragment {
         ivConfirmPassEye = view.findViewById(R.id.iv_eye_confirm_pass);
         btnCreate = view.findViewById(R.id.btn_create_account);
         tvLogin = view.findViewById(R.id.tv_login);
-        isShownPass = false;
-        isShownConfirmPass = false;
-        ivPassEye.setOnClickListener(v->{
-            if(!isShownPass){
+    }
+
+    @Override
+    public void initClicks() {
+        ivPassEye.setOnClickListener(v -> {
+            if (!isShownPass) {
                 edtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                 ivPassEye.setImageResource(R.drawable.ic_close_eye);
-            } else{
+            } else {
                 edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 ivPassEye.setImageResource(R.drawable.ic_open_eye);
             }
             edtPassword.setSelection(edtPassword.getText().length());
             isShownPass = !isShownPass;
         });
-        ivConfirmPassEye.setOnClickListener(v->{
-            if(!isShownConfirmPass){
+        ivConfirmPassEye.setOnClickListener(v -> {
+            if (!isShownConfirmPass) {
                 edtConfirmPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                 ivConfirmPassEye.setImageResource(R.drawable.ic_close_eye);
-            } else{
+            } else {
                 edtConfirmPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 ivConfirmPassEye.setImageResource(R.drawable.ic_open_eye);
             }
             edtConfirmPassword.setSelection(edtConfirmPassword.getText().length());
             isShownConfirmPass = !isShownConfirmPass;
         });
-
         btnCreate.setOnClickListener(v -> {
-            if (isValidData()){
-                Log.i(TAG,"valid data");
-                //firebase auth
+            boolean isConnected = NetworkConnection.isConnected(getContext());
+            if (isConnected) {
+                if (isValidData()) {
+                    String email = edtEmail.getText().toString().trim();
+                    String password = edtPassword.getText().toString().trim();
+                    showDialog();
+                    presenter.createAccount(email, password);
+                }
+            } else {
+                Toast.makeText(getContext(), R.string.check_your_internet_connection_and_try_again, Toast.LENGTH_SHORT).show();
             }
+
         });
-        tvLogin.setOnClickListener(v-> Navigation.findNavController(v).navigateUp());
+        tvLogin.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
+    }
+
+    @Override
+    public void onCreateAccount(Boolean isRegistered) {
+        dismissDialog();
+        if (isRegistered) {
+            Navigation.findNavController(mView).navigateUp();
+        } else {
+            Toast.makeText(getContext(), R.string.the_email_address_is_already_in_use_by_another_account, Toast.LENGTH_SHORT).show();
+        }
     }
 
     boolean isValidData() {
@@ -97,28 +139,24 @@ public class SignUpFragment extends Fragment {
         String confirmPassword = edtConfirmPassword.getText().toString().trim();
 
         if (email.isEmpty()) {
-            Log.i(TAG,getString(R.string.required));
             setErrorMsg(tvEmailError, getString(R.string.required));
-            isValidFlag =  false;
-        }else if (!isValidEmail(email)) {
-            Log.i(TAG,getString(R.string.enter_a_valid_mail));
+            isValidFlag = false;
+        } else if (!isValidEmail(email)) {
             setErrorMsg(tvEmailError, getString(R.string.enter_a_valid_mail));
-            isValidFlag =  false;
-        }else {
+            isValidFlag = false;
+        } else {
             tvEmailError.setVisibility(View.INVISIBLE);
         }
 
 
         if (password.isEmpty()) {
-            Log.i(TAG,getString(R.string.required));
             setErrorMsg(tvPasswordError, getString(R.string.required));
-            isValidFlag =  false;
-        }else if (!isValidPassword(password).equals("")) {
+            isValidFlag = false;
+        } else if (!isValidPassword(password).equals("")) {
             String passwordErrorMsg = isValidPassword(password);
-            Log.i(TAG,passwordErrorMsg);
             setErrorMsg(tvPasswordError, passwordErrorMsg);
-            isValidFlag =  false;
-        }else {
+            isValidFlag = false;
+        } else {
             tvPasswordError.setVisibility(View.INVISIBLE);
         }
 
@@ -126,10 +164,10 @@ public class SignUpFragment extends Fragment {
         if (confirmPassword.isEmpty()) {
             setErrorMsg(tvConfirmPasswordError, getString(R.string.required));
             isValidFlag = false;
-        }else if (!confirmPassword.equals(password)) {
+        } else if (!confirmPassword.equals(password)) {
             setErrorMsg(tvConfirmPasswordError, getString(R.string.passwords_do_not_match));
             isValidFlag = false;
-        }else {
+        } else {
             tvConfirmPasswordError.setVisibility(View.INVISIBLE);
         }
 
@@ -165,5 +203,13 @@ public class SignUpFragment extends Fragment {
     void setErrorMsg(TextView tvError, String msg) {
         tvError.setVisibility(View.VISIBLE);
         tvError.setText(msg);
+    }
+
+    public void showDialog() {
+        LoadingDialog.getInstance(getParentFragmentManager()).showLoading();
+    }
+
+    public void dismissDialog() {
+        LoadingDialog.getInstance(getParentFragmentManager()).dismissLoading();
     }
 }

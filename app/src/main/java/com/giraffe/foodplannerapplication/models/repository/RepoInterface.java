@@ -9,12 +9,17 @@ import com.giraffe.foodplannerapplication.network.NetworkCallback;
 import java.util.List;
 
 public interface RepoInterface {
+    //optional till now just for testing
     //=================remote functions=================
-    void getRandomMeal(NetworkCallback<MealsResponse> callback);//optional till now just for testing
-    //=================local functions=================
-    LiveData<List<Meal>> getLocalMeals();//optional till now just for testing
-    void insertMeal(Meal meal);//optional till now just for testing
+    void getRandomMeal(NetworkCallback<MealsResponse> callback);
 
-    void deleteMeal(Meal meal);//optional till now just for testing
+    void createAccount(String email, String password, NetworkCallback<Boolean> callback);
+
+    //=================local functions=================
+    LiveData<List<Meal>> getLocalMeals();
+
+    void insertMeal(Meal meal);
+
+    void deleteMeal(Meal meal);
 
 }

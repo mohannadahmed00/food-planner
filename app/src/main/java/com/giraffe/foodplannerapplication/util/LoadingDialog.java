@@ -12,10 +12,36 @@ import android.view.Window;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.giraffe.foodplannerapplication.R;
 
 public class LoadingDialog extends DialogFragment {
+
+    private static LoadingDialog instance;
+
+    private final FragmentManager fragmentManager;
+
+    public static LoadingDialog getInstance(FragmentManager fragmentManager) {
+        if (instance == null) {
+            instance = new LoadingDialog(fragmentManager);
+        }
+        return instance;
+    }
+
+    public void showLoading() {
+        instance.show(fragmentManager, "loading");
+    }
+
+    public void dismissLoading() {
+        instance.dismiss();
+    }
+
+    private LoadingDialog(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

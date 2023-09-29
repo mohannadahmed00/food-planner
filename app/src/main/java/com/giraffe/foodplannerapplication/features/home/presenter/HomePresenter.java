@@ -26,7 +26,7 @@ public class HomePresenter {
 
             @Override
             public void onFailure(String errorMsg) {
-                view.onFailGetRandomMeal(errorMsg);
+                view.onGetRandomMealFail(errorMsg);
             }
         });
     }

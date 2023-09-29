@@ -6,5 +6,5 @@ public interface HomeView {
 
     void onGetRandomMeal(Meal meal);
 
-    void onFailGetRandomMeal(String errorMsg);
+    void onGetRandomMealFail(String errorMsg);
 }

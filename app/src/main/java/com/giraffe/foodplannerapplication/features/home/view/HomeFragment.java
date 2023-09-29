@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.text.Editable;
 import android.text.Spannable;
@@ -33,8 +32,6 @@ import com.giraffe.foodplannerapplication.util.LoadingDialog;
 
 public class HomeFragment extends Fragment implements HomeView {
     private final static String TAG = "HomeFragment";
-
-    LoadingDialog loading;
 
     HomePresenter presenter;
 
@@ -121,21 +118,17 @@ public class HomeFragment extends Fragment implements HomeView {
     }
 
     @Override
-    public void onFailGetRandomMeal(String errorMsg) {
+    public void onGetRandomMealFail(String errorMsg) {
         dismissDialog();
         Log.i(TAG, errorMsg);
     }
 
     public void showDialog() {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        loading = new LoadingDialog();
-        loading.show(fragmentManager, "dialog");
+        LoadingDialog.getInstance(getParentFragmentManager()).showLoading();
     }
 
     public void dismissDialog() {
-        if (loading != null) {
-            loading.dismiss();
-        }
+        LoadingDialog.getInstance(getParentFragmentManager()).showLoading();
     }
 
 
