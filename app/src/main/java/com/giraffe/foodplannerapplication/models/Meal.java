@@ -1,5 +1,6 @@
 package com.giraffe.foodplannerapplication.models;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -7,6 +8,7 @@ import androidx.room.PrimaryKey;
 public class Meal{
 
     @PrimaryKey
+    @NonNull
     private final String idMeal;
     private final String strMeal;
     private final String strDrinkAlternate;

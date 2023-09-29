@@ -14,8 +14,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class ApiClient /*implements RemoteSource*/ {
-    private static final String URL = "www.themealdb.com/api/json/v1/1/";
+public class ApiClient implements RemoteSource {
+    private static final String URL = "https://www.themealdb.com/api/json/v1/1/";
     private static final String TAG = "ApiClient";
     private static ApiClient client = null;
 
@@ -29,13 +29,13 @@ public class ApiClient /*implements RemoteSource*/ {
         return client;
     }
 
-    //@Override
-    public void makeNetworkCall(NetworkCallback networkCallback) {
+    @Override
+    public <T> ApiServices makeNetworkCall(NetworkCallback<T> networkCallback) {
         //Gson gson =
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(URL).build();
-        ApiServices apiServices = retrofit.create(ApiServices.class);
+        return retrofit.create(ApiServices.class);
         //the end
         /*Call<ProductsResponse> call = apiServices.getProducts();
         call.enqueue(new Callback<ProductsResponse>() {
