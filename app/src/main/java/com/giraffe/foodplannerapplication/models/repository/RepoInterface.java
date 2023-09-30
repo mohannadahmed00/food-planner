@@ -3,7 +3,10 @@ package com.giraffe.foodplannerapplication.models.repository;
 import androidx.lifecycle.LiveData;
 
 import com.giraffe.foodplannerapplication.models.CategoriesResponse;
+import com.giraffe.foodplannerapplication.models.Category;
 import com.giraffe.foodplannerapplication.models.CountriesResponse;
+import com.giraffe.foodplannerapplication.models.Country;
+import com.giraffe.foodplannerapplication.models.Ingredient;
 import com.giraffe.foodplannerapplication.models.IngredientsResponse;
 import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.MealsResponse;
@@ -22,9 +25,11 @@ public interface RepoInterface {
 
     boolean logout();
 
-    void getCategories(NetworkCallback<CategoriesResponse> callback);
-    void getCountries(NetworkCallback<CountriesResponse> callback);
-    void getIngredients(NetworkCallback<IngredientsResponse> callback);
+    void getCategories(NetworkCallback<List<Category>> callback);
+
+    void getCountries(NetworkCallback<List<Country>> callback);
+
+    void getIngredients(NetworkCallback<List<Ingredient>> callback);
 
     //=================local functions=================
     boolean isLoggedIn();

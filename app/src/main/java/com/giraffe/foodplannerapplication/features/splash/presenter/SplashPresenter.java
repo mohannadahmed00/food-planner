@@ -14,6 +14,8 @@ import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.NetworkCallback;
 
+import java.util.List;
+
 public class SplashPresenter {
 
     SplashView view;
@@ -29,10 +31,11 @@ public class SplashPresenter {
     }
 
     public void getCategories(){
-        repo.getCategories(new NetworkCallback<CategoriesResponse>() {
+
+        repo.getCategories(new NetworkCallback<List<Category>>() {
             @Override
-            public void onSuccess(CategoriesResponse response) {
-                for (Category category: response.getCategories()) {
+            public void onSuccess(List<Category> categories) {
+                for (Category category: categories) {
                     Log.i(SplashFragment.TAG,category.getStrCategory());
                 }
             }
@@ -45,10 +48,10 @@ public class SplashPresenter {
     }
 
     public void getCountries(){
-        repo.getCountries(new NetworkCallback<CountriesResponse>() {
+        repo.getCountries(new NetworkCallback<List<Country>>() {
             @Override
-            public void onSuccess(CountriesResponse response) {
-                for (Country country: response.getCountries()) {
+            public void onSuccess(List<Country> countries) {
+                for (Country country: countries) {
                     Log.i(SplashFragment.TAG,country.getStrArea());
                 }
             }
@@ -61,10 +64,10 @@ public class SplashPresenter {
     }
 
     public void getIngredients(){
-        repo.getIngredients(new NetworkCallback<IngredientsResponse>() {
+        repo.getIngredients(new NetworkCallback<List<Ingredient>>() {
             @Override
-            public void onSuccess(IngredientsResponse response) {
-                for (Ingredient ingredient: response.getIngredients()) {
+            public void onSuccess(List<Ingredient> ingredients) {
+                for (Ingredient ingredient: ingredients) {
                     Log.i(SplashFragment.TAG,ingredient.getStrIngredient());
                 }
             }

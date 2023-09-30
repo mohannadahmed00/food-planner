@@ -1,16 +1,23 @@
 package com.giraffe.foodplannerapplication.models.repository;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.giraffe.foodplannerapplication.database.LocalSource;
+import com.giraffe.foodplannerapplication.features.splash.view.SplashFragment;
 import com.giraffe.foodplannerapplication.models.CategoriesResponse;
+import com.giraffe.foodplannerapplication.models.Category;
 import com.giraffe.foodplannerapplication.models.CountriesResponse;
+import com.giraffe.foodplannerapplication.models.Country;
+import com.giraffe.foodplannerapplication.models.Ingredient;
 import com.giraffe.foodplannerapplication.models.IngredientsResponse;
 import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.MealsResponse;
 import com.giraffe.foodplannerapplication.network.NetworkCallback;
 import com.giraffe.foodplannerapplication.network.RemoteSource;
+import com.giraffe.foodplannerapplication.database.SharedHelper;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -20,9 +27,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Repo implements RepoInterface {
-    RemoteSource remoteSource;
-    LocalSource localSource;
-    FirebaseAuth mAuth;
+    private RemoteSource remoteSource;
+    private LocalSource localSource;
+    private FirebaseAuth mAuth;
     private static Repo repo = null;
 
 
@@ -87,54 +94,79 @@ public class Repo implements RepoInterface {
         mAuth.signOut();
         return mAuth.getCurrentUser() == null;
     }
-    @Override
-    public void getCategories(NetworkCallback<CategoriesResponse> callback){
-        Call<CategoriesResponse> call = remoteSource.makeNetworkCall(callback).getCategories();
-        call.enqueue(new Callback<CategoriesResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<CategoriesResponse> call, @NonNull Response<CategoriesResponse> response) {
-                callback.onSuccess(response.body());
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<CategoriesResponse> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
+    @Override
+    public void getCategories(NetworkCallback<List<Category>> callback) {
+        List<Category> categories =localSource.readCategories();
+        if (categories==null ||categories.isEmpty()){
+            Log.i(SplashFragment.TAG,"getCategories from remote");
+            Call<CategoriesResponse> call = remoteSource.makeNetworkCall(callback).getCategories();
+            call.enqueue(new Callback<CategoriesResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<CategoriesResponse> call, @NonNull Response<CategoriesResponse> response) {
+                    localSource.storeCategories(response.body());
+                    callback.onSuccess(response.body().getCategories());
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<CategoriesResponse> call, @NonNull Throwable t) {
+                    callback.onFailure(t.getMessage());
+                }
+            });
+        }else {
+            Log.i(SplashFragment.TAG,"getCategories from local");
+            callback.onSuccess(categories);
+        }
 
     }
 
     @Override
-    public void getCountries(NetworkCallback<CountriesResponse> callback){
-        Call<CountriesResponse> call = remoteSource.makeNetworkCall(callback).getCountries();
-        call.enqueue(new Callback<CountriesResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<CountriesResponse> call, @NonNull Response<CountriesResponse> response) {
-                callback.onSuccess(response.body());
-            }
+    public void getCountries(NetworkCallback<List<Country>> callback) {
+        List<Country> countries =localSource.readCountries();
+        if (countries==null || countries.isEmpty()) {
+            Log.i(SplashFragment.TAG,"getCountries from remote");
+            Call<CountriesResponse> call = remoteSource.makeNetworkCall(callback).getCountries();
+            call.enqueue(new Callback<CountriesResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<CountriesResponse> call, @NonNull Response<CountriesResponse> response) {
+                    localSource.storeCountries(response.body());
+                    callback.onSuccess(response.body().getCountries());
+                }
 
-            @Override
-            public void onFailure(@NonNull Call<CountriesResponse> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<CountriesResponse> call, @NonNull Throwable t) {
+                    callback.onFailure(t.getMessage());
+                }
+            });
+        }else {
+            Log.i(SplashFragment.TAG,"getCountries from local");
+            callback.onSuccess(countries);
+        }
 
     }
 
     @Override
-    public void getIngredients(NetworkCallback<IngredientsResponse> callback){
-        Call<IngredientsResponse> call = remoteSource.makeNetworkCall(callback).getIngredients();
-        call.enqueue(new Callback<IngredientsResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<IngredientsResponse> call, @NonNull Response<IngredientsResponse> response) {
-                callback.onSuccess(response.body());
-            }
+    public void getIngredients(NetworkCallback<List<Ingredient>> callback) {
+        List<Ingredient> ingredients = localSource.readIngredients();
+        if (ingredients==null || ingredients.isEmpty()) {
+            Log.i(SplashFragment.TAG,"getIngredients from remote");
+            Call<IngredientsResponse> call = remoteSource.makeNetworkCall(callback).getIngredients();
+            call.enqueue(new Callback<IngredientsResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<IngredientsResponse> call, @NonNull Response<IngredientsResponse> response) {
+                    localSource.storeIngredients(response.body());
+                    callback.onSuccess(response.body().getIngredients());
+                }
 
-            @Override
-            public void onFailure(@NonNull Call<IngredientsResponse> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<IngredientsResponse> call, @NonNull Throwable t) {
+                    callback.onFailure(t.getMessage());
+                }
+            });
+        }else {
+            Log.i(SplashFragment.TAG,"getIngredients from local");
+            callback.onSuccess(ingredients);
+        }
 
     }
 

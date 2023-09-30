@@ -1,5 +1,6 @@
 package com.giraffe.foodplannerapplication.features.splash.view;
 
+import android.graphics.Shader;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 
 import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
+import com.giraffe.foodplannerapplication.database.SharedHelper;
 import com.giraffe.foodplannerapplication.features.splash.presenter.SplashPresenter;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
@@ -51,8 +53,8 @@ public class SplashFragment extends Fragment implements SplashView {
         fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
         logo = view.findViewById(R.id.iv_logo);
         logo.startAnimation(fadeIn);
-        //presenter.getCategories();
-        //presenter.getCountries();
+        presenter.getCategories();
+        presenter.getCountries();
         presenter.getIngredients();
         Handler handler = new Handler();
         handler.postDelayed(() -> presenter.isLoggedIn(), 4000);
