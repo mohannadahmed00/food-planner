@@ -21,8 +21,10 @@ import com.giraffe.foodplannerapplication.features.splash.presenter.SplashPresen
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
 
+import java.util.ArrayList;
+
 public class SplashFragment extends Fragment implements SplashView {
-    private final static String TAG = "SplashFragment";
+    public final static String TAG = "SplashFragment";
     private Animation fadeIn;
     private ImageView logo;
 
@@ -49,6 +51,9 @@ public class SplashFragment extends Fragment implements SplashView {
         fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
         logo = view.findViewById(R.id.iv_logo);
         logo.startAnimation(fadeIn);
+        //presenter.getCategories();
+        //presenter.getCountries();
+        presenter.getIngredients();
         Handler handler = new Handler();
         handler.postDelayed(() -> presenter.isLoggedIn(), 4000);
     }

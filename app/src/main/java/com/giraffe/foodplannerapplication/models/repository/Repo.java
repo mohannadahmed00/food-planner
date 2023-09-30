@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.giraffe.foodplannerapplication.database.LocalSource;
+import com.giraffe.foodplannerapplication.models.CategoriesResponse;
+import com.giraffe.foodplannerapplication.models.CountriesResponse;
+import com.giraffe.foodplannerapplication.models.IngredientsResponse;
 import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.MealsResponse;
 import com.giraffe.foodplannerapplication.network.NetworkCallback;
@@ -83,6 +86,56 @@ public class Repo implements RepoInterface {
     public boolean logout() {
         mAuth.signOut();
         return mAuth.getCurrentUser() == null;
+    }
+    @Override
+    public void getCategories(NetworkCallback<CategoriesResponse> callback){
+        Call<CategoriesResponse> call = remoteSource.makeNetworkCall(callback).getCategories();
+        call.enqueue(new Callback<CategoriesResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<CategoriesResponse> call, @NonNull Response<CategoriesResponse> response) {
+                callback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<CategoriesResponse> call, @NonNull Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+
+    }
+
+    @Override
+    public void getCountries(NetworkCallback<CountriesResponse> callback){
+        Call<CountriesResponse> call = remoteSource.makeNetworkCall(callback).getCountries();
+        call.enqueue(new Callback<CountriesResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<CountriesResponse> call, @NonNull Response<CountriesResponse> response) {
+                callback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<CountriesResponse> call, @NonNull Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+
+    }
+
+    @Override
+    public void getIngredients(NetworkCallback<IngredientsResponse> callback){
+        Call<IngredientsResponse> call = remoteSource.makeNetworkCall(callback).getIngredients();
+        call.enqueue(new Callback<IngredientsResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<IngredientsResponse> call, @NonNull Response<IngredientsResponse> response) {
+                callback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<IngredientsResponse> call, @NonNull Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+
     }
 
     //=================local functions=================

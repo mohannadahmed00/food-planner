@@ -3,13 +3,13 @@ package com.giraffe.foodplannerapplication.models;
 import java.util.List;
 
 public class IngredientsResponse {
-    private final List<Meal> meals;
+    private final List<Ingredient> meals;
 
-    public IngredientsResponse(List<Meal> meals) {
+    public IngredientsResponse(List<Ingredient> meals) {
         this.meals = meals;
     }
 
-    public List<Meal> getMeals() {
+    public List<Ingredient> getIngredients() {
         return meals;
     }
 }

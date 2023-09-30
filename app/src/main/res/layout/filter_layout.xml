@@ -82,14 +82,14 @@
         <Button
             android:id="@+id/btn_continue"
             style="@style/orange_button"
-            app:layout_constraintTop_toBottomOf="@id/cg_ingredient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple_effect"
             android:text="@string/continue_str"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cg_ingredient" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
