@@ -2,6 +2,7 @@ package com.giraffe.foodplannerapplication.util;
 
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -39,7 +40,6 @@ public class LoadingDialog extends DialogFragment {
 
     private LoadingDialog(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
-
     }
 
     @Nullable
@@ -53,7 +53,7 @@ public class LoadingDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return dialog;
     }
 

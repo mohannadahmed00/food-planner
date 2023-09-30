@@ -7,8 +7,6 @@ import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.NetworkCallback;
 
 public class HomePresenter {
-    private final static String TAG = "HomePresenter";
-
     HomeView view;
     Repo repo;
 

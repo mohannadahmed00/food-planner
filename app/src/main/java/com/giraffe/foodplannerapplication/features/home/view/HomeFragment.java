@@ -1,5 +1,6 @@
 package com.giraffe.foodplannerapplication.features.home.view;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,20 +29,26 @@ import com.giraffe.foodplannerapplication.features.home.presenter.HomePresenter;
 import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
+import com.giraffe.foodplannerapplication.util.FilterDialog;
 import com.giraffe.foodplannerapplication.util.LoadingDialog;
 
-public class HomeFragment extends Fragment implements HomeView {
-    private final static String TAG = "HomeFragment";
+public class HomeFragment extends Fragment implements HomeView ,OnFilterClick{
+    public final static String TAG = "HomeFragment";
 
-    HomePresenter presenter;
+    private HomePresenter presenter;
 
-    ImageView ivRandom;
-    TextView tvRandom;
+    private ImageView ivFilter,ivRandom;
+    private TextView tvRandom;
 
-    EditText edtSearch;
+    private EditText edtSearch;
 
-    View viewBlur;
+    private View viewBlur;
 
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,7 @@ public class HomeFragment extends Fragment implements HomeView {
         ));
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home, container, false);
@@ -60,13 +68,25 @@ public class HomeFragment extends Fragment implements HomeView {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        inflateViews(view);
+        initClicks();
+        handleSearch();
+        presenter.getRandomMeal();
+    }
+    @Override
+    public void inflateViews(View view) {
+        ivFilter =  view.findViewById(R.id.iv_filter);
         viewBlur = view.findViewById(R.id.v_blur);
         edtSearch = view.findViewById(R.id.edt_search);
         ivRandom = view.findViewById(R.id.iv_random);
         tvRandom = view.findViewById(R.id.tv_random);
-        presenter.getRandomMeal();
-        showDialog();
-        handleSearch();
+    }
+
+    @Override
+    public void initClicks() {
+        ivFilter.setOnClickListener(v->{
+            FilterDialog.getInstance(getParentFragmentManager(),this).showFilter();
+        });
     }
 
     void handleSearch() {
@@ -92,7 +112,6 @@ public class HomeFragment extends Fragment implements HomeView {
         });
     }
 
-
     void handleRandomMealImg(String imgUrl) {
         Glide.with(requireContext()).load(imgUrl).into(ivRandom);
     }
@@ -108,18 +127,14 @@ public class HomeFragment extends Fragment implements HomeView {
         tvRandom.setText(spannableString);
     }
 
-
     @Override
     public void onGetRandomMeal(Meal meal) {
-        dismissDialog();
         handleRandomMealTitle(meal.getStrMeal());
         handleRandomMealImg(meal.getStrMealThumb());
-        Log.i(TAG, meal.getStrMeal());
     }
 
     @Override
     public void onGetRandomMealFail(String errorMsg) {
-        dismissDialog();
         Log.i(TAG, errorMsg);
     }
 
@@ -129,5 +144,13 @@ public class HomeFragment extends Fragment implements HomeView {
 
     public void dismissDialog() {
         LoadingDialog.getInstance(getParentFragmentManager()).dismissLoading();
+    }
+
+
+    @Override
+    public void onFilterClick(String category,String country,String ingredient) {
+        FilterDialog.getInstance(getParentFragmentManager(),this).dismissFilter();
+        Log.i(TAG,"category: " + category +" / country: " + country+" / ingredient: " + ingredient);
+
     }
 }

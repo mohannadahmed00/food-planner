@@ -40,4 +40,7 @@
     <string name="the_email_address_is_already_in_use_by_another_account">The email address is already in use by another account.</string>
     <string name="please_enter_a_valid_username_and_password">Please enter a valid username and password.</string>
     <string name="an_unknown_error_occurred">An unknown error occurred.</string>
+    <string name="ingredient">Ingredient</string>
+    <string name="country">Country</string>
+    <string name="category">Category</string>
 </resources>

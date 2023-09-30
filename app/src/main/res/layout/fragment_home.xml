@@ -14,7 +14,7 @@
         android:layout_margin="16dp"
         android:foreground="@drawable/text_protection"
         android:scaleType="centerCrop"
-        android:src="@drawable/cr"
+        android:src="@drawable/gray_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edt_search"
@@ -48,7 +48,9 @@
         style="@style/edit_text_style"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingEnd="56dp"
         android:layout_margin="16dp"
+        android:maxLines="1"
         android:background="@drawable/edt_rounded"
         android:drawableStart="@drawable/ic_search"
         android:drawablePadding="10dp"
@@ -57,6 +59,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:src="@drawable/ic_filter"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_search"
+        app:layout_constraintEnd_toEndOf="@+id/edt_search"
+        app:layout_constraintTop_toTopOf="@+id/edt_search" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout><!---->
