@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.Spannable;
@@ -26,23 +27,38 @@ import com.bumptech.glide.Glide;
 import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
 import com.giraffe.foodplannerapplication.features.home.presenter.HomePresenter;
+import com.giraffe.foodplannerapplication.models.Category;
+import com.giraffe.foodplannerapplication.models.Country;
 import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
-import com.giraffe.foodplannerapplication.util.FilterDialog;
+import com.giraffe.foodplannerapplication.util.Filter.view.FilterDialog;
 import com.giraffe.foodplannerapplication.util.LoadingDialog;
 
-public class HomeFragment extends Fragment implements HomeView ,OnFilterClick{
+import java.util.ArrayList;
+import java.util.List;
+
+public class HomeFragment extends Fragment implements HomeView, OnFilterClick, CategoriesAdapter.OnCategoryClick, CountriesAdapter.OnCountryClick {
     public final static String TAG = "HomeFragment";
 
     private HomePresenter presenter;
 
-    private ImageView ivFilter,ivRandom;
+    private ImageView ivFilter, ivRandom;
     private TextView tvRandom;
 
     private EditText edtSearch;
 
     private View viewBlur;
+
+    private String category, country, ingredient;
+
+    private RecyclerView rvCategories,rvCountries;
+
+    private CategoriesAdapter categoriesAdapter;
+    private CountriesAdapter countriesAdapter;
+
+    private List<Category> categories;
+    private List<Country> countries;
 
 
     @Override
@@ -57,6 +73,10 @@ public class HomeFragment extends Fragment implements HomeView ,OnFilterClick{
                 ApiClient.getInstance(),
                 ConcreteLocalSource.getInstance(getContext())
         ));
+        categories = new ArrayList<>();
+        countries = new ArrayList<>();
+        categoriesAdapter = new CategoriesAdapter(categories,this);
+        countriesAdapter = new CountriesAdapter(countries,this);
     }
 
 
@@ -71,22 +91,29 @@ public class HomeFragment extends Fragment implements HomeView ,OnFilterClick{
         inflateViews(view);
         initClicks();
         handleSearch();
+        rvCategories.setAdapter(categoriesAdapter);
+        rvCountries.setAdapter(countriesAdapter);
         presenter.getRandomMeal();
+        presenter.getCategories();
+        presenter.getCountries();
     }
+
+
+
     @Override
     public void inflateViews(View view) {
-        ivFilter =  view.findViewById(R.id.iv_filter);
+        ivFilter = view.findViewById(R.id.iv_filter);
         viewBlur = view.findViewById(R.id.v_blur);
         edtSearch = view.findViewById(R.id.edt_search);
         ivRandom = view.findViewById(R.id.iv_random);
         tvRandom = view.findViewById(R.id.tv_random);
+        rvCategories = view.findViewById(R.id.rv_category);
+        rvCountries = view.findViewById(R.id.rv_country);
     }
 
     @Override
     public void initClicks() {
-        ivFilter.setOnClickListener(v->{
-            FilterDialog.getInstance(getParentFragmentManager(),this).showFilter();
-        });
+        ivFilter.setOnClickListener(v -> FilterDialog.getInstance(getParentFragmentManager(), this, category, country, ingredient).showFilter());
     }
 
     void handleSearch() {
@@ -134,23 +161,42 @@ public class HomeFragment extends Fragment implements HomeView ,OnFilterClick{
     }
 
     @Override
-    public void onGetRandomMealFail(String errorMsg) {
-        Log.i(TAG, errorMsg);
+    public void onGetCategories(List<Category> categories) {
+        categoriesAdapter.setList(categories);
     }
 
-    public void showDialog() {
-        LoadingDialog.getInstance(getParentFragmentManager()).showLoading();
-    }
-
-    public void dismissDialog() {
-        LoadingDialog.getInstance(getParentFragmentManager()).dismissLoading();
+    @Override
+    public void onGetCountries(List<Country> countries) {
+        countriesAdapter.setList(countries);
     }
 
 
     @Override
-    public void onFilterClick(String category,String country,String ingredient) {
-        FilterDialog.getInstance(getParentFragmentManager(),this).dismissFilter();
-        Log.i(TAG,"category: " + category +" / country: " + country+" / ingredient: " + ingredient);
+    public void onFilterClick(String category, String country, String ingredient) {
+        this.category = category;
+        this.country = country;
+        this.ingredient = ingredient;
+        FilterDialog.getInstance(getParentFragmentManager(), this, category, country, ingredient).dismissFilter();
+        if (category != null || country != null || ingredient != null) {
+            ivFilter.setColorFilter(ContextCompat.getColor(requireContext(), R.color.orange));
+        } else {
+            ivFilter.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gray));
+        }
+    }
+    public void showDialog() {
+        LoadingDialog.getInstance(getParentFragmentManager()).showLoading();
+    }
+    public void dismissDialog() {
+        LoadingDialog.getInstance(getParentFragmentManager()).dismissLoading();
+    }
 
+    @Override
+    public void onClick(Category category) {
+        Log.i(TAG,category.getStrCategory());
+    }
+
+    @Override
+    public void onClick(Country country) {
+        Log.i(TAG,country.getStrArea());
     }
 }

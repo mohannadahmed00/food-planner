@@ -1,47 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    tools:context=".MainActivity"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
+    android:id="@+id/coordinator"
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:padding="0dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/coordinator"
-        android:layout_width="match_parent"
+    <fragment
+        android:id="@+id/nav_host_fragment"
         android:layout_height="match_parent"
-        android:layout_margin="0dp"
-        android:padding="0dp"
-        android:fitsSystemWindows="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-
-        <fragment
-            android:id="@+id/nav_host_fragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/splash_graph"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_width="match_parent"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:navGraph="@navigation/splash_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom"
         android:layout_margin="5dp"
         android:background="@drawable/bottom_nav_background"
         android:fitsSystemWindows="true"
-        app:labelVisibilityMode="labeled"
-        app:itemActiveIndicatorStyle="@color/trans"
-        app:itemRippleColor="@color/trans"
-        android:layout_gravity="bottom"
-        app:itemIconSize="30dp"
-        app:menu="@menu/bottom_nav_menu"
         app:elevation="5dp"
+        app:layout_constraintVertical_bias="1.0"
+        app:itemActiveIndicatorStyle="@color/trans"
+        app:itemIconSize="30dp"
+        app:itemIconTint="@color/bottom_nav_selector"
+        app:itemRippleColor="@color/trans"
         app:itemTextColor="@color/bottom_nav_selector"
-        app:itemIconTint="@color/bottom_nav_selector"/>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/nav_host_fragment"
+        app:menu="@menu/bottom_nav_menu" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+
