@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.giraffe.foodplannerapplication.R;
@@ -39,7 +40,9 @@ import com.giraffe.foodplannerapplication.util.LoadingDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment implements HomeView, OnFilterClick, CategoriesAdapter.OnCategoryClick, CountriesAdapter.OnCountryClick {
+import io.reactivex.rxjava3.core.Observable;
+
+public class HomeFragment extends Fragment implements HomeView, OnFilterClick, CategoriesAdapter.OnCategoryClick, CountriesAdapter.OnCountryClick, SearchAdapter.OnSearchClick {
     public final static String TAG = "HomeFragment";
 
     private HomePresenter presenter;
@@ -52,15 +55,15 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     private View viewBlur;
 
     private String category, country, ingredient;
-
-    private RecyclerView rvCategories, rvCountries;
-
+    private RecyclerView rvSearch, rvCategories, rvCountries;
     private CategoriesAdapter categoriesAdapter;
     private CountriesAdapter countriesAdapter;
+    private SearchAdapter searchAdapter;
+
 
     private List<Category> categories;
     private List<Country> countries;
-
+    private List<Meal> meals;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -76,8 +79,10 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         ));
         categories = new ArrayList<>();
         countries = new ArrayList<>();
+        meals = new ArrayList<>();
         categoriesAdapter = new CategoriesAdapter(categories, this);
         countriesAdapter = new CountriesAdapter(countries, this);
+        searchAdapter = new SearchAdapter(meals, this);
     }
 
 
@@ -92,8 +97,11 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         inflateViews(view);
         initClicks();
         handleSearch();
+
+
         rvCategories.setAdapter(categoriesAdapter);
         rvCountries.setAdapter(countriesAdapter);
+        rvSearch.setAdapter(searchAdapter);
         presenter.getRandomMeal();
         presenter.getCategories();
         presenter.getCountries();
@@ -109,6 +117,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         tvRandom = view.findViewById(R.id.tv_random);
         rvCategories = view.findViewById(R.id.rv_category);
         rvCountries = view.findViewById(R.id.rv_country);
+        rvSearch = view.findViewById(R.id.rv_search);
     }
 
     @Override
@@ -125,10 +134,11 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() == 0) {
-                    viewBlur.setVisibility(View.INVISIBLE);
+                if (charSequence.length() > 2) {
+                    presenter.getSearchResult(charSequence.toString());
                 } else {
-                    viewBlur.setVisibility(View.VISIBLE);
+                    viewBlur.setVisibility(View.INVISIBLE);
+                    rvSearch.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -171,6 +181,18 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     }
 
     @Override
+    public void onGetSearchResult(List<Meal> meals) {
+        if (meals == null || meals.isEmpty()) {
+            viewBlur.setVisibility(View.INVISIBLE);
+            rvSearch.setVisibility(View.INVISIBLE);
+        } else {
+            viewBlur.setVisibility(View.VISIBLE);
+            rvSearch.setVisibility(View.VISIBLE);
+            searchAdapter.setList(meals);
+        }
+    }
+
+    @Override
     public void onFilterClick(String category, String country, String ingredient) {
         this.category = category;
         this.country = country;
@@ -203,5 +225,10 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         HomeFragmentDirections.ActionHomeFragmentToMealsFragment action = HomeFragmentDirections.actionHomeFragmentToMealsFragment(countriesAdapter.getList(), "country", this.countries.indexOf(country));
         Navigation.findNavController(requireView()).navigate(action);
         Log.i(TAG, country.getStrArea());
+    }
+
+    @Override
+    public void onSearchClick(Meal meal) {
+        Toast.makeText(requireContext(), meal.getStrMeal(), Toast.LENGTH_SHORT).show();
     }
 }

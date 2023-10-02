@@ -29,4 +29,7 @@ public interface ApiServices {
 
     @GET("filter.php")
     Call<MealsResponse> getCountryMeals(@Query("a") String country);
+
+    @GET("search.php")
+    Call<MealsResponse> getSearchResult(@Query("s") String word);
 }

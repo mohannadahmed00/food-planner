@@ -32,6 +32,7 @@ public interface RepoInterface {
     void getIngredients(NetworkCallback<List<Ingredient>> callback);
     void getCategoryMeals(String category,NetworkCallback<List<Meal>> callback);
     void getCountryMeals(String country,NetworkCallback<List<Meal>> callback);
+    void getSearchResult(String word,NetworkCallback<List<Meal>> callback);
 
     //=================local functions=================
     boolean isLoggedIn();

@@ -19,6 +19,7 @@ import com.giraffe.foodplannerapplication.network.NetworkCallback;
 import com.giraffe.foodplannerapplication.network.RemoteSource;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -209,6 +210,25 @@ public class Repo implements RepoInterface {
 
             @Override
             public void onFailure(@NonNull Call<MealsResponse> call, @NonNull Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void getSearchResult(String word, NetworkCallback<List<Meal>> callback) {
+        Call<MealsResponse> call = remoteSource.makeNetworkCall(callback).getSearchResult(word);
+        call.enqueue(new Callback<MealsResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MealsResponse> call, @NonNull Response<MealsResponse> response) {
+                if (response.body() != null) {
+                    callback.onSuccess(response.body().getMeals());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MealsResponse> call, @NonNull Throwable t) {
+                callback.onSuccess(new ArrayList<>());
                 callback.onFailure(t.getMessage());
             }
         });

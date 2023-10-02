@@ -9,6 +9,7 @@ import com.giraffe.foodplannerapplication.features.home.view.HomeFragment;
 import com.giraffe.foodplannerapplication.features.home.view.HomeView;
 import com.giraffe.foodplannerapplication.models.Category;
 import com.giraffe.foodplannerapplication.models.Country;
+import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.MealsResponse;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.NetworkCallback;
@@ -36,7 +37,7 @@ public class HomePresenter {
 
             @Override
             public void onFailure(String errorMsg) {
-                Log.i(HomeFragment.TAG,errorMsg);
+                Log.i(HomeFragment.TAG, errorMsg);
             }
         });
     }
@@ -51,7 +52,7 @@ public class HomePresenter {
 
             @Override
             public void onFailure(String errorMsg) {
-                Log.i(HomeFragment.TAG,errorMsg);
+                Log.i(HomeFragment.TAG, errorMsg);
             }
         });
     }
@@ -60,19 +61,36 @@ public class HomePresenter {
         repo.getCountries(new NetworkCallback<List<Country>>() {
             @Override
             public void onSuccess(List<Country> response) {
-                response.forEach(e-> e.setStrColor(getRandomColor()));
+                response.forEach(e -> e.setStrColor(getRandomColor()));
                 view.onGetCountries(response);
             }
+
             @Override
             public void onFailure(String errorMsg) {
-                Log.i(HomeFragment.TAG,errorMsg);
+                Log.i(HomeFragment.TAG, errorMsg);
             }
         });
     }
 
-    private String getRandomColor(){
+    private String getRandomColor() {
         Random random = new Random();
         int color = Color.argb(56, random.nextInt(Integer.MAX_VALUE - 157), random.nextInt(Integer.MAX_VALUE - 157), random.nextInt(Integer.MAX_VALUE - 157));
         return String.format("#%06X", 0xFFFFFF & color);
     }
+
+    public void getSearchResult(String word) {
+        repo.getSearchResult(word, new NetworkCallback<List<Meal>>() {
+            @Override
+            public void onSuccess(List<Meal> response) {
+                view.onGetSearchResult(response);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                Log.i(HomeFragment.TAG, errorMsg);
+            }
+        });
+    }
+
+
 }

@@ -17,4 +17,6 @@ public interface HomeView {
 
     void onGetCategories(List<Category> categories);
     void onGetCountries(List<Country> countries);
+
+    void onGetSearchResult(List<Meal> meals);
 }
