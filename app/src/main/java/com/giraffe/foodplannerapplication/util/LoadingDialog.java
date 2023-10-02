@@ -31,7 +31,9 @@ public class LoadingDialog extends DialogFragment {
     }
 
     public void showLoading() {
-        instance.show(fragmentManager, "loading");
+        if (!instance.isVisible()) {
+            instance.show(fragmentManager, "loading");
+        }
     }
 
     public void dismissLoading() {

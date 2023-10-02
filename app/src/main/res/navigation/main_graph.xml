@@ -13,7 +13,11 @@
         android:id="@+id/detailsFragment"
         android:name="com.giraffe.foodplannerapplication.features.details.view.DetailsFragment"
         android:label="@string/meal_details"
-        tools:layout="@layout/fragment_details" />
+        tools:layout="@layout/fragment_details" >
+        <argument
+            android:name="meal"
+            app:argType="com.giraffe.foodplannerapplication.models.Meal" />
+    </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.giraffe.foodplannerapplication.features.editprofile.view.EditProfileFragment"
@@ -32,6 +36,9 @@
         <action
             android:id="@+id/action_homeFragment_to_mealsFragment"
             app:destination="@id/mealsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/planFragment"

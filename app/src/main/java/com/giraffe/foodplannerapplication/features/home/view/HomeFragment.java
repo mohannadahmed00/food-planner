@@ -252,6 +252,9 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     @Override
     public void onSearchClick(Meal meal) {
+        edtSearch.setText("");
+        HomeFragmentDirections.ActionHomeFragmentToDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(meal);
+        Navigation.findNavController(requireView()).navigate(action);
         Toast.makeText(requireContext(), meal.getStrMeal(), Toast.LENGTH_SHORT).show();
     }
 }
