@@ -8,6 +8,8 @@ import com.giraffe.foodplannerapplication.models.MealsResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiServices {
     @GET("random.php")
@@ -21,4 +23,10 @@ public interface ApiServices {
 
     @GET("list.php?i=list")
     Call<IngredientsResponse> getIngredients();
+
+    @GET("filter.php")
+    Call<MealsResponse> getCategoryMeals(@Query("c") String category);
+
+    @GET("filter.php")
+    Call<MealsResponse> getCountryMeals(@Query("a") String country);
 }

@@ -17,7 +17,6 @@ import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.MealsResponse;
 import com.giraffe.foodplannerapplication.network.NetworkCallback;
 import com.giraffe.foodplannerapplication.network.RemoteSource;
-import com.giraffe.foodplannerapplication.database.SharedHelper;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -27,11 +26,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Repo implements RepoInterface {
-    private RemoteSource remoteSource;
-    private LocalSource localSource;
-    private FirebaseAuth mAuth;
+    private final RemoteSource remoteSource;
+    private final LocalSource localSource;
+    private final FirebaseAuth mAuth;
     private static Repo repo = null;
-
 
     private Repo(RemoteSource remoteSource, LocalSource localSource) {
         this.remoteSource = remoteSource;
@@ -72,7 +70,9 @@ public class Repo implements RepoInterface {
                         mAuth.signOut();
                         callback.onSuccess(true);
                     } else {
-                        callback.onFailure(task.getException().getMessage());
+                        if (task.getException() != null) {
+                            callback.onFailure(task.getException().getMessage());
+                        }
                     }
                 });
     }
@@ -84,7 +84,9 @@ public class Repo implements RepoInterface {
                     if (task.isSuccessful()) {
                         callback.onSuccess(true);
                     } else {
-                        callback.onFailure(task.getException().getMessage());
+                        if (task.getException() != null) {
+                            callback.onFailure(task.getException().getMessage());
+                        }
                     }
                 });
     }
@@ -97,15 +99,17 @@ public class Repo implements RepoInterface {
 
     @Override
     public void getCategories(NetworkCallback<List<Category>> callback) {
-        List<Category> categories =localSource.readCategories();
-        if (categories==null ||categories.isEmpty()){
-            Log.i(SplashFragment.TAG,"getCategories from remote");
+        List<Category> categories = localSource.readCategories();
+        if (categories == null || categories.isEmpty()) {
+            Log.i(SplashFragment.TAG, "getCategories from remote");
             Call<CategoriesResponse> call = remoteSource.makeNetworkCall(callback).getCategories();
             call.enqueue(new Callback<CategoriesResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<CategoriesResponse> call, @NonNull Response<CategoriesResponse> response) {
                     localSource.storeCategories(response.body());
-                    callback.onSuccess(response.body().getCategories());
+                    if (response.body() != null) {
+                        callback.onSuccess(response.body().getCategories());
+                    }
                 }
 
                 @Override
@@ -113,8 +117,8 @@ public class Repo implements RepoInterface {
                     callback.onFailure(t.getMessage());
                 }
             });
-        }else {
-            Log.i(SplashFragment.TAG,"getCategories from local");
+        } else {
+            Log.i(SplashFragment.TAG, "getCategories from local");
             callback.onSuccess(categories);
         }
 
@@ -122,15 +126,17 @@ public class Repo implements RepoInterface {
 
     @Override
     public void getCountries(NetworkCallback<List<Country>> callback) {
-        List<Country> countries =localSource.readCountries();
-        if (countries==null || countries.isEmpty()) {
-            Log.i(SplashFragment.TAG,"getCountries from remote");
+        List<Country> countries = localSource.readCountries();
+        if (countries == null || countries.isEmpty()) {
+            Log.i(SplashFragment.TAG, "getCountries from remote");
             Call<CountriesResponse> call = remoteSource.makeNetworkCall(callback).getCountries();
             call.enqueue(new Callback<CountriesResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<CountriesResponse> call, @NonNull Response<CountriesResponse> response) {
                     localSource.storeCountries(response.body());
-                    callback.onSuccess(response.body().getCountries());
+                    if (response.body() != null) {
+                        callback.onSuccess(response.body().getCountries());
+                    }
                 }
 
                 @Override
@@ -138,8 +144,8 @@ public class Repo implements RepoInterface {
                     callback.onFailure(t.getMessage());
                 }
             });
-        }else {
-            Log.i(SplashFragment.TAG,"getCountries from local");
+        } else {
+            Log.i(SplashFragment.TAG, "getCountries from local");
             callback.onSuccess(countries);
         }
 
@@ -148,14 +154,16 @@ public class Repo implements RepoInterface {
     @Override
     public void getIngredients(NetworkCallback<List<Ingredient>> callback) {
         List<Ingredient> ingredients = localSource.readIngredients();
-        if (ingredients==null || ingredients.isEmpty()) {
-            Log.i(SplashFragment.TAG,"getIngredients from remote");
+        if (ingredients == null || ingredients.isEmpty()) {
+            Log.i(SplashFragment.TAG, "getIngredients from remote");
             Call<IngredientsResponse> call = remoteSource.makeNetworkCall(callback).getIngredients();
             call.enqueue(new Callback<IngredientsResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<IngredientsResponse> call, @NonNull Response<IngredientsResponse> response) {
                     localSource.storeIngredients(response.body());
-                    callback.onSuccess(response.body().getIngredients());
+                    if (response.body() != null) {
+                        callback.onSuccess(response.body().getIngredients());
+                    }
                 }
 
                 @Override
@@ -163,12 +171,49 @@ public class Repo implements RepoInterface {
                     callback.onFailure(t.getMessage());
                 }
             });
-        }else {
-            Log.i(SplashFragment.TAG,"getIngredients from local");
+        } else {
+            Log.i(SplashFragment.TAG, "getIngredients from local");
             callback.onSuccess(ingredients);
         }
 
     }
+
+    @Override
+    public void getCategoryMeals(String category, NetworkCallback<List<Meal>> callback) {
+        Call<MealsResponse> call = remoteSource.makeNetworkCall(callback).getCategoryMeals(category);
+        call.enqueue(new Callback<MealsResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MealsResponse> call, @NonNull Response<MealsResponse> response) {
+                if (response.body() != null) {
+                    callback.onSuccess(response.body().getMeals());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MealsResponse> call, @NonNull Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void getCountryMeals(String country, NetworkCallback<List<Meal>> callback) {
+        Call<MealsResponse> call = remoteSource.makeNetworkCall(callback).getCountryMeals(country);
+        call.enqueue(new Callback<MealsResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MealsResponse> call, @NonNull Response<MealsResponse> response) {
+                if (response.body() != null) {
+                    callback.onSuccess(response.body().getMeals());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MealsResponse> call, @NonNull Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+    }
+
 
     //=================local functions=================
     @Override

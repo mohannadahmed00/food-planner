@@ -17,6 +17,7 @@ import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.models.Category;
 import com.giraffe.foodplannerapplication.models.Country;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.CountryVH> {
@@ -33,6 +34,10 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
         this.countries.clear();
         this.countries.addAll(countries);
         notifyDataSetChanged();
+    }
+
+    public ArrayList<Country> getList(){
+        return new ArrayList<>(countries);
     }
 
     @NonNull

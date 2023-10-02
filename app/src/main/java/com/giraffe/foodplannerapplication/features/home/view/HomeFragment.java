@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
@@ -52,7 +53,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     private String category, country, ingredient;
 
-    private RecyclerView rvCategories,rvCountries;
+    private RecyclerView rvCategories, rvCountries;
 
     private CategoriesAdapter categoriesAdapter;
     private CountriesAdapter countriesAdapter;
@@ -75,8 +76,8 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         ));
         categories = new ArrayList<>();
         countries = new ArrayList<>();
-        categoriesAdapter = new CategoriesAdapter(categories,this);
-        countriesAdapter = new CountriesAdapter(countries,this);
+        categoriesAdapter = new CategoriesAdapter(categories, this);
+        countriesAdapter = new CountriesAdapter(countries, this);
     }
 
 
@@ -97,7 +98,6 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         presenter.getCategories();
         presenter.getCountries();
     }
-
 
 
     @Override
@@ -170,7 +170,6 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         countriesAdapter.setList(countries);
     }
 
-
     @Override
     public void onFilterClick(String category, String country, String ingredient) {
         this.category = category;
@@ -183,20 +182,26 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
             ivFilter.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gray));
         }
     }
+
     public void showDialog() {
         LoadingDialog.getInstance(getParentFragmentManager()).showLoading();
     }
+
     public void dismissDialog() {
         LoadingDialog.getInstance(getParentFragmentManager()).dismissLoading();
     }
 
     @Override
     public void onClick(Category category) {
-        Log.i(TAG,category.getStrCategory());
+        HomeFragmentDirections.ActionHomeFragmentToMealsFragment action = HomeFragmentDirections.actionHomeFragmentToMealsFragment(categoriesAdapter.getList(), "category", this.categories.indexOf(category));
+        Navigation.findNavController(requireView()).navigate(action);
+        Log.i(TAG, category.getStrCategory());
     }
 
     @Override
     public void onClick(Country country) {
-        Log.i(TAG,country.getStrArea());
+        HomeFragmentDirections.ActionHomeFragmentToMealsFragment action = HomeFragmentDirections.actionHomeFragmentToMealsFragment(countriesAdapter.getList(), "country", this.countries.indexOf(country));
+        Navigation.findNavController(requireView()).navigate(action);
+        Log.i(TAG, country.getStrArea());
     }
 }

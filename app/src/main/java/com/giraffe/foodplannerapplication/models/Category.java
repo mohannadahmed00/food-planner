@@ -1,6 +1,8 @@
 package com.giraffe.foodplannerapplication.models;
 
-public class Category {
+import java.io.Serializable;
+
+public class Category implements Serializable {
     private final String idCategory;
     private final String strCategory;
     private final String strCategoryThumb;

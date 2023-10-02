@@ -28,7 +28,11 @@
         android:id="@+id/homeFragment"
         android:name="com.giraffe.foodplannerapplication.features.home.view.HomeFragment"
         android:label="@string/home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_mealsFragment"
+            app:destination="@id/mealsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/planFragment"
         android:name="com.giraffe.foodplannerapplication.features.plan.view.PlanFragment"
@@ -44,4 +48,20 @@
         android:name="com.giraffe.foodplannerapplication.features.settings.view.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/mealsFragment"
+        android:name="com.giraffe.foodplannerapplication.features.meals.view.TabsFragment"
+        android:label="fragment_meals"
+        tools:layout="@layout/fragment_tabs">
+        <argument
+            android:name="list"
+            app:argType="java.util.ArrayList" />
+        <argument
+            android:name="type"
+            app:argType="string" />
+        <argument
+            android:name="selected"
+            app:argType="integer" />
+
+    </fragment>
 </navigation>

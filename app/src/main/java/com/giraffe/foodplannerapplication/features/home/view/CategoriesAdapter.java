@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.models.Category;
-import com.giraffe.foodplannerapplication.models.Country;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.CategoryVH> {
@@ -26,16 +26,20 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         this.onCategoryClick = onCategoryClick;
     }
 
-    public void setList(List<Category> categories){
+    public void setList(List<Category> categories) {
         this.categories.clear();
         this.categories.addAll(categories);
         notifyDataSetChanged();
     }
 
+    public ArrayList<Category> getList() {
+        return new ArrayList<>(categories);
+    }
+
     @NonNull
     @Override
     public CategoryVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_item, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_item, parent, false);
         return new CategoryVH(view);
     }
 
@@ -44,7 +48,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         Category category = categories.get(position);
         holder.getTvItem().setText(category.getStrCategory());
         Glide.with(holder.getView().getContext()).load(category.getStrCategoryThumb()).into(holder.getIvItem());
-        holder.getView().setOnClickListener(v-> onCategoryClick.onClick(category));
+        holder.getView().setOnClickListener(v -> onCategoryClick.onClick(category));
     }
 
     @Override
