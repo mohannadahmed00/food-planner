@@ -223,7 +223,9 @@ public class FilterDialog extends DialogFragment implements FilterView {
     }
 
     public void showFilter() {
-        instance.show(fragmentManager, "filter");
+        if (!instance.isVisible()) {
+            instance.show(fragmentManager, "filter");
+        }
     }
 
     public void dismissFilter() {

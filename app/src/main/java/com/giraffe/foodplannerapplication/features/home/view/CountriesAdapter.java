@@ -50,7 +50,6 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
     @Override
     public void onBindViewHolder(@NonNull CountryVH holder, int position) {
         Country country = countries.get(position);
-        Log.i(HomeFragment.TAG,"country color: "+country.getStrColor());
         holder.getTvItem().setText(country.getStrArea());
         int color = Color.parseColor(country.getStrColor());
         holder.getIvItem().setColorFilter(color);

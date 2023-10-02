@@ -39,6 +39,7 @@ import com.giraffe.foodplannerapplication.util.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.core.Observable;
 
@@ -65,6 +66,8 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     private List<Country> countries;
     private List<Meal> meals;
 
+    private Observable<String> observable;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -83,6 +86,8 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         categoriesAdapter = new CategoriesAdapter(categories, this);
         countriesAdapter = new CountriesAdapter(countries, this);
         searchAdapter = new SearchAdapter(meals, this);
+
+
     }
 
 
@@ -126,27 +131,42 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     }
 
     void handleSearch() {
-        edtSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 2) {
-                    presenter.getSearchResult(charSequence.toString());
-                } else {
-                    viewBlur.setVisibility(View.INVISIBLE);
-                    rvSearch.setVisibility(View.INVISIBLE);
+        observable = Observable.create(emitter -> {
+            edtSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 }
-            }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    /*if (charSequence.length()<2){
+                        viewBlur.setVisibility(View.INVISIBLE);
+                        rvSearch.setVisibility(View.INVISIBLE);
+                    }else {*/
+                    if (charSequence.length() < 2) {
+                        viewBlur.setVisibility(View.INVISIBLE);
+                        rvSearch.setVisibility(View.INVISIBLE);
+                    }
+                    emitter.onNext(charSequence.toString());
+                    //}
+                }
 
-            }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
+            });
         });
+        observable = observable.delay(1, TimeUnit.SECONDS).debounce(1, TimeUnit.SECONDS);
+        observable.subscribe(s -> {
+            if (s.length() >= 2) {
+                Log.i(TAG, "search: " + s);
+                showDialog();
+                presenter.getSearchResult(s);
+            }
+            //presenter.getSearchResult(s);
+        });
+
     }
 
     void handleRandomMealImg(String imgUrl) {
@@ -182,13 +202,16 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     @Override
     public void onGetSearchResult(List<Meal> meals) {
+        dismissDialog();
         if (meals == null || meals.isEmpty()) {
             viewBlur.setVisibility(View.INVISIBLE);
             rvSearch.setVisibility(View.INVISIBLE);
         } else {
-            viewBlur.setVisibility(View.VISIBLE);
-            rvSearch.setVisibility(View.VISIBLE);
-            searchAdapter.setList(meals);
+            if (!edtSearch.getText().toString().isEmpty()) {
+                viewBlur.setVisibility(View.VISIBLE);
+                rvSearch.setVisibility(View.VISIBLE);
+                searchAdapter.setList(meals);
+            }
         }
     }
 
