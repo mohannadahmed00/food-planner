@@ -66,6 +66,8 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     private List<Country> countries;
     private List<Meal> meals;
 
+    private Meal randomMeal;
+
     private Observable<String> observable;
 
     @Override
@@ -128,6 +130,12 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     @Override
     public void initClicks() {
         ivFilter.setOnClickListener(v -> FilterDialog.getInstance(getParentFragmentManager(), this, category, country, ingredient).showFilter());
+        ivRandom.setOnClickListener(view -> {
+            if (randomMeal!=null) {
+                HomeFragmentDirections.ActionHomeFragmentToDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(randomMeal);
+                Navigation.findNavController(requireView()).navigate(action);
+            }
+        });
     }
 
     void handleSearch() {
@@ -186,6 +194,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     @Override
     public void onGetRandomMeal(Meal meal) {
+        this.randomMeal = meal;
         handleRandomMealTitle(meal.getStrMeal());
         handleRandomMealImg(meal.getStrMealThumb());
     }
@@ -255,6 +264,5 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         edtSearch.setText("");
         HomeFragmentDirections.ActionHomeFragmentToDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(meal);
         Navigation.findNavController(requireView()).navigate(action);
-        Toast.makeText(requireContext(), meal.getStrMeal(), Toast.LENGTH_SHORT).show();
     }
 }

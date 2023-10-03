@@ -19,7 +19,21 @@ public class MealsPresenter {
         this.repo = repo;
     }
 
-    public void getCategoryMeals(String category){
+    public void getMealById(String mealId) {
+        repo.getMealById(mealId, new NetworkCallback<Meal>() {
+            @Override
+            public void onSuccess(Meal response) {
+                view.onGetMeal(response);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                Log.i(MealsFragment.TAG, errorMsg);
+            }
+        });
+    }
+
+    public void getCategoryMeals(String category) {
         repo.getCategoryMeals(category, new NetworkCallback<List<Meal>>() {
             @Override
             public void onSuccess(List<Meal> response) {
@@ -28,12 +42,12 @@ public class MealsPresenter {
 
             @Override
             public void onFailure(String errorMsg) {
-                Log.i(MealsFragment.TAG,errorMsg);
+                Log.i(MealsFragment.TAG, errorMsg);
             }
         });
     }
 
-    public void getCountryMeals(String country){
+    public void getCountryMeals(String country) {
         repo.getCountryMeals(country, new NetworkCallback<List<Meal>>() {
             @Override
             public void onSuccess(List<Meal> response) {
@@ -42,7 +56,7 @@ public class MealsPresenter {
 
             @Override
             public void onFailure(String errorMsg) {
-                Log.i(MealsFragment.TAG,errorMsg);
+                Log.i(MealsFragment.TAG, errorMsg);
             }
         });
     }

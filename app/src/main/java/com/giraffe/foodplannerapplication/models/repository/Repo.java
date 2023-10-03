@@ -64,6 +64,22 @@ public class Repo implements RepoInterface {
     }
 
     @Override
+    public void getMealById(String mealId, NetworkCallback<Meal> callback) {
+        Call<MealsResponse> call = remoteSource.makeNetworkCall(callback).getMealById(mealId);
+        call.enqueue(new Callback<MealsResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MealsResponse> call, @NonNull Response<MealsResponse> response) {
+                callback.onSuccess(response.body().getMeals().get(0));
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MealsResponse> call, @NonNull Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    @Override
     public void createAccount(String email, String password, NetworkCallback<Boolean> callback) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {

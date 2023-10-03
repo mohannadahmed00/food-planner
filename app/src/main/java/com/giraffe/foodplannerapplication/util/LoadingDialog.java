@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,18 @@ import androidx.fragment.app.FragmentManager;
 import com.giraffe.foodplannerapplication.R;
 
 public class LoadingDialog extends DialogFragment {
+    private final static String TAG = "LoadingDialog";
 
     private static LoadingDialog instance;
 
-    private final FragmentManager fragmentManager;
+    private static FragmentManager mFragmentManager;
 
     public static LoadingDialog getInstance(FragmentManager fragmentManager) {
+
+        if (mFragmentManager == null || mFragmentManager.isDestroyed()) {
+            mFragmentManager = fragmentManager;
+        }
+
         if (instance == null) {
             instance = new LoadingDialog(fragmentManager);
         }
@@ -32,7 +39,7 @@ public class LoadingDialog extends DialogFragment {
 
     public void showLoading() {
         if (!instance.isVisible()) {
-            instance.show(fragmentManager, "loading");
+            instance.show(mFragmentManager, "loading");
         }
     }
 
@@ -41,7 +48,7 @@ public class LoadingDialog extends DialogFragment {
     }
 
     private LoadingDialog(FragmentManager fragmentManager) {
-        this.fragmentManager = fragmentManager;
+        mFragmentManager = fragmentManager;
     }
 
     @Nullable

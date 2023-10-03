@@ -217,6 +217,10 @@ public class DetailsFragment extends Fragment implements DetailsView {
     }
     private String getVideoId(String url){
         String[] split = url.split("v=");
-        return split[1].trim();
+        if (split.length>1){
+            return split[1].trim();
+        }else {
+            return "";
+        }
     }
 }

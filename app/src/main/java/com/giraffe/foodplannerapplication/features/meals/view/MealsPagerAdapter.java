@@ -13,10 +13,12 @@ import java.util.ArrayList;
 
 public class MealsPagerAdapter<T> extends FragmentStateAdapter {
     private final ArrayList<T> list;
+    private TabsView tabsView;
 
-    public MealsPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, ArrayList<T> list) {
+    public MealsPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, ArrayList<T> list, TabsView tabsView) {
         super(fragmentManager, lifecycle);
         this.list = list;
+        this.tabsView = tabsView;
     }
 
     @NonNull
@@ -24,10 +26,9 @@ public class MealsPagerAdapter<T> extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         T item = list.get(position);
         if (item instanceof Category) {
-            return new MealsFragment<>((Category) item);
-
+            return new MealsFragment<>((Category) item, tabsView);
         } else {
-            return new MealsFragment<>((Country) item);
+            return new MealsFragment<>((Country) item, tabsView);
         }
     }
 

@@ -18,6 +18,7 @@ public interface RepoInterface {
     //optional till now just for testing
     //=================remote functions=================
     void getRandomMeal(NetworkCallback<MealsResponse> callback);
+    void getMealById(String mealId,NetworkCallback<Meal> callback);
 
     void createAccount(String email, String password, NetworkCallback<Boolean> callback);
 

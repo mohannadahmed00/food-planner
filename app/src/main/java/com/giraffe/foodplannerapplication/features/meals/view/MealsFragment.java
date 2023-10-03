@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import com.giraffe.foodplannerapplication.models.Country;
 import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
+import com.giraffe.foodplannerapplication.util.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +39,11 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
     private final List<Meal> meals;
     private RecyclerView rvMeals;
 
-    MealsFragment(T item) {
+    private TabsView tabsView;
+
+
+    MealsFragment(T item, TabsView tabsView) {
+        this.tabsView = tabsView;
         if (item instanceof Category) {
             category = (Category) item;
         } else {
@@ -88,7 +95,23 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
     }
 
     @Override
+    public void onGetMeal(Meal meal) {
+        dismissDialog();
+        tabsView.onMealClick(meal);
+    }
+
+    @Override
     public void onClick(Meal meal) {
-        Toast.makeText(requireContext(), meal.getStrMeal(), Toast.LENGTH_SHORT).show();
+        showDialog();
+        presenter.getMealById(meal.getIdMeal());
+        //Toast.makeText(requireContext(), meal.getStrMeal()+":"+meal.getIdMeal(), Toast.LENGTH_SHORT).show();
+    }
+
+    public void showDialog() {
+        LoadingDialog.getInstance(getChildFragmentManager()).showLoading();
+    }
+
+    public void dismissDialog() {
+        LoadingDialog.getInstance(getChildFragmentManager()).dismissLoading();
     }
 }

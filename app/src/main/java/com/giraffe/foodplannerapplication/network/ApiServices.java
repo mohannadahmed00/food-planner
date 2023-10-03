@@ -32,4 +32,7 @@ public interface ApiServices {
 
     @GET("search.php")
     Call<MealsResponse> getSearchResult(@Query("s") String word);
+
+    @GET("lookup.php")
+    Call<MealsResponse> getMealById(@Query("i") String mealId);
 }

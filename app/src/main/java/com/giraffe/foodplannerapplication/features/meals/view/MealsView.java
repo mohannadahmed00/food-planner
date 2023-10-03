@@ -12,4 +12,6 @@ public interface MealsView {
     void initClicks();
 
     void onGetMeals(List<Meal> meals);
+
+    void onGetMeal(Meal meal);
 }
