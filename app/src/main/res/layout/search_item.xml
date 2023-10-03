@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/tv_search"
         android:layout_width="match_parent"
-        android:background="@color/white"
+        android:background="@drawable/edt_rounded"
         android:layout_height="match_parent"
         android:gravity="center"
         android:padding="15dp"

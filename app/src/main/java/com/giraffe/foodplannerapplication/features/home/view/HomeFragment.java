@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     private HomePresenter presenter;
 
-    private ImageView ivFilter, ivRandom;
+    private ImageView ivFilter, ivRandom,ivFav;
     private TextView tvRandom;
 
     private EditText edtSearch;
@@ -117,6 +117,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     @Override
     public void inflateViews(View view) {
+        ivFav = view.findViewById(R.id.iv_fav);
         ivFilter = view.findViewById(R.id.iv_filter);
         viewBlur = view.findViewById(R.id.v_blur);
         edtSearch = view.findViewById(R.id.edt_search);
@@ -134,6 +135,15 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
             if (randomMeal!=null) {
                 HomeFragmentDirections.ActionHomeFragmentToDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(randomMeal);
                 Navigation.findNavController(requireView()).navigate(action);
+            }
+        });
+        ivFav.setOnClickListener(v->{
+            if (ivFav.getTag()!=null && ivFav.getTag().equals("selected")){
+                ivFav.setTag("unselected");
+                ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white));
+            }else {
+                ivFav.setTag("selected");
+                ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
             }
         });
     }

@@ -5,6 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".features.meals.view.TabsFragment">
+    <ImageView
+        android:id="@+id/iv_back"
+        android:padding="16dp"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:src="@drawable/ic_arrow_back"
+        android:background="@color/yellow"
+        app:layout_constraintBottom_toBottomOf="@id/tv_bar"
+        app:layout_constraintEnd_toStartOf="@id/tv_bar"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_bar" />
+
+    <TextView
+        android:id="@+id/tv_bar"
+        android:layout_width="0dp"
+        android:gravity="center_vertical"
+        android:layout_height="70dp"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/orange"
+        android:background="@color/yellow"
+        android:text="Meals by Country"
+        app:layout_constraintBottom_toTopOf="@id/tl_meals"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="5"
+        app:layout_constraintStart_toEndOf="@id/iv_back"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tl_meals"
@@ -14,7 +42,7 @@
         app:layout_constraintBottom_toTopOf="@id/vp_meals"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_bar"
         app:tabIndicatorColor="@color/orange"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/orange"

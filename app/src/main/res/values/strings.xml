@@ -43,4 +43,6 @@
     <string name="ingredient">Ingredient</string>
     <string name="country">Country</string>
     <string name="category">Category</string>
+    <string name="meals_by_category">Meals by Category</string>
+    <string name="meals_by_country">Meals by Country</string>
 </resources>

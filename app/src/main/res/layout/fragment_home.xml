@@ -39,6 +39,19 @@
                 app:layout_constraintTop_toBottomOf="@id/view_blank1"
                 app:shapeAppearanceOverlay="@style/rounded_square" />
 
+            <ImageView
+                android:id="@+id/iv_fav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_favorite"
+                app:layout_constraintBottom_toBottomOf="@id/iv_random"
+                app:layout_constraintEnd_toEndOf="@id/iv_random"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toStartOf="@id/iv_random"
+                app:layout_constraintTop_toTopOf="@id/iv_random"
+                app:layout_constraintVertical_bias="0" />
+
             <TextView
                 android:id="@+id/tv_random"
                 android:layout_width="0dp"
@@ -117,8 +130,6 @@
                 app:layout_constraintTop_toBottomOf="@id/rv_country" />
 
 
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -126,7 +137,7 @@
         android:id="@+id/v_blur"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/trans_light_gray"
+        android:background="@color/trans_gray"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

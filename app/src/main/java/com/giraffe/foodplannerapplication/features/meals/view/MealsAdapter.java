@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -45,6 +46,15 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealVH> {
         holder.getTvItem().setText(meal.getStrMeal());
         Glide.with(holder.getView().getContext()).load(meal.getStrMealThumb()).into(holder.getIvItem());
         holder.getView().setOnClickListener(v -> mealClick.onClick(meal));
+        holder.getIvFav().setOnClickListener(v->{
+            if (holder.getIvFav().getTag()!=null && holder.getIvFav().getTag().equals("selected")){
+                holder.getIvFav().setTag("unselected");
+                holder.getIvFav().setColorFilter(ContextCompat.getColor(holder.getView().getContext(), R.color.white));
+            }else {
+                holder.getIvFav().setTag("selected");
+                holder.getIvFav().setColorFilter(ContextCompat.getColor(holder.getView().getContext(), R.color.red));
+            }
+        });
     }
 
     @Override
@@ -54,7 +64,7 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealVH> {
 
     static class MealVH extends RecyclerView.ViewHolder {
         private final View view;
-        private final ImageView ivItem;
+        private final ImageView ivItem,ivFav;
         private final TextView tvItem;
 
         public MealVH(@NonNull View itemView) {
@@ -62,6 +72,7 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealVH> {
             view = itemView;
             ivItem = itemView.findViewById(R.id.iv_meal);
             tvItem = itemView.findViewById(R.id.tv_meal);
+            ivFav = itemView.findViewById(R.id.iv_fav);
         }
 
         public View getView() {
@@ -74,6 +85,10 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealVH> {
 
         public TextView getTvItem() {
             return tvItem;
+        }
+
+        public ImageView getIvFav() {
+            return ivFav;
         }
     }
 

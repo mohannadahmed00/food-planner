@@ -5,17 +5,15 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,15 +29,14 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DetailsFragment extends Fragment implements DetailsView {
     public final static String TAG = "DetailsFragment";
     private DetailsPresenter presenter;
 
-    private ImageView ivMeal;
-    private TextView tvCategory, tvCountry, tvSteps;
+    private ImageView ivBack,ivMeal,ivFav;
+    private TextView tvBar,tvCategory, tvCountry, tvSteps;
     //private WebView wvInstructions;
     YouTubePlayerView youTubePlayerView;
     private RecyclerView rvIngredients;
@@ -81,18 +78,11 @@ public class DetailsFragment extends Fragment implements DetailsView {
         super.onViewCreated(view, savedInstanceState);
         inflateViews(view);
         initClicks();
+        tvBar.setText(meal.getStrMeal());
         Glide.with(requireContext()).load(meal.getStrMealThumb()).into(ivMeal);
         tvCategory.setText(meal.getStrCategory());
         tvCountry.setText(meal.getStrArea());
-        /*String[] steps = meal.getStrInstructions().split("\r");
-        counter = 0;
-        StringBuilder strBuilder = new StringBuilder();
-        Arrays.stream(steps).forEach(s -> {
-            strBuilder.append(String.valueOf(++counter).concat("- " + s) + "\n");
-        });*/
         tvSteps.setText(meal.getStrInstructions());
-
-
         getLifecycle().addObserver(youTubePlayerView);
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
@@ -101,50 +91,36 @@ public class DetailsFragment extends Fragment implements DetailsView {
                 youTubePlayer.loadVideo(videoId, 0f);
             }
         });
-
-
-        /*String dataUrl = "<html>" +
-                "<body>" +
-                "<h2>Video From YouTube</h2>" +
-                "<br>" +
-                "<iframe width=\"560\" height=\"315\" src=\"" + meal.getStrYoutube() + "\" frameborder=\"0\" allowfullscreen/>" +
-                "</body>" +
-                "</html>";
-        WebSettings webSettings = wvInstructions.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        wvInstructions.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        wvInstructions.getSettings().setLoadWithOverviewMode(true);
-        wvInstructions.getSettings().setUseWideViewPort(true);*/
-
-        //wvInstructions.setWebViewClient(new WebViewClient());
-        //wvInstructions.setWebChromeClient(new WebChromeClient());
-        //wvInstructions.loadUrl(meal.getStrYoutube());
-
-        //WebSettings settings = wvInstructions.getSettings();
-        //settings.setJavaScriptEnabled(true);
-        //settings.setPluginState(WebSettings.PluginState.ON);
-
-
-
-
-        //wvInstructions.loadData(dataUrl, "text/html", "utf-8");
         rvIngredients.setAdapter(adapter);
     }
 
     @Override
     public void inflateViews(View view) {
+        ivBack = view.findViewById(R.id.iv_back);
+        tvBar = view.findViewById(R.id.tv_bar);
+        ivFav = view.findViewById(R.id.iv_fav_details);
         ivMeal = view.findViewById(R.id.iv_meal);
         tvCategory = view.findViewById(R.id.tv_category);
         tvCountry = view.findViewById(R.id.tv_country);
         tvSteps = view.findViewById(R.id.tv_steps);
-        //wvInstructions = view.findViewById(R.id.wv_instructions);
         youTubePlayerView = view.findViewById(R.id.wv_instructions);
         rvIngredients = view.findViewById(R.id.rv_ingredients);
     }
 
     @Override
     public void initClicks() {
-
+        ivBack.setOnClickListener(v->{
+            Navigation.findNavController(v).navigateUp();
+        });
+        ivFav.setOnClickListener(v->{
+            if (ivFav.getTag()!=null && ivFav.getTag().equals("selected")){
+                ivFav.setTag("unselected");
+                ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white));
+            }else {
+                ivFav.setTag("selected");
+                ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
+            }
+        });
     }
 
     private ArrayList<String> getIngredients(Meal meal) {

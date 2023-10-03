@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.models.Category;
@@ -38,6 +40,9 @@ public class TabsFragment extends Fragment implements TabsView {
     private int selected;
     private String type;
 
+    private ImageView ivBack;
+    private TextView tvBar;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -62,10 +67,9 @@ public class TabsFragment extends Fragment implements TabsView {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.i(TAG, "onViewCreated");
-
         args = TabsFragmentArgs.fromBundle(getArguments());
         type = args.getType();
-        if (selected==-1) {
+        if (selected == -1) {
             selected = TabsFragmentArgs.fromBundle(getArguments()).getSelected();
         }
         if (type.equals("category")) {
@@ -76,15 +80,19 @@ public class TabsFragment extends Fragment implements TabsView {
             countries = args.getList();
             adapter = new MealsPagerAdapter<>(getChildFragmentManager(), getLifecycle(), countries, this);
         }
+        ivBack = view.findViewById(R.id.iv_back);
+        tvBar = view.findViewById(R.id.tv_bar);
         tabLayout = view.findViewById(R.id.tl_meals);
         viewPager = view.findViewById(R.id.vp_meals);
         viewPager.setAdapter(adapter);
         viewPager.postDelayed(() -> viewPager.setCurrentItem(selected), 0);
         if (type.equals("category")) {
+            tvBar.setText(R.string.meals_by_category);
             new TabLayoutMediator(tabLayout, viewPager,
                     (tab, position) -> tab.setText(categories.get(position).getStrCategory())
             ).attach();
         } else {
+            tvBar.setText(R.string.meals_by_country);
             new TabLayoutMediator(tabLayout, viewPager,
                     (tab, position) -> tab.setText(countries.get(position).getStrArea())
             ).attach();
@@ -109,7 +117,7 @@ public class TabsFragment extends Fragment implements TabsView {
                         }
                     }
                 }*/
-                Log.i(TAG,"onTabSelected index: "+selected);
+                Log.i(TAG, "onTabSelected index: " + selected);
             }
 
             @Override
@@ -121,6 +129,10 @@ public class TabsFragment extends Fragment implements TabsView {
             public void onTabReselected(TabLayout.Tab tab) {
 
             }
+        });
+
+        ivBack.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigateUp();
         });
     }
 
