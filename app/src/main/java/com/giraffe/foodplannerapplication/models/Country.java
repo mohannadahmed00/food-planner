@@ -14,7 +14,7 @@ public class Country {
 
     private final String strArea;
 
-    private String strColor;
+    private String strCode;
 
     public Country(String strArea) {
         this.strArea = strArea;
@@ -24,11 +24,11 @@ public class Country {
         return strArea;
     }
 
-    public String getStrColor(){
-        return strColor;
+    public String getStrCode() {
+        return strCode;
     }
 
-    public void setStrColor(String color){
-        this.strColor = color;
+    public void setStrCode(String strCode) {
+        this.strCode = strCode;
     }
 }

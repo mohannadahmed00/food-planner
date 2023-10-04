@@ -6,10 +6,12 @@ import com.giraffe.foodplannerapplication.models.Ingredient;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observable;
+
 public interface FilterView {
-    void onGetCategories(List<Category> categories);
+    void onGetCategories(Observable<List<Category>> observable);
 
-    void onGetCountries(List<Country> countries);
+    void onGetCountries(Observable<List<Country>> observable);
 
-    void onGetIngredient(List<Ingredient> ingredients);
+    void onGetIngredient(Observable<List<Ingredient>> observable);
 }

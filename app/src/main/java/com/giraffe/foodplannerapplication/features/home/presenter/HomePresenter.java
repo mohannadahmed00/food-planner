@@ -31,67 +31,19 @@ public class HomePresenter {
     }
 
     public void getRandomMeal() {
-        repo.getRandomMeal(new NetworkCallback<MealsResponse>() {
-            @Override
-            public void onSuccess(MealsResponse response) {
-                view.onGetRandomMeal(response.getMeals().get(0));
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                Log.i(HomeFragment.TAG, errorMsg);
-            }
-        });
+        view.onGetRandomMeal(repo.getRandomMeal());
     }
 
     public void getCategories() {
-        repo.getCategories(new NetworkCallback<List<Category>>() {
-
-            @Override
-            public void onSuccess(List<Category> response) {
-                view.onGetCategories(response);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                Log.i(HomeFragment.TAG, errorMsg);
-            }
-        });
+        view.onGetCategories(repo.getCategories());
     }
 
     public void getCountries() {
-        repo.getCountries(new NetworkCallback<List<Country>>() {
-            @Override
-            public void onSuccess(List<Country> response) {
-                response.forEach(e -> e.setStrColor(getRandomColor()));
-                view.onGetCountries(response);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                Log.i(HomeFragment.TAG, errorMsg);
-            }
-        });
-    }
-
-    private String getRandomColor() {
-        Random random = new Random();
-        int color = Color.argb(56, random.nextInt(Integer.MAX_VALUE - 157), random.nextInt(Integer.MAX_VALUE - 157), random.nextInt(Integer.MAX_VALUE - 157));
-        return String.format("#%06X", 0xFFFFFF & color);
+        view.onGetCountries(repo.getCountries());
     }
 
     public void getSearchResult(String word) {
-        repo.getSearchResult(word, new NetworkCallback<List<Meal>>() {
-            @Override
-            public void onSuccess(List<Meal> response) {
-                view.onGetSearchResult(response);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                Log.i(HomeFragment.TAG, errorMsg);
-            }
-        });
+        view.onGetSearchResult(repo.getSearchResult(word));
     }
 
     public void insertMeal(Meal meal){

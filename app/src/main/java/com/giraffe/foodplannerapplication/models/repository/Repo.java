@@ -52,35 +52,13 @@ public class Repo implements RepoInterface {
 
     //=================remote functions=================
     @Override
-    public void getRandomMeal(NetworkCallback<MealsResponse> callback) {
-        Call<MealsResponse> call = remoteSource.makeNetworkCall(callback).getRandomMeal();
-        call.enqueue(new Callback<MealsResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<MealsResponse> call, @NonNull Response<MealsResponse> response) {
-                callback.onSuccess(response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<MealsResponse> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
+    public Observable<Meal> getRandomMeal() {
+        return remoteSource.callRequest().getRandomMeal().subscribeOn(Schedulers.io()).map(mealsResponse -> mealsResponse.getMeals().get(0));
     }
 
     @Override
-    public void getMealById(String mealId, NetworkCallback<Meal> callback) {
-        Call<MealsResponse> call = remoteSource.makeNetworkCall(callback).getMealById(mealId);
-        call.enqueue(new Callback<MealsResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<MealsResponse> call, @NonNull Response<MealsResponse> response) {
-                callback.onSuccess(response.body().getMeals().get(0));
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<MealsResponse> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
+    public Observable<Meal> getMealById(String mealId) {
+        return remoteSource.callRequest().getMealById(mealId).subscribeOn(Schedulers.io()).map(mealsResponse -> mealsResponse.getMeals().get(0));
     }
 
     @Override
@@ -119,84 +97,52 @@ public class Repo implements RepoInterface {
     }
 
     @Override
-    public void getCategories(NetworkCallback<List<Category>> callback) {
+    public Observable<List<Category>> getCategories() {
         List<Category> categories = localSource.readCategories();
         if (categories == null || categories.isEmpty()) {
             Log.i(SplashFragment.TAG, "getCategories from remote");
-            Call<CategoriesResponse> call = remoteSource.makeNetworkCall(callback).getCategories();
-            call.enqueue(new Callback<CategoriesResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<CategoriesResponse> call, @NonNull Response<CategoriesResponse> response) {
-                    localSource.storeCategories(response.body());
-                    if (response.body() != null) {
-                        callback.onSuccess(response.body().getCategories());
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<CategoriesResponse> call, @NonNull Throwable t) {
-                    callback.onFailure(t.getMessage());
-                }
-            });
+            return remoteSource.callRequest().getCategories()
+                    .subscribeOn(Schedulers.io())
+                    .map(categoriesResponse -> {
+                        localSource.storeCategories(categoriesResponse);
+                        return categoriesResponse.getCategories();
+                    });
         } else {
-            Log.i(SplashFragment.TAG, "getCategories from local");
-            callback.onSuccess(categories);
+            return Observable.just(categories);
         }
-
     }
 
     @Override
-    public void getCountries(NetworkCallback<List<Country>> callback) {
+    public Observable<List<Country>> getCountries() {
         List<Country> countries = localSource.readCountries();
         if (countries == null || countries.isEmpty()) {
             Log.i(SplashFragment.TAG, "getCountries from remote");
-            Call<CountriesResponse> call = remoteSource.makeNetworkCall(callback).getCountries();
-            call.enqueue(new Callback<CountriesResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<CountriesResponse> call, @NonNull Response<CountriesResponse> response) {
-                    localSource.storeCountries(response.body());
-                    if (response.body() != null) {
-                        callback.onSuccess(response.body().getCountries());
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<CountriesResponse> call, @NonNull Throwable t) {
-                    callback.onFailure(t.getMessage());
-                }
-            });
+            return remoteSource.callRequest().getCountries()
+                    .subscribeOn(Schedulers.io())
+                    .map(countriesResponse -> {
+                        localSource.storeCountries(countriesResponse);
+                        return countriesResponse.getCountries();
+                    });
         } else {
-            Log.i(SplashFragment.TAG, "getCountries from local");
-            callback.onSuccess(countries);
+            return Observable.just(countries);
         }
 
     }
 
     @Override
-    public void getIngredients(NetworkCallback<List<Ingredient>> callback) {
+    public Observable<List<Ingredient>> getIngredients() {
         List<Ingredient> ingredients = localSource.readIngredients();
         if (ingredients == null || ingredients.isEmpty()) {
             Log.i(SplashFragment.TAG, "getIngredients from remote");
-            Call<IngredientsResponse> call = remoteSource.makeNetworkCall(callback).getIngredients();
-            call.enqueue(new Callback<IngredientsResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<IngredientsResponse> call, @NonNull Response<IngredientsResponse> response) {
-                    localSource.storeIngredients(response.body());
-                    if (response.body() != null) {
-                        callback.onSuccess(response.body().getIngredients());
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<IngredientsResponse> call, @NonNull Throwable t) {
-                    callback.onFailure(t.getMessage());
-                }
-            });
+            return remoteSource.callRequest().getIngredients()
+                    .subscribeOn(Schedulers.io())
+                    .map(ingredientsResponse -> {
+                        localSource.storeIngredients(ingredientsResponse);
+                        return ingredientsResponse.getIngredients();
+                    });
         } else {
-            Log.i(SplashFragment.TAG, "getIngredients from local");
-            callback.onSuccess(ingredients);
+            return Observable.just(ingredients);
         }
-
     }
 
     @Override
@@ -206,29 +152,17 @@ public class Repo implements RepoInterface {
     }
 
     @Override
-    public Observable<List<Meal>>  getCountryMeals(String country) {
+    public Observable<List<Meal>> getCountryMeals(String country) {
         return remoteSource.callRequest().getCountryMeals(country)
                 .subscribeOn(Schedulers.io())
                 .map(mealsResponse -> mealsResponse.getMeals());
     }
 
     @Override
-    public void getSearchResult(String word, NetworkCallback<List<Meal>> callback) {
-        Call<MealsResponse> call = remoteSource.makeNetworkCall(callback).getSearchResult(word);
-        call.enqueue(new Callback<MealsResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<MealsResponse> call, @NonNull Response<MealsResponse> response) {
-                if (response.body() != null) {
-                    callback.onSuccess(response.body().getMeals());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<MealsResponse> call, @NonNull Throwable t) {
-                callback.onSuccess(new ArrayList<>());
-                callback.onFailure(t.getMessage());
-            }
-        });
+    public Observable<List<Meal>> getSearchResult(String word) {
+        return remoteSource.callRequest().getSearchResult(word)
+                .subscribeOn(Schedulers.io())
+                .map(mealsResponse -> mealsResponse.getMeals());
     }
 
 

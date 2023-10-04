@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.models.Category;
 import com.giraffe.foodplannerapplication.models.Country;
@@ -30,20 +31,20 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
         this.onCountryClick = onCountryClick;
     }
 
-    public void setList(List<Country> countries){
+    public void setList(List<Country> countries) {
         this.countries.clear();
         this.countries.addAll(countries);
         notifyDataSetChanged();
     }
 
-    public ArrayList<Country> getList(){
+    public ArrayList<Country> getList() {
         return new ArrayList<>(countries);
     }
 
     @NonNull
     @Override
     public CountryVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_item, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_item, parent, false);
         return new CountryVH(view);
     }
 
@@ -51,10 +52,10 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
     public void onBindViewHolder(@NonNull CountryVH holder, int position) {
         Country country = countries.get(position);
         holder.getTvItem().setText(country.getStrArea());
-        int color = Color.parseColor(country.getStrColor());
-        holder.getIvItem().setColorFilter(color);
-        //Glide.with(holder.getView().getContext()).load(category.getStrCategoryThumb()).into(holder.getIvItem());
-        holder.getView().setOnClickListener(v-> onCountryClick.onClick(country));
+        Glide.with(holder.getView().getContext()).load("https://flagsapi.com/" + country.getStrCode() + "/flat/64.png")
+                .apply(new RequestOptions().override(120, 64))
+                .into(holder.getIvItem());
+        holder.getView().setOnClickListener(v -> onCountryClick.onClick(country));
     }
 
     @Override

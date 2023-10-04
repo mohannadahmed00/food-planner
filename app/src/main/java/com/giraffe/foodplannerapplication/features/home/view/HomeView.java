@@ -9,18 +9,19 @@ import com.giraffe.foodplannerapplication.models.Meal;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
 
 public interface HomeView {
     void inflateViews(View view);
 
     void initClicks();
 
-    void onGetRandomMeal(Meal meal);
+    void onGetRandomMeal(Observable<Meal> observable);
 
-    void onGetCategories(List<Category> categories);
-    void onGetCountries(List<Country> countries);
+    void onGetCategories(Observable<List<Category>> observable);
+    void onGetCountries(Observable<List<Country>> observable);
 
-    void onGetSearchResult(List<Meal> meals);
+    void onGetSearchResult(Observable<List<Meal>> observable);
 
     void onFavMealInserted(Completable completable);
     void onFavMealDeleted(Completable completable);

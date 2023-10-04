@@ -96,7 +96,7 @@ public class DetailsFragment extends Fragment implements DetailsView {
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                String videoId = getVideoId(meal.getStrYoutube());
+                String videoId = meal.getStrYoutube() != null ? getVideoId(meal.getStrYoutube()) : "";
                 youTubePlayer.loadVideo(videoId, 0f);
             }
         });

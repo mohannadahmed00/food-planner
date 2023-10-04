@@ -20,8 +20,8 @@ import io.reactivex.rxjava3.core.Observable;
 public interface RepoInterface {
     //optional till now just for testing
     //=================remote functions=================
-    void getRandomMeal(NetworkCallback<MealsResponse> callback);
-    void getMealById(String mealId,NetworkCallback<Meal> callback);
+    Observable<Meal> getRandomMeal();
+    Observable<Meal> getMealById(String mealId);
 
     void createAccount(String email, String password, NetworkCallback<Boolean> callback);
 
@@ -29,14 +29,14 @@ public interface RepoInterface {
 
     boolean logout();
 
-    void getCategories(NetworkCallback<List<Category>> callback);
+    Observable<List<Category>> getCategories();
 
-    void getCountries(NetworkCallback<List<Country>> callback);
+    Observable<List<Country>> getCountries();
 
-    void getIngredients(NetworkCallback<List<Ingredient>> callback);
+    Observable<List<Ingredient>> getIngredients();
     Observable<List<Meal>> getCategoryMeals(String category);
     Observable<List<Meal>>  getCountryMeals(String country);
-    void getSearchResult(String word,NetworkCallback<List<Meal>> callback);
+    Observable<List<Meal>> getSearchResult(String word);
 
     //=================local functions=================
     boolean isLoggedIn();

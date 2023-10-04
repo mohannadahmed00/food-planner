@@ -20,44 +20,14 @@ public class FilterPresenter {
     }
 
     public void getCategories() {
-        repo.getCategories(new NetworkCallback<List<Category>>() {
-            @Override
-            public void onSuccess(List<Category> response) {
-                view.onGetCategories(response);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                view.onGetCategories(new ArrayList<>());
-            }
-        });
+        view.onGetCategories(repo.getCategories());
     }
 
     public void getCountries() {
-        repo.getCountries(new NetworkCallback<List<Country>>() {
-            @Override
-            public void onSuccess(List<Country> response) {
-                view.onGetCountries(response);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                view.onGetCountries(new ArrayList<>());
-            }
-        });
+        view.onGetCountries(repo.getCountries());
     }
 
     public void getIngredients() {
-        repo.getIngredients(new NetworkCallback<List<Ingredient>>() {
-            @Override
-            public void onSuccess(List<Ingredient> response) {
-                view.onGetIngredient(response);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                view.onGetIngredient(new ArrayList<>());
-            }
-        });
+        view.onGetIngredient(repo.getIngredients());
     }
 }

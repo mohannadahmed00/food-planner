@@ -16,7 +16,7 @@ public interface MealsView {
 
     void onGetMeals(Observable<List<Meal>> observable);
 
-    void onGetMeal(Meal meal);
+    void onGetMeal(Observable<Meal> observable);
     void onGetFavMeals(Observable<List<Meal>> observable);
 
     void onMealInserted(Completable completable);

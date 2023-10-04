@@ -22,17 +22,7 @@ public class MealsPresenter {
     }
 
     public void getMealById(String mealId) {
-        repo.getMealById(mealId, new NetworkCallback<Meal>() {
-            @Override
-            public void onSuccess(Meal response) {
-                view.onGetMeal(response);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                Log.i(MealsFragment.TAG, errorMsg);
-            }
-        });
+        view.onGetMeal(repo.getMealById(mealId));
     }
 
     public void getCategoryMeals(String category) {
@@ -43,15 +33,15 @@ public class MealsPresenter {
         view.onGetMeals(repo.getCountryMeals(country));
     }
 
-    public void getFavMeals(){
+    public void getFavMeals() {
         view.onGetFavMeals(repo.getLocalMeals());
     }
 
-    public void insertMeal(Meal meal){
+    public void insertMeal(Meal meal) {
         view.onMealInserted(repo.insertMeal(meal));
     }
 
-    public void deleteMeal(Meal meal){
+    public void deleteMeal(Meal meal) {
         view.onMealDeleted(repo.deleteMeal(meal));
     }
 }

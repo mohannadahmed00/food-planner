@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.giraffe.foodplannerapplication.R;
@@ -40,6 +39,7 @@ import com.giraffe.foodplannerapplication.util.LoadingDialog;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
@@ -50,7 +50,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     private HomePresenter presenter;
 
-    private ImageView ivFilter, ivRandom,ivFav;
+    private ImageView ivFilter, ivRandom, ivFav;
     private TextView tvRandom;
 
     private EditText edtSearch;
@@ -134,16 +134,16 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     public void initClicks() {
         ivFilter.setOnClickListener(v -> FilterDialog.getInstance(getParentFragmentManager(), this, category, country, ingredient).showFilter());
         ivRandom.setOnClickListener(view -> {
-            if (randomMeal!=null) {
+            if (randomMeal != null) {
                 HomeFragmentDirections.ActionHomeFragmentToDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(randomMeal);
                 Navigation.findNavController(requireView()).navigate(action);
             }
         });
-        ivFav.setOnClickListener(v->{
-            if(randomMeal.isSelected()){
+        ivFav.setOnClickListener(v -> {
+            if (randomMeal.isSelected()) {
                 randomMeal.setSelected(false);
                 presenter.deleteMeal(randomMeal);
-            }else {
+            } else {
                 randomMeal.setSelected(true);
                 presenter.insertMeal(randomMeal);
             }
@@ -158,41 +158,36 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     }
 
     void handleSearch() {
+        Observable
+                .create(emitter -> {
+                    edtSearch.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
 
-        observable = Observable.create(emitter -> {
-            edtSearch.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            if (charSequence.length() < 2) {
+                                viewBlur.setVisibility(View.INVISIBLE);
+                                rvSearch.setVisibility(View.INVISIBLE);
+                            }
+                            emitter.onNext(charSequence.toString());
+                            //}
+                        }
 
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    /*if (charSequence.length()<2){
-                        viewBlur.setVisibility(View.INVISIBLE);
-                        rvSearch.setVisibility(View.INVISIBLE);
-                    }else {*/
-                    if (charSequence.length() < 2) {
-                        viewBlur.setVisibility(View.INVISIBLE);
-                        rvSearch.setVisibility(View.INVISIBLE);
-                    }
-                    emitter.onNext(charSequence.toString());
-                    //}
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                }
-            });
-        });
-        observable = observable.delay(1, TimeUnit.SECONDS).debounce(1, TimeUnit.SECONDS);
-        observable.subscribe(s -> {
-            if (s.length() >= 2) {
-                Log.i(TAG, "search: " + s);
-                showDialog();
-                presenter.getSearchResult(s);
-            }
-            //presenter.getSearchResult(s);
-        });
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                        }
+                    });
+                })
+                .debounce(1, TimeUnit.SECONDS)
+                .filter(o -> o.toString().length() > 2)
+                .distinctUntilChanged()
+                .subscribe(s -> {
+                    Log.i(TAG, "search: " + s);
+                    showDialog();
+                    presenter.getSearchResult(s.toString());
+                }, throwable -> Log.i(TAG, throwable.getMessage()));
 
     }
 
@@ -212,35 +207,47 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     }
 
     @Override
-    public void onGetRandomMeal(Meal meal) {
-        this.randomMeal = meal;
-        handleRandomMealTitle(meal.getStrMeal());
-        handleRandomMealImg(meal.getStrMealThumb());
+    public void onGetRandomMeal(Observable<Meal> observable) {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(meal -> {
+                    this.randomMeal = meal;
+                    handleRandomMealTitle(meal.getStrMeal());
+                    handleRandomMealImg(meal.getStrMealThumb());
+                });
     }
 
     @Override
-    public void onGetCategories(List<Category> categories) {
-        categoriesAdapter.setList(categories);
+    public void onGetCategories(Observable<List<Category>> observable) {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(categories -> categoriesAdapter.setList(categories));
     }
 
     @Override
-    public void onGetCountries(List<Country> countries) {
-        countriesAdapter.setList(countries);
+    public void onGetCountries(Observable<List<Country>> observable) {
+        observable.map(countries -> countries.stream().map(country -> {
+                    country.setStrCode(getCountryCode(country.getStrArea()));
+                    return country;
+                }).collect(Collectors.toList())).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(countries -> countriesAdapter.setList(countries), throwable -> Log.i(TAG, "error: " + throwable.getMessage()));
     }
 
     @Override
-    public void onGetSearchResult(List<Meal> meals) {
-        dismissDialog();
-        if (meals == null || meals.isEmpty()) {
-            viewBlur.setVisibility(View.INVISIBLE);
-            rvSearch.setVisibility(View.INVISIBLE);
-        } else {
-            if (!edtSearch.getText().toString().isEmpty()) {
-                viewBlur.setVisibility(View.VISIBLE);
-                rvSearch.setVisibility(View.VISIBLE);
-                searchAdapter.setList(meals);
-            }
-        }
+    public void onGetSearchResult(Observable<List<Meal>> observable) {
+
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(meals -> {
+                    dismissDialog();
+                    if (meals == null || meals.isEmpty()) {
+                        viewBlur.setVisibility(View.INVISIBLE);
+                        rvSearch.setVisibility(View.INVISIBLE);
+                    } else {
+                        if (!edtSearch.getText().toString().isEmpty()) {
+                            viewBlur.setVisibility(View.VISIBLE);
+                            rvSearch.setVisibility(View.VISIBLE);
+                            searchAdapter.setList(meals);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -301,5 +308,67 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
                         () -> ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white)),
                         throwable -> randomMeal.setSelected(true)
                 );
+    }
+
+
+    public String getCountryCode(String country) {
+        switch (country) {
+            case "American":
+                return "US";
+            case "British":
+                return "GB";
+            case "Canadian":
+                return "CA";
+            case "Chinese":
+                return "CN";
+            case "Croatian":
+                return "HR";
+            case "Dutch":
+                return "DE";
+            case "Egyptian":
+                return "EG";
+            case "Filipino":
+                return "PH";
+            case "French":
+                return "FR";
+            case "Greek":
+                return "GR";
+            case "Indian":
+                return "IN";
+            case "Irish":
+                return "IE";
+            case "Italian":
+                return "IT";
+            case "Jamaican":
+                return "JM";
+            case "Japanese":
+                return "JP";
+            case "Kenyan":
+                return "KE";
+            case "Malaysian":
+                return "MY";
+            case "Mexican":
+                return "MX";
+            case "Moroccan":
+                return "MA";
+            case "Polish":
+                return "PL";
+            case "Portuguese":
+                return "PT";
+            case "Russian":
+                return "RU";
+            case "Spanish":
+                return "ES";
+            case "Thai":
+                return "TH";
+            case "Tunisian":
+                return "TN";
+            case "Turkish":
+                return "TR";
+            case "Vietnamese":
+                return "VN";
+            default:
+                return "Unknown";
+        }
     }
 }

@@ -14,16 +14,16 @@ import retrofit2.http.Query;
 
 public interface ApiServices {
     @GET("random.php")
-    Call<MealsResponse> getRandomMeal();
+    Observable<MealsResponse> getRandomMeal();
 
     @GET("categories.php")
-    Call<CategoriesResponse> getCategories();
+    Observable<CategoriesResponse> getCategories();
 
     @GET("list.php?a=list")
-    Call<CountriesResponse> getCountries();
+    Observable<CountriesResponse> getCountries();
 
     @GET("list.php?i=list")
-    Call<IngredientsResponse> getIngredients();
+    Observable<IngredientsResponse> getIngredients();
 
     @GET("filter.php")
     Observable<MealsResponse> getCategoryMeals(@Query("c") String category);
@@ -32,8 +32,8 @@ public interface ApiServices {
     Observable<MealsResponse> getCountryMeals(@Query("a") String country);
 
     @GET("search.php")
-    Call<MealsResponse> getSearchResult(@Query("s") String word);
+    Observable<MealsResponse> getSearchResult(@Query("s") String word);
 
     @GET("lookup.php")
-    Call<MealsResponse> getMealById(@Query("i") String mealId);
+    Observable<MealsResponse> getMealById(@Query("i") String mealId);
 }

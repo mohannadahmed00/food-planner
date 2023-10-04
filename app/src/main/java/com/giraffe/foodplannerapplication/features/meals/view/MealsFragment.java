@@ -48,8 +48,6 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
     private TabsView tabsView;
     private Context context;
 
-    private Observable<List<Meal>> observableMeals;
-
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -109,9 +107,12 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
 
 
     @Override
-    public void onGetMeal(Meal meal) {
-        dismissDialog();
-        tabsView.onMealClick(meal);
+    public void onGetMeal(Observable<Meal> observable) {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(meal -> {
+                    dismissDialog();
+                    tabsView.onMealClick(meal);
+                });
     }
 
     @Override
@@ -124,11 +125,15 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
             }
         }
         if (temp != null) {
+            Log.i(TAG,"old meal");
+
             tabsView.onMealClick(temp);
-            return;
+            //return;
+        }else {
+            Log.i(TAG,"new meal");
+            showDialog();
+            presenter.getMealById(meal.getIdMeal());
         }
-        showDialog();
-        presenter.getMealById(meal.getIdMeal());
         //Toast.makeText(requireContext(), meal.getStrMeal()+":"+meal.getIdMeal(), Toast.LENGTH_SHORT).show();
     }
 

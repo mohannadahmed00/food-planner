@@ -33,7 +33,9 @@ import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
 
 public class FilterDialog extends DialogFragment implements FilterView {
 
@@ -132,26 +134,6 @@ public class FilterDialog extends DialogFragment implements FilterView {
             }
         });
         btnContinue.setOnClickListener(v -> onFilterClick.onFilterClick(category, country, ingredient));
-
-        /*handler = new Handler(Looper.myLooper()) {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                Log.i("Filter",msg.arg1+"");
-                if (msg.arg1==0){
-                    for (Chip chip : categories) {
-                        cgCategory.addView(chip);
-                    }
-                }else if (msg.arg1==1){
-                    for (Chip chip : countries) {
-                        cgCountry.addView(chip);
-                    }
-                }else {
-                    for (Chip chip : ingredients) {
-                        cgIngredient.addView(chip);
-                    }
-                }
-            }
-        };*/
     }
 
     private Chip createChip(String title) {
@@ -181,29 +163,38 @@ public class FilterDialog extends DialogFragment implements FilterView {
     }
 
     @Override
-    public void onGetCategories(List<Category> categories) {
-        List<Chip> chips = categories.stream().map(e -> createChip(e.getStrCategory())).collect(Collectors.toList());
-        for (Chip chip : chips) {
-            if (category != null && chip.getText().toString().trim().equals(category)) {
-                chip.setChecked(true);
-            }
-            cgCategory.addView(chip);
-        }
-        /*new Thread(()->{
-            this.categories = categories.stream().map(e->createChip(e.getStrCategory())).collect(Collectors.toList());
-            handler.sendEmptyMessage(0);
-        }).start();*/
+    public void onGetCategories(Observable<List<Category>> observable) {
+        observable.flatMap(categories -> Observable.fromIterable(categories))
+                .map(category -> category.getStrCategory())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(s -> createChip(s))
+                .subscribe(chip -> {
+                    if (category != null && chip.getText().toString().trim().equals(category)) {
+                        chip.setChecked(true);
+                    }
+                    cgCategory.addView(chip);
+                });
     }
 
     @Override
-    public void onGetCountries(List<Country> countries) {
-        List<Chip> chips = countries.stream().map(e -> createChip(e.getStrArea())).collect(Collectors.toList());
+    public void onGetCountries(Observable<List<Country>> observable) {
+        observable.flatMap(countries -> Observable.fromIterable(countries))
+                .map(country -> country.getStrArea())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(s -> createChip(s))
+                .subscribe(chip -> {
+                    if (country != null && chip.getText().toString().trim().equals(country)) {
+                        chip.setChecked(true);
+                    }
+                    cgCountry.addView(chip);
+                });
+        /*List<Chip> chips = countries.stream().map(e -> createChip(e.getStrArea())).collect(Collectors.toList());
         for (Chip chip : chips) {
             if (country != null && chip.getText().toString().trim().equals(country)) {
                 chip.setChecked(true);
             }
             cgCountry.addView(chip);
-        }
+        }*/
         /*new Thread(()->{
             this.countries = countries.stream().map(e->createChip(e.getStrArea())).collect(Collectors.toList());
             handler.sendEmptyMessage(1);
@@ -211,15 +202,17 @@ public class FilterDialog extends DialogFragment implements FilterView {
     }
 
     @Override
-    public void onGetIngredient(List<Ingredient> ingredients) {
-        List<Chip> chips = ingredients.stream().map(e -> createChip(e.getStrIngredient())).collect(Collectors.toList());
-        for (Chip chip : chips) {
-            cgIngredient.addView(chip);
-        }
-        /*new Thread(()->{
-            this.ingredients = ingredients.stream().map(e->createChip(e.getStrIngredient())).collect(Collectors.toList());
-            handler.sendEmptyMessage(2);
-        }).start();*/
+    public void onGetIngredient(Observable<List<Ingredient>> observable) {
+        observable.flatMap(ingredients -> Observable.fromIterable(ingredients))
+                .map(ingredient -> ingredient.getStrIngredient())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(s -> createChip(s))
+                .subscribe(chip -> {
+                    if (ingredient != null && chip.getText().toString().trim().equals(ingredient)) {
+                        chip.setChecked(true);
+                    }
+                    cgIngredient.addView(chip);
+                });
     }
 
     public void showFilter() {
