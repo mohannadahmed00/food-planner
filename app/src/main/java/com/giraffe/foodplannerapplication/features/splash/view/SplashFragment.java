@@ -1,6 +1,5 @@
 package com.giraffe.foodplannerapplication.features.splash.view;
 
-import android.graphics.Shader;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,12 +17,9 @@ import android.widget.ImageView;
 
 import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
-import com.giraffe.foodplannerapplication.database.SharedHelper;
 import com.giraffe.foodplannerapplication.features.splash.presenter.SplashPresenter;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
-
-import java.util.ArrayList;
 
 public class SplashFragment extends Fragment implements SplashView {
     public final static String TAG = "SplashFragment";

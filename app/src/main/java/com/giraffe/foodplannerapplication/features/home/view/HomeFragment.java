@@ -70,8 +70,6 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     private Meal randomMeal;
 
-    private Observable<String> observable;
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -213,13 +211,13 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
                     this.randomMeal = meal;
                     handleRandomMealTitle(meal.getStrMeal());
                     handleRandomMealImg(meal.getStrMealThumb());
-                });
+                },throwable -> Log.i(TAG,throwable.getMessage()));
     }
 
     @Override
     public void onGetCategories(Observable<List<Category>> observable) {
         observable.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(categories -> categoriesAdapter.setList(categories));
+                .subscribe(categories -> categoriesAdapter.setList(categories),throwable -> Log.i(TAG,throwable.getMessage()));
     }
 
     @Override
@@ -247,7 +245,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
                             searchAdapter.setList(meals);
                         }
                     }
-                });
+                },throwable -> Log.i(TAG,throwable.getMessage()));
     }
 
     @Override

@@ -38,6 +38,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 
 public class FilterDialog extends DialogFragment implements FilterView {
+    private static final String TAG = "FilterDialog";
 
     private static FilterDialog instance;
 
@@ -107,7 +108,7 @@ public class FilterDialog extends DialogFragment implements FilterView {
 
         presenter.getCategories();
         presenter.getCountries();
-        //presenter.getIngredients();
+        presenter.getIngredients();
 
         cgCategory.setOnCheckedChangeListener((group, checkedId) -> {
             Chip chip = group.findViewById(checkedId);
@@ -173,7 +174,7 @@ public class FilterDialog extends DialogFragment implements FilterView {
                         chip.setChecked(true);
                     }
                     cgCategory.addView(chip);
-                });
+                },throwable -> Log.i(TAG,throwable.getMessage()));
     }
 
     @Override
@@ -187,7 +188,7 @@ public class FilterDialog extends DialogFragment implements FilterView {
                         chip.setChecked(true);
                     }
                     cgCountry.addView(chip);
-                });
+                },throwable -> Log.i(TAG,throwable.getMessage()));
         /*List<Chip> chips = countries.stream().map(e -> createChip(e.getStrArea())).collect(Collectors.toList());
         for (Chip chip : chips) {
             if (country != null && chip.getText().toString().trim().equals(country)) {
@@ -212,7 +213,7 @@ public class FilterDialog extends DialogFragment implements FilterView {
                         chip.setChecked(true);
                     }
                     cgIngredient.addView(chip);
-                });
+                },throwable -> Log.i(TAG,throwable.getMessage()));
     }
 
     public void showFilter() {

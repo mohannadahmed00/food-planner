@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
@@ -112,7 +110,7 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
                 .subscribe(meal -> {
                     dismissDialog();
                     tabsView.onMealClick(meal);
-                });
+                },throwable -> Log.i(TAG,throwable.getMessage()));
     }
 
     @Override
@@ -150,8 +148,8 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
     public void onMealInserted(Completable completable) {
         completable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        () -> Toast.makeText(context, "meal inserted", Toast.LENGTH_SHORT).show(),
-                        throwable -> Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_SHORT).show()
+                        () ->{},
+                        throwable -> Log.i(TAG,throwable.getMessage())
                 );
     }
 
@@ -159,8 +157,8 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
     public void onMealDeleted(Completable completable) {
         completable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        () -> Toast.makeText(context, "meal deleted", Toast.LENGTH_SHORT).show(),
-                        throwable -> Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_SHORT).show()
+                        () -> {},
+                        throwable -> Log.i(TAG,throwable.getMessage())
                 );
     }
 
@@ -177,7 +175,7 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
         observable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         favMeals -> this.favMeals.addAll(favMeals),
-                        throwable -> Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_SHORT).show()
+                        throwable -> Log.i(TAG,throwable.getMessage())
                 );
     }
 
@@ -195,8 +193,7 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
                                 return m;
                             }).collect(Collectors.toList()));
                             //adapter.setList(meals);
-                        },
-                        throwable -> Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_SHORT).show()
+                        },throwable -> Log.i(TAG,throwable.getMessage())
                 );
     }
 }
