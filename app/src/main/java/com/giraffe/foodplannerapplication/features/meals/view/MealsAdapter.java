@@ -15,6 +15,7 @@ import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.models.Meal;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealVH> {
 
@@ -32,6 +33,19 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealVH> {
         notifyDataSetChanged();
     }
 
+    public void updateFavorites(List<Meal> allMeals,List<Meal> favMeals){
+        this.meals.clear();
+        meals.addAll(allMeals.stream().map(m -> {
+            favMeals.stream().forEach(f -> {
+                if (f.getIdMeal().equals(m.getIdMeal())) {
+                    m.setSelected(true);
+                }
+            });
+            return m;
+        }).collect(Collectors.toList()));
+        notifyDataSetChanged();
+    }
+
 
     @NonNull
     @Override
@@ -46,12 +60,19 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealVH> {
         holder.getTvItem().setText(meal.getStrMeal());
         Glide.with(holder.getView().getContext()).load(meal.getStrMealThumb()).into(holder.getIvItem());
         holder.getView().setOnClickListener(v -> mealClick.onClick(meal));
+        if (meal.isSelected()){
+            holder.getIvFav().setColorFilter(ContextCompat.getColor(holder.getView().getContext(), R.color.red));
+        }else {
+            holder.getIvFav().setColorFilter(ContextCompat.getColor(holder.getView().getContext(), R.color.white));
+        }
         holder.getIvFav().setOnClickListener(v->{
-            if (holder.getIvFav().getTag()!=null && holder.getIvFav().getTag().equals("selected")){
-                holder.getIvFav().setTag("unselected");
+            if (meal.isSelected()){
+                mealClick.onFavClick(meal,false);
+                meal.setSelected(false);
                 holder.getIvFav().setColorFilter(ContextCompat.getColor(holder.getView().getContext(), R.color.white));
             }else {
-                holder.getIvFav().setTag("selected");
+                mealClick.onFavClick(meal,true);
+                meal.setSelected(true);
                 holder.getIvFav().setColorFilter(ContextCompat.getColor(holder.getView().getContext(), R.color.red));
             }
         });
@@ -94,5 +115,7 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealVH> {
 
     interface OnMealClick {
         void onClick(Meal meal);
+
+        void onFavClick(Meal meal,Boolean isSelect);
     }
 }

@@ -17,10 +17,15 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class ConcreteLocalSource implements LocalSource{
     MealDAO productDAO;
     private static ConcreteLocalSource localSource = null;
-    private final LiveData<List<Meal>> meals;
+    private final Observable<List<Meal>> meals;
 
     private final SharedHelper shared;
 
@@ -40,17 +45,19 @@ public class ConcreteLocalSource implements LocalSource{
 
     //=================database functions=================
     @Override
-    public void insertMeal(Meal meal) {
-        new Thread(()-> productDAO.insertMeal(meal)).start();
+    public Completable insertMeal(Meal meal) {
+        return productDAO.insertMeal(meal).subscribeOn(Schedulers.io());
+        //new Thread(()-> productDAO.insertMeal(meal)).start();
     }
 
     @Override
-    public void deleteMeal(Meal meal) {
-        new Thread(()-> productDAO.deleteMeal(meal)).start();
+    public Completable deleteMeal(Meal meal) {
+        return productDAO.deleteMeal(meal).subscribeOn(Schedulers.io());
+        //new Thread(()-> productDAO.deleteMeal(meal)).start();
     }
 
     @Override
-    public LiveData<List<Meal>> getMeals() {
+    public Observable<List<Meal>> getMeals() {
         return meals;
     }
 

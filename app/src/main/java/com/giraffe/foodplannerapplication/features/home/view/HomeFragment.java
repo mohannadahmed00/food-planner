@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 
 public class HomeFragment extends Fragment implements HomeView, OnFilterClick, CategoriesAdapter.OnCategoryClick, CountriesAdapter.OnCountryClick, SearchAdapter.OnSearchClick {
@@ -138,13 +140,20 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
             }
         });
         ivFav.setOnClickListener(v->{
-            if (ivFav.getTag()!=null && ivFav.getTag().equals("selected")){
+            if(randomMeal.isSelected()){
+                randomMeal.setSelected(false);
+                presenter.deleteMeal(randomMeal);
+            }else {
+                randomMeal.setSelected(true);
+                presenter.insertMeal(randomMeal);
+            }
+            /*if (ivFav.getTag()!=null && ivFav.getTag().equals("selected")){
                 ivFav.setTag("unselected");
                 ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white));
             }else {
                 ivFav.setTag("selected");
                 ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
-            }
+            }*/
         });
     }
 
@@ -274,5 +283,23 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         edtSearch.setText("");
         HomeFragmentDirections.ActionHomeFragmentToDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(meal);
         Navigation.findNavController(requireView()).navigate(action);
+    }
+
+    @Override
+    public void onFavMealInserted(Completable completable) {
+        completable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red)),
+                        throwable -> randomMeal.setSelected(false)
+                );
+    }
+
+    @Override
+    public void onFavMealDeleted(Completable completable) {
+        completable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white)),
+                        throwable -> randomMeal.setSelected(true)
+                );
     }
 }

@@ -10,6 +10,8 @@ import com.giraffe.foodplannerapplication.network.NetworkCallback;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observable;
+
 public class MealsPresenter {
     MealsView view;
     Repo repo;
@@ -34,30 +36,22 @@ public class MealsPresenter {
     }
 
     public void getCategoryMeals(String category) {
-        repo.getCategoryMeals(category, new NetworkCallback<List<Meal>>() {
-            @Override
-            public void onSuccess(List<Meal> response) {
-                view.onGetMeals(response);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                Log.i(MealsFragment.TAG, errorMsg);
-            }
-        });
+        view.onGetMeals(repo.getCategoryMeals(category));
     }
 
     public void getCountryMeals(String country) {
-        repo.getCountryMeals(country, new NetworkCallback<List<Meal>>() {
-            @Override
-            public void onSuccess(List<Meal> response) {
-                view.onGetMeals(response);
-            }
+        view.onGetMeals(repo.getCountryMeals(country));
+    }
 
-            @Override
-            public void onFailure(String errorMsg) {
-                Log.i(MealsFragment.TAG, errorMsg);
-            }
-        });
+    public void getFavMeals(){
+        view.onGetFavMeals(repo.getLocalMeals());
+    }
+
+    public void insertMeal(Meal meal){
+        view.onMealInserted(repo.insertMeal(meal));
+    }
+
+    public void deleteMeal(Meal meal){
+        view.onMealDeleted(repo.deleteMeal(meal));
     }
 }

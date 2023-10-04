@@ -52,8 +52,8 @@ dependencies {
     implementation("androidx.navigation:navigation-ui:2.5.3")
 
     //room
-    implementation("androidx.room:room-runtime:2.4.1")
-    annotationProcessor("androidx.room:room-compiler:2.4.1")
+    implementation("androidx.room:room-runtime:2.5.2")
+    annotationProcessor("androidx.room:room-compiler:2.5.2")
 
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -68,10 +68,12 @@ dependencies {
     //lottie
     implementation("com.airbnb.android:lottie:6.1.0")
 
-    //RXJava
+    //rxJava
     implementation ("io.reactivex.rxjava3:rxandroid:3.0.2")
-    implementation ("io.reactivex.rxjava3:rxjava:3.1.5")
+    implementation ("io.reactivex.rxjava3:rxjava:3.1.6")
+    implementation("com.github.akarnokd:rxjava3-retrofit-adapter:3.0.0")
+    implementation("androidx.room:room-rxjava3:2.5.2")
 
-    //
+    //youtube player
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.0.0")
 }

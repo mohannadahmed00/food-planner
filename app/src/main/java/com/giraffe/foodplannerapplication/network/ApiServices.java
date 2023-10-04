@@ -6,6 +6,7 @@ import com.giraffe.foodplannerapplication.models.CountriesResponse;
 import com.giraffe.foodplannerapplication.models.IngredientsResponse;
 import com.giraffe.foodplannerapplication.models.MealsResponse;
 
+import io.reactivex.rxjava3.core.Observable;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -25,10 +26,10 @@ public interface ApiServices {
     Call<IngredientsResponse> getIngredients();
 
     @GET("filter.php")
-    Call<MealsResponse> getCategoryMeals(@Query("c") String category);
+    Observable<MealsResponse> getCategoryMeals(@Query("c") String category);
 
     @GET("filter.php")
-    Call<MealsResponse> getCountryMeals(@Query("a") String country);
+    Observable<MealsResponse> getCountryMeals(@Query("a") String country);
 
     @GET("search.php")
     Call<MealsResponse> getSearchResult(@Query("s") String word);

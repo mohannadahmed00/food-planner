@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.giraffe.foodplannerapplication.R;
@@ -31,12 +32,15 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+
 public class DetailsFragment extends Fragment implements DetailsView {
     public final static String TAG = "DetailsFragment";
     private DetailsPresenter presenter;
-
-    private ImageView ivBack,ivMeal,ivFav;
-    private TextView tvBar,tvCategory, tvCountry, tvSteps;
+    private ImageView ivBack, ivMeal, ivFav;
+    private TextView tvBar, tvCategory, tvCountry, tvSteps;
     //private WebView wvInstructions;
     YouTubePlayerView youTubePlayerView;
     private RecyclerView rvIngredients;
@@ -50,22 +54,27 @@ public class DetailsFragment extends Fragment implements DetailsView {
 
     int counter;
 
+    private Context context;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        presenter = new DetailsPresenter(this, Repo.getInstance(
-                ApiClient.getInstance(),
-                ConcreteLocalSource.getInstance(context)
-        ));
+        this.context = context;
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter = new DetailsPresenter(this, Repo.getInstance(
+                ApiClient.getInstance(),
+                ConcreteLocalSource.getInstance(context)
+        ));
         args = DetailsFragmentArgs.fromBundle(getArguments());
         meal = args.getMeal();
         ingredients = getIngredients(meal);
         adapter = new IngredientsAdapter(ingredients);
+        presenter.getMeals();
     }
 
     @Override
@@ -79,7 +88,7 @@ public class DetailsFragment extends Fragment implements DetailsView {
         inflateViews(view);
         initClicks();
         tvBar.setText(meal.getStrMeal());
-        Glide.with(requireContext()).load(meal.getStrMealThumb()).into(ivMeal);
+        Glide.with(context).load(meal.getStrMealThumb()).into(ivMeal);
         tvCategory.setText(meal.getStrCategory());
         tvCountry.setText(meal.getStrArea());
         tvSteps.setText(meal.getStrInstructions());
@@ -109,17 +118,24 @@ public class DetailsFragment extends Fragment implements DetailsView {
 
     @Override
     public void initClicks() {
-        ivBack.setOnClickListener(v->{
+        ivBack.setOnClickListener(v -> {
             Navigation.findNavController(v).navigateUp();
         });
-        ivFav.setOnClickListener(v->{
-            if (ivFav.getTag()!=null && ivFav.getTag().equals("selected")){
+        ivFav.setOnClickListener(v -> {
+            if (meal.isSelected()) {
+                meal.setSelected(false);
+                presenter.deleteMeal(meal);
+            } else {
+                meal.setSelected(true);
+                presenter.insertMeal(meal);
+            }
+            /*if (ivFav.getTag()!=null && ivFav.getTag().equals("selected")){
                 ivFav.setTag("unselected");
                 ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white));
             }else {
                 ivFav.setTag("selected");
                 ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
-            }
+            }*/
         });
     }
 
@@ -186,17 +202,52 @@ public class DetailsFragment extends Fragment implements DetailsView {
             ingredients.add(meal.getStrIngredient20());
         }
         for (String s : ingredients) {
-            Log.i(TAG,s);
+            Log.i(TAG, s);
         }
         return ingredients;
 
     }
-    private String getVideoId(String url){
+
+    private String getVideoId(String url) {
         String[] split = url.split("v=");
-        if (split.length>1){
+        if (split.length > 1) {
             return split[1].trim();
-        }else {
+        } else {
             return "";
         }
+    }
+
+    @Override
+    public void onFavMealInserted(Completable completable) {
+        completable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> ivFav.setColorFilter(ContextCompat.getColor(context, R.color.red)),
+                        throwable -> meal.setSelected(false)
+                );
+    }
+
+    @Override
+    public void onFavMealDeleted(Completable completable) {
+        completable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> ivFav.setColorFilter(ContextCompat.getColor(context, R.color.white)),
+                        throwable -> meal.setSelected(true)
+                );
+    }
+
+    @Override
+    public void onGetFavMeals(Observable<List<Meal>> observable) {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .flatMap(
+                        meals -> Observable.fromIterable(meals)
+                ).subscribe(
+                        meal1 -> {
+                            if (this.meal.getIdMeal().equals(meal1.getIdMeal())) {
+                                this.meal.setSelected(true);
+                                ivFav.setColorFilter(ContextCompat.getColor(context, R.color.red));
+                            }
+                        },
+                        throwable -> Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_SHORT).show()
+                );
     }
 }

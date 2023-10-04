@@ -14,6 +14,9 @@ import com.giraffe.foodplannerapplication.network.NetworkCallback;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+
 public interface RepoInterface {
     //optional till now just for testing
     //=================remote functions=================
@@ -31,17 +34,17 @@ public interface RepoInterface {
     void getCountries(NetworkCallback<List<Country>> callback);
 
     void getIngredients(NetworkCallback<List<Ingredient>> callback);
-    void getCategoryMeals(String category,NetworkCallback<List<Meal>> callback);
-    void getCountryMeals(String country,NetworkCallback<List<Meal>> callback);
+    Observable<List<Meal>> getCategoryMeals(String category);
+    Observable<List<Meal>>  getCountryMeals(String country);
     void getSearchResult(String word,NetworkCallback<List<Meal>> callback);
 
     //=================local functions=================
     boolean isLoggedIn();
 
-    LiveData<List<Meal>> getLocalMeals();
+    Observable<List<Meal>> getLocalMeals();
 
-    void insertMeal(Meal meal);
+    Completable insertMeal(Meal meal);
 
-    void deleteMeal(Meal meal);
+    Completable deleteMeal(Meal meal);
 
 }

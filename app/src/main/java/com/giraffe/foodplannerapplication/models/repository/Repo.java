@@ -22,6 +22,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -196,39 +200,16 @@ public class Repo implements RepoInterface {
     }
 
     @Override
-    public void getCategoryMeals(String category, NetworkCallback<List<Meal>> callback) {
-        Call<MealsResponse> call = remoteSource.makeNetworkCall(callback).getCategoryMeals(category);
-        call.enqueue(new Callback<MealsResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<MealsResponse> call, @NonNull Response<MealsResponse> response) {
-                if (response.body() != null) {
-                    callback.onSuccess(response.body().getMeals());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<MealsResponse> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
+    public Observable<List<Meal>> getCategoryMeals(String category) {
+        return remoteSource.callRequest().getCategoryMeals(category).subscribeOn(Schedulers.io())
+                .map(mealsResponse -> mealsResponse.getMeals());
     }
 
     @Override
-    public void getCountryMeals(String country, NetworkCallback<List<Meal>> callback) {
-        Call<MealsResponse> call = remoteSource.makeNetworkCall(callback).getCountryMeals(country);
-        call.enqueue(new Callback<MealsResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<MealsResponse> call, @NonNull Response<MealsResponse> response) {
-                if (response.body() != null) {
-                    callback.onSuccess(response.body().getMeals());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<MealsResponse> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
+    public Observable<List<Meal>>  getCountryMeals(String country) {
+        return remoteSource.callRequest().getCountryMeals(country)
+                .subscribeOn(Schedulers.io())
+                .map(mealsResponse -> mealsResponse.getMeals());
     }
 
     @Override
@@ -258,17 +239,18 @@ public class Repo implements RepoInterface {
     }
 
     @Override
-    public LiveData<List<Meal>> getLocalMeals() {
+    public Observable<List<Meal>> getLocalMeals() {
         return localSource.getMeals();
     }
 
     @Override
-    public void insertMeal(Meal meal) {
-        localSource.insertMeal(meal);
+    public Completable insertMeal(Meal meal) {
+        return localSource.insertMeal(meal);
     }
 
     @Override
-    public void deleteMeal(Meal meal) {
-        localSource.deleteMeal(meal);
+    public Completable deleteMeal(Meal meal) {
+        return localSource.deleteMeal(meal);
     }
+
 }

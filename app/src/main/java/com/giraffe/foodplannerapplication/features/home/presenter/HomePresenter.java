@@ -19,6 +19,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.reactivex.rxjava3.core.Completable;
+
 public class HomePresenter {
     HomeView view;
     Repo repo;
@@ -90,6 +92,13 @@ public class HomePresenter {
                 Log.i(HomeFragment.TAG, errorMsg);
             }
         });
+    }
+
+    public void insertMeal(Meal meal){
+        view.onFavMealInserted(repo.insertMeal(meal));
+    }
+    public void deleteMeal(Meal meal){
+        view.onFavMealDeleted(repo.deleteMeal(meal));
     }
 
 

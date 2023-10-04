@@ -8,6 +8,8 @@ import com.giraffe.foodplannerapplication.models.Meal;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+
 public interface HomeView {
     void inflateViews(View view);
 
@@ -19,4 +21,7 @@ public interface HomeView {
     void onGetCountries(List<Country> countries);
 
     void onGetSearchResult(List<Meal> meals);
+
+    void onFavMealInserted(Completable completable);
+    void onFavMealDeleted(Completable completable);
 }

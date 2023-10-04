@@ -1,5 +1,6 @@
 package com.giraffe.foodplannerapplication.network;
 
+import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -24,6 +25,15 @@ public class ApiClient implements RemoteSource {
         //Gson gson =
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(URL).build();
+        return retrofit.create(ApiServices.class);
+    }
+
+    @Override
+    public <T> ApiServices callRequest() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .baseUrl(URL).build();
         return retrofit.create(ApiServices.class);
     }

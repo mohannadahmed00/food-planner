@@ -11,14 +11,17 @@ import com.giraffe.foodplannerapplication.models.Meal;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+
 @Dao
 public interface MealDAO {
-    @Query("SELECT * FROM meals_table")
-    LiveData<List<Meal>> getMeals();
+    @Query("SELECT * FROM favorites_table")
+    Observable<List<Meal>> getMeals();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertMeal(Meal meal);
+    Completable insertMeal(Meal meal);
 
     @Delete
-    void deleteMeal(Meal meal);
+    Completable deleteMeal(Meal meal);
 }
