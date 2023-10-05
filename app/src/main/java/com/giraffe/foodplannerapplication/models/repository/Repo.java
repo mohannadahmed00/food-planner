@@ -177,8 +177,8 @@ public class Repo implements RepoInterface {
     }
 
     @Override
-    public Observable<List<PlannedMeal>> getPlannedMeals() {
-        return localSource.getPlannedMeals();
+    public Observable<List<PlannedMeal>> getPlannedMeals(int day) {
+        return localSource.getPlannedMeals(day);
     }
 
     @Override

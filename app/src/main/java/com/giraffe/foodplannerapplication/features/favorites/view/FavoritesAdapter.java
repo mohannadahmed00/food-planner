@@ -104,7 +104,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         void onClick(Meal meal);
     }
 
-    String getIngredients(List<String> ingredients) {
+    private String getIngredients(List<String> ingredients) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < ingredients.size(); i++) {
             if (i == ingredients.size() - 1) {

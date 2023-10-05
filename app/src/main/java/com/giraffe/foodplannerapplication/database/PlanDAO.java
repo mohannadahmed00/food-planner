@@ -16,10 +16,10 @@ import io.reactivex.rxjava3.core.Observable;
 
 @Dao
 public interface PlanDAO {
-    @Query("SELECT * FROM planned_meals_table")
-    Observable<List<PlannedMeal>> getMeals();
+    @Query("SELECT * FROM planned_meals_table where day = :day order by type ASC")
+    Observable<List<PlannedMeal>> getMeals(int day);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insertMeal(PlannedMeal meal);
 
     @Delete

@@ -21,7 +21,7 @@ public interface LocalSource {
 
     Completable deletePlannedMeal(PlannedMeal meal);
 
-    Observable<List<PlannedMeal>> getPlannedMeals();
+    Observable<List<PlannedMeal>> getPlannedMeals(int day);
 
 
     Completable insertFavMeal(Meal meal);

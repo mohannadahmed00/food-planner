@@ -43,7 +43,7 @@ public interface RepoInterface {
     Completable deleteFavMeal(Meal meal);
 
 
-    Observable<List<PlannedMeal>> getPlannedMeals();
+    Observable<List<PlannedMeal>> getPlannedMeals(int day);
 
     Completable insertPlannedMeal(PlannedMeal meal);
 
