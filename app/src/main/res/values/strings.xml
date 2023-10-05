@@ -45,4 +45,5 @@
     <string name="category">Category</string>
     <string name="meals_by_category">Meals by Category</string>
     <string name="meals_by_country">Meals by Country</string>
+    <string name="confirm">Confirm</string>
 </resources>

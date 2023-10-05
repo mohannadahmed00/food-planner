@@ -1,16 +1,8 @@
 package com.giraffe.foodplannerapplication.features.meals.presenter;
 
-import android.util.Log;
-
-import com.giraffe.foodplannerapplication.features.meals.view.MealsFragment;
 import com.giraffe.foodplannerapplication.features.meals.view.MealsView;
 import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
-import com.giraffe.foodplannerapplication.network.NetworkCallback;
-
-import java.util.List;
-
-import io.reactivex.rxjava3.core.Observable;
 
 public class MealsPresenter {
     MealsView view;
@@ -34,14 +26,22 @@ public class MealsPresenter {
     }
 
     public void getFavMeals() {
-        view.onGetFavMeals(repo.getLocalMeals());
+        view.onGetFavMeals(repo.getFavMeals());
     }
 
     public void insertMeal(Meal meal) {
-        view.onMealInserted(repo.insertMeal(meal));
+        if (meal.getStrInstructions() != null) {
+            view.onMealInserted(repo.insertFavMeal(meal));
+        } else {
+            repo.getMealById(meal.getIdMeal()).subscribe(
+                    meal1 -> {
+                        view.onMealInserted(repo.insertFavMeal(meal1));
+                    }
+            );
+        }
     }
 
     public void deleteMeal(Meal meal) {
-        view.onMealDeleted(repo.deleteMeal(meal));
+        view.onMealDeleted(repo.deleteFavMeal(meal));
     }
 }

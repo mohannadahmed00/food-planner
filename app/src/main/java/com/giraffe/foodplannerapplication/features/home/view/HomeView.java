@@ -25,4 +25,7 @@ public interface HomeView {
 
     void onFavMealInserted(Completable completable);
     void onFavMealDeleted(Completable completable);
+
+    void onPlannedMealInserted(Completable completable);
+
 }

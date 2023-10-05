@@ -1,7 +1,5 @@
 package com.giraffe.foodplannerapplication.database;
 
-import androidx.lifecycle.LiveData;
-
 import com.giraffe.foodplannerapplication.models.CategoriesResponse;
 import com.giraffe.foodplannerapplication.models.Category;
 import com.giraffe.foodplannerapplication.models.CountriesResponse;
@@ -9,6 +7,7 @@ import com.giraffe.foodplannerapplication.models.Country;
 import com.giraffe.foodplannerapplication.models.Ingredient;
 import com.giraffe.foodplannerapplication.models.IngredientsResponse;
 import com.giraffe.foodplannerapplication.models.Meal;
+import com.giraffe.foodplannerapplication.models.PlannedMeal;
 
 import java.util.List;
 
@@ -17,11 +16,19 @@ import io.reactivex.rxjava3.core.Observable;
 
 public interface LocalSource {
     //optional till now just for testing
-    Completable insertMeal(Meal meal);
 
-    Completable deleteMeal(Meal meal);
+    Completable insertPlannedMeal(PlannedMeal meal);
 
-    Observable<List<Meal>> getMeals();
+    Completable deletePlannedMeal(PlannedMeal meal);
+
+    Observable<List<PlannedMeal>> getPlannedMeals();
+
+
+    Completable insertFavMeal(Meal meal);
+
+    Completable deleteFavMeal(Meal meal);
+
+    Observable<List<Meal>> getFavMeals();
 
     void storeCategories(CategoriesResponse response);
     void storeCountries(CountriesResponse response);

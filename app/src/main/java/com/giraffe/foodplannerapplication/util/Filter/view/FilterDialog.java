@@ -108,7 +108,7 @@ public class FilterDialog extends DialogFragment implements FilterView {
 
         presenter.getCategories();
         presenter.getCountries();
-        presenter.getIngredients();
+        //presenter.getIngredients();
 
         cgCategory.setOnCheckedChangeListener((group, checkedId) -> {
             Chip chip = group.findViewById(checkedId);

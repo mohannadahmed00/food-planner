@@ -14,9 +14,9 @@ public class FavoritesPresenter {
     }
 
     public void getFavorites(){
-        view.onGetFavorites(repo.getLocalMeals());
+        view.onGetFavorites(repo.getFavMeals());
     }
     public void deleteFavorite(Meal meal){
-        view.onDeleteFavorites(repo.deleteMeal(meal));
+        view.onDeleteFavorites(repo.deleteFavMeal(meal));
     }
 }

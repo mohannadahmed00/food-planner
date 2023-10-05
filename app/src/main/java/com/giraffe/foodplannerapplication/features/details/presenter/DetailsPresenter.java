@@ -14,13 +14,13 @@ public class DetailsPresenter {
     }
 
     public void insertMeal(Meal meal){
-        view.onFavMealInserted(repo.insertMeal(meal));
+        view.onFavMealInserted(repo.insertFavMeal(meal));
     }
     public void deleteMeal(Meal meal){
-        view.onFavMealDeleted(repo.deleteMeal(meal));
+        view.onFavMealDeleted(repo.deleteFavMeal(meal));
     }
 
     public void getMeals(){
-        view.onGetFavMeals(repo.getLocalMeals());
+        view.onGetFavMeals(repo.getFavMeals());
     }
 }

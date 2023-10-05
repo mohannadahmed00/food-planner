@@ -4,6 +4,8 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="colorPrimary">@color/light_gray</item>
+        <item name="colorAccent">@color/orange</item>
+        <!--<item name="android:datePickerStyle">@style/MyDatePickerDialogTheme</item>-->
     </style>
 
     <style name="Theme.FoodPlannerApplication" parent="Base.Theme.FoodPlannerApplication" />

@@ -1,6 +1,8 @@
 package com.giraffe.foodplannerapplication.features.home.view;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,9 +22,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.giraffe.foodplannerapplication.R;
@@ -31,12 +36,19 @@ import com.giraffe.foodplannerapplication.features.home.presenter.HomePresenter;
 import com.giraffe.foodplannerapplication.models.Category;
 import com.giraffe.foodplannerapplication.models.Country;
 import com.giraffe.foodplannerapplication.models.Meal;
+import com.giraffe.foodplannerapplication.models.PlannedMeal;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
+import com.giraffe.foodplannerapplication.util.BottomSheet;
 import com.giraffe.foodplannerapplication.util.Filter.view.FilterDialog;
 import com.giraffe.foodplannerapplication.util.LoadingDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -50,14 +62,14 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     private HomePresenter presenter;
 
-    private ImageView ivFilter, ivRandom, ivFav;
+    private ImageView ivFilter, ivRandom, ivFav, ivAdd;
     private TextView tvRandom;
 
     private EditText edtSearch;
 
     private View viewBlur;
 
-    private String category, country, ingredient;
+    private String category, country, ingredient, selectedDate;
     private RecyclerView rvSearch, rvCategories, rvCountries;
     private CategoriesAdapter categoriesAdapter;
     private CountriesAdapter countriesAdapter;
@@ -69,6 +81,12 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     private List<Meal> meals;
 
     private Meal randomMeal;
+
+    private ChipGroup cgType;
+    private TextView tvWeekDay;
+    private Button btnConfirm;
+
+    private int mealType;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -88,8 +106,6 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         categoriesAdapter = new CategoriesAdapter(categories, this);
         countriesAdapter = new CountriesAdapter(countries, this);
         searchAdapter = new SearchAdapter(meals, this);
-
-
     }
 
 
@@ -118,6 +134,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     @Override
     public void inflateViews(View view) {
         ivFav = view.findViewById(R.id.iv_fav);
+        ivAdd = view.findViewById(R.id.iv_add);
         ivFilter = view.findViewById(R.id.iv_filter);
         viewBlur = view.findViewById(R.id.v_blur);
         edtSearch = view.findViewById(R.id.edt_search);
@@ -140,18 +157,27 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         ivFav.setOnClickListener(v -> {
             if (randomMeal.isSelected()) {
                 randomMeal.setSelected(false);
-                presenter.deleteMeal(randomMeal);
+                presenter.deleteFavMeal(randomMeal);
             } else {
                 randomMeal.setSelected(true);
-                presenter.insertMeal(randomMeal);
+                presenter.insertFavMeal(randomMeal);
             }
-            /*if (ivFav.getTag()!=null && ivFav.getTag().equals("selected")){
-                ivFav.setTag("unselected");
-                ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white));
-            }else {
-                ivFav.setTag("selected");
-                ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
-            }*/
+        });
+
+        ivAdd.setOnClickListener(v -> {
+            //showDatePickerDialog(getContext());
+            //showBottomSheetDialog();
+            if (randomMeal != null) {
+                BottomSheet.showBottomSheetDialog(getContext(), randomMeal, new BottomSheet.OnBottomConfirmed() {
+                    @Override
+                    public void onClick(PlannedMeal plannedMeal) {
+                        presenter.insertPlannedMeal(plannedMeal);
+                        Log.i(TAG, "store " + plannedMeal.getMeal().getStrMeal() + " as " + plannedMeal.getType() + " at " + plannedMeal.getDate().toString());
+                    }
+                });
+            }
+            /*PlannedMeal plannedMeal= new PlannedMeal(PlannedMeal.MealType.BREAKFAST, new Date().getTime(),randomMeal);
+            presenter.insertPlannedMeal(plannedMeal);*/
         });
     }
 
@@ -211,13 +237,13 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
                     this.randomMeal = meal;
                     handleRandomMealTitle(meal.getStrMeal());
                     handleRandomMealImg(meal.getStrMealThumb());
-                },throwable -> Log.i(TAG,throwable.getMessage()));
+                }, throwable -> Log.i(TAG, throwable.getMessage()));
     }
 
     @Override
     public void onGetCategories(Observable<List<Category>> observable) {
         observable.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(categories -> categoriesAdapter.setList(categories),throwable -> Log.i(TAG,throwable.getMessage()));
+                .subscribe(categories -> categoriesAdapter.setList(categories), throwable -> Log.i(TAG, throwable.getMessage()));
     }
 
     @Override
@@ -245,7 +271,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
                             searchAdapter.setList(meals);
                         }
                     }
-                },throwable -> Log.i(TAG,throwable.getMessage()));
+                }, throwable -> Log.i(TAG, throwable.getMessage()));
     }
 
     @Override
@@ -295,7 +321,10 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         completable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         () -> ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red)),
-                        throwable -> randomMeal.setSelected(false)
+                        throwable -> {
+                            randomMeal.setSelected(false);
+                            Log.i(TAG, throwable.getMessage());
+                        }
                 );
     }
 
@@ -306,6 +335,14 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
                         () -> ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white)),
                         throwable -> randomMeal.setSelected(true)
                 );
+    }
+
+    @Override
+    public void onPlannedMealInserted(Completable completable) {
+        completable.observeOn(AndroidSchedulers.mainThread()).subscribe(
+                () -> Log.i(TAG, "meal has been planned"),
+                throwable -> Log.i(TAG, "meal has not be planned")
+        );
     }
 
 

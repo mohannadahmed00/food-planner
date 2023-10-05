@@ -110,7 +110,7 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
                 .subscribe(meal -> {
                     dismissDialog();
                     tabsView.onMealClick(meal);
-                },throwable -> Log.i(TAG,throwable.getMessage()));
+                }, throwable -> Log.i(TAG, throwable.getMessage()));
     }
 
     @Override
@@ -123,12 +123,11 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
             }
         }
         if (temp != null) {
-            Log.i(TAG,"old meal");
-
+            Log.i(TAG, "old meal");
             tabsView.onMealClick(temp);
             //return;
-        }else {
-            Log.i(TAG,"new meal");
+        } else {
+            Log.i(TAG, "new meal");
             showDialog();
             presenter.getMealById(meal.getIdMeal());
         }
@@ -138,6 +137,7 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
     @Override
     public void onFavClick(Meal meal, Boolean isSelect) {
         if (isSelect) {
+            //showDialog();
             presenter.insertMeal(meal);
         } else {
             presenter.deleteMeal(meal);
@@ -148,8 +148,13 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
     public void onMealInserted(Completable completable) {
         completable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        () ->{},
-                        throwable -> Log.i(TAG,throwable.getMessage())
+                        () -> {
+                            //dismissDialog();
+                        },
+                        throwable -> {
+                            //dismissDialog();
+                            Log.i(TAG, throwable.getMessage());
+                        }
                 );
     }
 
@@ -157,8 +162,9 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
     public void onMealDeleted(Completable completable) {
         completable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        () -> {},
-                        throwable -> Log.i(TAG,throwable.getMessage())
+                        () -> {
+                        },
+                        throwable -> Log.i(TAG, throwable.getMessage())
                 );
     }
 
@@ -175,7 +181,7 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
         observable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         favMeals -> this.favMeals.addAll(favMeals),
-                        throwable -> Log.i(TAG,throwable.getMessage())
+                        throwable -> Log.i(TAG, throwable.getMessage())
                 );
     }
 
@@ -193,7 +199,7 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
                                 return m;
                             }).collect(Collectors.toList()));
                             //adapter.setList(meals);
-                        },throwable -> Log.i(TAG,throwable.getMessage())
+                        }, throwable -> Log.i(TAG, throwable.getMessage())
                 );
     }
 }

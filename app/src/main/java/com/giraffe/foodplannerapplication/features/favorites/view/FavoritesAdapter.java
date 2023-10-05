@@ -20,7 +20,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
     private List<Meal> favorites;
     private OnFavClick onFavClick;
 
-    public FavoritesAdapter(List<Meal> favorites,OnFavClick onFavClick) {
+    public FavoritesAdapter(List<Meal> favorites, OnFavClick onFavClick) {
         this.favorites = favorites;
         this.onFavClick = onFavClick;
     }
@@ -49,7 +49,8 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         holder.getTvMeal().setText(meal.getStrMeal());
         holder.getTvCountry().setText(meal.getStrArea());
         holder.getTvCategory().setText(meal.getStrCategory());
-        holder.getView().setOnClickListener(v->{
+        holder.getTvIngredients().setText(getIngredients(meal.getIngredients()));
+        holder.getView().setOnClickListener(v -> {
             onFavClick.onClick(meal);
         });
     }
@@ -62,7 +63,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
     static class FavoriteVH extends RecyclerView.ViewHolder {
         private final View view;
         private final ImageView ivMeal;
-        private final TextView tvMeal, tvCountry, tvCategory;
+        private final TextView tvMeal, tvCountry, tvCategory, tvIngredients;
 
         public FavoriteVH(@NonNull View itemView) {
             super(itemView);
@@ -71,6 +72,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
             tvMeal = itemView.findViewById(R.id.tv_meal);
             tvCountry = itemView.findViewById(R.id.tv_country);
             tvCategory = itemView.findViewById(R.id.tv_category);
+            tvIngredients = itemView.findViewById(R.id.tv_ingredients);
         }
 
         public View getView() {
@@ -92,9 +94,25 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         public TextView getTvCategory() {
             return tvCategory;
         }
+
+        public TextView getTvIngredients() {
+            return tvIngredients;
+        }
     }
 
-    interface OnFavClick{
+    interface OnFavClick {
         void onClick(Meal meal);
+    }
+
+    String getIngredients(List<String> ingredients) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < ingredients.size(); i++) {
+            if (i == ingredients.size() - 1) {
+                builder.append(ingredients.get(i));
+            } else {
+                builder.append(ingredients.get(i)).append(" - ");
+            }
+        }
+        return builder.toString();
     }
 }

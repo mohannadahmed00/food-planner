@@ -1,15 +1,10 @@
 package com.giraffe.foodplannerapplication.models.repository;
 
-import androidx.lifecycle.LiveData;
-
-import com.giraffe.foodplannerapplication.models.CategoriesResponse;
 import com.giraffe.foodplannerapplication.models.Category;
-import com.giraffe.foodplannerapplication.models.CountriesResponse;
 import com.giraffe.foodplannerapplication.models.Country;
 import com.giraffe.foodplannerapplication.models.Ingredient;
-import com.giraffe.foodplannerapplication.models.IngredientsResponse;
 import com.giraffe.foodplannerapplication.models.Meal;
-import com.giraffe.foodplannerapplication.models.MealsResponse;
+import com.giraffe.foodplannerapplication.models.PlannedMeal;
 import com.giraffe.foodplannerapplication.network.NetworkCallback;
 
 import java.util.List;
@@ -41,10 +36,17 @@ public interface RepoInterface {
     //=================local functions=================
     boolean isLoggedIn();
 
-    Observable<List<Meal>> getLocalMeals();
+    Observable<List<Meal>> getFavMeals();
 
-    Completable insertMeal(Meal meal);
+    Completable insertFavMeal(Meal meal);
 
-    Completable deleteMeal(Meal meal);
+    Completable deleteFavMeal(Meal meal);
+
+
+    Observable<List<PlannedMeal>> getPlannedMeals();
+
+    Completable insertPlannedMeal(PlannedMeal meal);
+
+    Completable deletePlannedMeal(PlannedMeal meal);
 
 }

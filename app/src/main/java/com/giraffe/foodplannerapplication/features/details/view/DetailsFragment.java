@@ -72,7 +72,7 @@ public class DetailsFragment extends Fragment implements DetailsView {
         ));
         args = DetailsFragmentArgs.fromBundle(getArguments());
         meal = args.getMeal();
-        ingredients = getIngredients(meal);
+        ingredients = meal.getIngredients();
         adapter = new IngredientsAdapter(ingredients);
         presenter.getMeals();
     }
@@ -139,74 +139,6 @@ public class DetailsFragment extends Fragment implements DetailsView {
         });
     }
 
-    private ArrayList<String> getIngredients(Meal meal) {
-        ArrayList<String> ingredients = new ArrayList<>();
-        if (meal.getStrIngredient1() != null && !meal.getStrIngredient1().equals("")) {
-            ingredients.add(meal.getStrIngredient1());
-        }
-        if (meal.getStrIngredient2() != null && !meal.getStrIngredient2().equals("")) {
-            ingredients.add(meal.getStrIngredient2());
-        }
-        if (meal.getStrIngredient3() != null && !meal.getStrIngredient3().equals("")) {
-            ingredients.add(meal.getStrIngredient3());
-        }
-        if (meal.getStrIngredient4() != null && !meal.getStrIngredient4().equals("")) {
-            ingredients.add(meal.getStrIngredient4());
-        }
-        if (meal.getStrIngredient5() != null && !meal.getStrIngredient5().equals("")) {
-            ingredients.add(meal.getStrIngredient5());
-        }
-        if (meal.getStrIngredient6() != null && !meal.getStrIngredient6().equals("")) {
-            ingredients.add(meal.getStrIngredient6());
-        }
-        if (meal.getStrIngredient7() != null && !meal.getStrIngredient7().equals("")) {
-            ingredients.add(meal.getStrIngredient7());
-        }
-        if (meal.getStrIngredient8() != null && !meal.getStrIngredient8().equals("")) {
-            ingredients.add(meal.getStrIngredient8());
-        }
-        if (meal.getStrIngredient9() != null && !meal.getStrIngredient9().equals("")) {
-            ingredients.add(meal.getStrIngredient9());
-        }
-        if (meal.getStrIngredient10() != null && !meal.getStrIngredient10().equals("")) {
-            ingredients.add(meal.getStrIngredient10());
-        }
-        if (meal.getStrIngredient11() != null && !meal.getStrIngredient11().equals("")) {
-            ingredients.add(meal.getStrIngredient11());
-        }
-        if (meal.getStrIngredient12() != null && !meal.getStrIngredient12().equals("")) {
-            ingredients.add(meal.getStrIngredient12());
-        }
-        if (meal.getStrIngredient13() != null && !meal.getStrIngredient13().equals("")) {
-            ingredients.add(meal.getStrIngredient13());
-        }
-        if (meal.getStrIngredient14() != null && !meal.getStrIngredient14().equals("")) {
-            ingredients.add(meal.getStrIngredient14());
-        }
-        if (meal.getStrIngredient15() != null && !meal.getStrIngredient15().equals("")) {
-            ingredients.add(meal.getStrIngredient15());
-        }
-        if (meal.getStrIngredient16() != null && !meal.getStrIngredient16().equals("")) {
-            ingredients.add(meal.getStrIngredient16());
-        }
-        if (meal.getStrIngredient17() != null && !meal.getStrIngredient17().equals("")) {
-            ingredients.add(meal.getStrIngredient17());
-        }
-        if (meal.getStrIngredient18() != null && !meal.getStrIngredient18().equals("")) {
-            ingredients.add(meal.getStrIngredient18());
-        }
-        if (meal.getStrIngredient19() != null && !meal.getStrIngredient19().equals("")) {
-            ingredients.add(meal.getStrIngredient19());
-        }
-        if (meal.getStrIngredient20() != null && !meal.getStrIngredient20().equals("")) {
-            ingredients.add(meal.getStrIngredient20());
-        }
-        for (String s : ingredients) {
-            Log.i(TAG, s);
-        }
-        return ingredients;
-
-    }
 
     private String getVideoId(String url) {
         String[] split = url.split("v=");

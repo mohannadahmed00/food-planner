@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="32dp"
-    android:background="@color/trans_light_gray">
+    android:background="@color/trans"
+    android:padding="32dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -75,6 +75,7 @@
                     android:text="@string/ingredient"
                     android:textColor="@color/orange"
                     android:textSize="22sp"
+                    android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cg_country" />
 
@@ -85,6 +86,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_ingredient">
+
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/cg_ingredient"
                         android:layout_width="wrap_content"
@@ -92,8 +94,6 @@
                         app:singleLine="true"
                         app:singleSelection="true" />
                 </HorizontalScrollView>
-
-
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

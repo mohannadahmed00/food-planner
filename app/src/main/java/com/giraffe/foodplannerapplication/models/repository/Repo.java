@@ -2,33 +2,22 @@ package com.giraffe.foodplannerapplication.models.repository;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-
 import com.giraffe.foodplannerapplication.database.LocalSource;
 import com.giraffe.foodplannerapplication.features.splash.view.SplashFragment;
-import com.giraffe.foodplannerapplication.models.CategoriesResponse;
 import com.giraffe.foodplannerapplication.models.Category;
-import com.giraffe.foodplannerapplication.models.CountriesResponse;
 import com.giraffe.foodplannerapplication.models.Country;
 import com.giraffe.foodplannerapplication.models.Ingredient;
-import com.giraffe.foodplannerapplication.models.IngredientsResponse;
 import com.giraffe.foodplannerapplication.models.Meal;
-import com.giraffe.foodplannerapplication.models.MealsResponse;
+import com.giraffe.foodplannerapplication.models.PlannedMeal;
 import com.giraffe.foodplannerapplication.network.NetworkCallback;
 import com.giraffe.foodplannerapplication.network.RemoteSource;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Repo implements RepoInterface {
     private final RemoteSource remoteSource;
@@ -173,18 +162,33 @@ public class Repo implements RepoInterface {
     }
 
     @Override
-    public Observable<List<Meal>> getLocalMeals() {
-        return localSource.getMeals();
+    public Observable<List<Meal>> getFavMeals() {
+        return localSource.getFavMeals();
     }
 
     @Override
-    public Completable insertMeal(Meal meal) {
-        return localSource.insertMeal(meal);
+    public Completable insertFavMeal(Meal meal) {
+        return localSource.insertFavMeal(meal);
     }
 
     @Override
-    public Completable deleteMeal(Meal meal) {
-        return localSource.deleteMeal(meal);
+    public Completable deleteFavMeal(Meal meal) {
+        return localSource.deleteFavMeal(meal);
+    }
+
+    @Override
+    public Observable<List<PlannedMeal>> getPlannedMeals() {
+        return localSource.getPlannedMeals();
+    }
+
+    @Override
+    public Completable insertPlannedMeal(PlannedMeal meal) {
+        return localSource.insertPlannedMeal(meal);
+    }
+
+    @Override
+    public Completable deletePlannedMeal(PlannedMeal meal) {
+        return localSource.deletePlannedMeal(meal);
     }
 
 }

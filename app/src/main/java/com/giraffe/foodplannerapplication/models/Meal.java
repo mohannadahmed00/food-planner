@@ -1,10 +1,13 @@
 package com.giraffe.foodplannerapplication.models;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @Entity(tableName = "favorites_table")
 public class Meal implements Serializable {
@@ -343,5 +346,71 @@ public class Meal implements Serializable {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+
+    public ArrayList<String> getIngredients() {
+        ArrayList<String> ingredients = new ArrayList<>();
+        if (getStrIngredient1() != null && !getStrIngredient1().equals("")) {
+            ingredients.add(getStrIngredient1());
+        }
+        if (getStrIngredient2() != null && !getStrIngredient2().equals("")) {
+            ingredients.add(getStrIngredient2());
+        }
+        if (getStrIngredient3() != null && !getStrIngredient3().equals("")) {
+            ingredients.add(getStrIngredient3());
+        }
+        if (getStrIngredient4() != null && !getStrIngredient4().equals("")) {
+            ingredients.add(getStrIngredient4());
+        }
+        if (getStrIngredient5() != null && !getStrIngredient5().equals("")) {
+            ingredients.add(getStrIngredient5());
+        }
+        if (getStrIngredient6() != null && !getStrIngredient6().equals("")) {
+            ingredients.add(getStrIngredient6());
+        }
+        if (getStrIngredient7() != null && !getStrIngredient7().equals("")) {
+            ingredients.add(getStrIngredient7());
+        }
+        if (getStrIngredient8() != null && !getStrIngredient8().equals("")) {
+            ingredients.add(getStrIngredient8());
+        }
+        if (getStrIngredient9() != null && !getStrIngredient9().equals("")) {
+            ingredients.add(getStrIngredient9());
+        }
+        if (getStrIngredient10() != null && !getStrIngredient10().equals("")) {
+            ingredients.add(getStrIngredient10());
+        }
+        if (getStrIngredient11() != null && !getStrIngredient11().equals("")) {
+            ingredients.add(getStrIngredient11());
+        }
+        if (getStrIngredient12() != null && !getStrIngredient12().equals("")) {
+            ingredients.add(getStrIngredient12());
+        }
+        if (getStrIngredient13() != null && !getStrIngredient13().equals("")) {
+            ingredients.add(getStrIngredient13());
+        }
+        if (getStrIngredient14() != null && !getStrIngredient14().equals("")) {
+            ingredients.add(getStrIngredient14());
+        }
+        if (getStrIngredient15() != null && !getStrIngredient15().equals("")) {
+            ingredients.add(getStrIngredient15());
+        }
+        if (getStrIngredient16() != null && !getStrIngredient16().equals("")) {
+            ingredients.add(getStrIngredient16());
+        }
+        if (getStrIngredient17() != null && !getStrIngredient17().equals("")) {
+            ingredients.add(getStrIngredient17());
+        }
+        if (getStrIngredient18() != null && !getStrIngredient18().equals("")) {
+            ingredients.add(getStrIngredient18());
+        }
+        if (getStrIngredient19() != null && !getStrIngredient19().equals("")) {
+            ingredients.add(getStrIngredient19());
+        }
+        if (getStrIngredient20() != null && !getStrIngredient20().equals("")) {
+            ingredients.add(getStrIngredient20());
+        }
+        return ingredients;
     }
 }
