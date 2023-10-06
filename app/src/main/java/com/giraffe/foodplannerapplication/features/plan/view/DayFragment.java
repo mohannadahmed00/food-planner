@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import kotlin.Pair;
 
@@ -42,6 +44,7 @@ public class DayFragment extends Fragment implements DayView, DayAdapter.OnPlann
     private RecyclerView recyclerView;
 
     private ArrayList<PlannedMeal> meals;
+    private int deletePosition;
 
 
     public DayFragment() {
@@ -168,6 +171,21 @@ public class DayFragment extends Fragment implements DayView, DayAdapter.OnPlann
                     Log.i(TAG,"plan size: "+plannedMeals.size());
                     tvDay.setText(plannedMeals.size()+"");
                 }, throwable -> Log.i(TAG, "error: "+throwable.getMessage()));*/
+    }
+
+    @Override
+    public void onPlannedMealDeleted(Completable completable) {
+        completable.observeOn(AndroidSchedulers.mainThread()).subscribe(() -> {
+            adapter.getPlannedMeals().remove(deletePosition);
+            adapter.notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
+        });
+    }
+
+    @Override
+    public void onDeleteClick(PlannedMeal plannedMeal,int position) {
+        deletePosition = position;
+        presenter.deletePlannedMeal(plannedMeal);
     }
 
     @Override

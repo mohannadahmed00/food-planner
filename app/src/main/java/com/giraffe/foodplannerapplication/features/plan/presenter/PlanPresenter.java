@@ -1,6 +1,7 @@
 package com.giraffe.foodplannerapplication.features.plan.presenter;
 
 import com.giraffe.foodplannerapplication.features.plan.view.DayView;
+import com.giraffe.foodplannerapplication.models.PlannedMeal;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 
 public class PlanPresenter {
@@ -14,5 +15,8 @@ public class PlanPresenter {
 
     public void getPlannedMeals(int day){
         view.onGetPlannedMeals(repo.getPlannedMeals(day));
+    }
+    public void deletePlannedMeal(PlannedMeal meal){
+        view.onPlannedMealDeleted(repo.deletePlannedMeal(meal));
     }
 }

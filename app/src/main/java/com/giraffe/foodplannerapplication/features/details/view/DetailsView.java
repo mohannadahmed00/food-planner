@@ -18,4 +18,6 @@ public interface DetailsView {
     void onFavMealDeleted(Completable completable);
     void onGetFavMeals(Observable<List<Meal>> observable);
 
+    void onPlannedMealInserted(Completable completable);
+
 }

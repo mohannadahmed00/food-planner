@@ -23,8 +23,11 @@ import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
 import com.giraffe.foodplannerapplication.features.details.presenter.DetailsPresenter;
 import com.giraffe.foodplannerapplication.models.Meal;
+import com.giraffe.foodplannerapplication.models.PlannedMeal;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
+import com.giraffe.foodplannerapplication.util.BottomSheet;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
@@ -39,7 +42,7 @@ import io.reactivex.rxjava3.core.Observable;
 public class DetailsFragment extends Fragment implements DetailsView {
     public final static String TAG = "DetailsFragment";
     private DetailsPresenter presenter;
-    private ImageView ivBack, ivMeal, ivFav;
+    private ImageView ivBack, ivMeal, ivAdd, ivFav;
     private TextView tvBar, tvCategory, tvCountry, tvSteps;
     //private WebView wvInstructions;
     YouTubePlayerView youTubePlayerView;
@@ -55,6 +58,8 @@ public class DetailsFragment extends Fragment implements DetailsView {
     int counter;
 
     private Context context;
+
+    private BottomSheetDialog bottomSheetDialog;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -107,6 +112,7 @@ public class DetailsFragment extends Fragment implements DetailsView {
     public void inflateViews(View view) {
         ivBack = view.findViewById(R.id.iv_back);
         tvBar = view.findViewById(R.id.tv_bar);
+        ivAdd = view.findViewById(R.id.iv_add);
         ivFav = view.findViewById(R.id.iv_fav_details);
         ivMeal = view.findViewById(R.id.iv_meal);
         tvCategory = view.findViewById(R.id.tv_category);
@@ -136,6 +142,16 @@ public class DetailsFragment extends Fragment implements DetailsView {
                 ivFav.setTag("selected");
                 ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
             }*/
+        });
+        ivAdd.setOnClickListener(v -> {
+            BottomSheet.showBottomSheetDialog(getContext(), meal, new BottomSheet.OnBottomConfirmed() {
+                @Override
+                public void onClick(PlannedMeal plannedMeal, BottomSheetDialog dialog) {
+                    bottomSheetDialog = dialog;
+                    presenter.insertPlannedMeal(plannedMeal);
+                    Log.i(TAG, "store " + plannedMeal.getMeal().getStrMeal() + " as " + plannedMeal.getType() + " at " + plannedMeal.getDate().toString());
+                }
+            });
         });
     }
 
@@ -181,5 +197,17 @@ public class DetailsFragment extends Fragment implements DetailsView {
                         },
                         throwable -> Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_SHORT).show()
                 );
+    }
+
+    @Override
+    public void onPlannedMealInserted(Completable completable) {
+        completable.observeOn(AndroidSchedulers.mainThread()).subscribe(
+                () -> {
+                    if (bottomSheetDialog != null) {
+                        bottomSheetDialog.dismiss();
+                    }
+                },
+                throwable -> Log.i(TAG, "meal has not be planned")
+        );
     }
 }

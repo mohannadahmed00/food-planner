@@ -56,6 +56,9 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.PlanMealVH> {
         holder.getView().setOnClickListener(v -> {
             onPlannedMealClick.onClick(meal.getMeal());
         });
+        holder.getIvDelete().setOnClickListener(v->{
+            onPlannedMealClick.onDeleteClick(meal,position);
+        });
     }
 
     @Override
@@ -65,12 +68,13 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.PlanMealVH> {
 
     static class PlanMealVH extends RecyclerView.ViewHolder {
         private final View view;
-        private final ImageView ivMeal;
+        private final ImageView ivMeal,ivDelete;
         private final TextView tvType, tvMeal, tvCountry, tvCategory, tvIngredients;
 
         public PlanMealVH(@NonNull View itemView) {
             super(itemView);
             view = itemView;
+            ivDelete = itemView.findViewById(R.id.iv_delete);
             tvType = itemView.findViewById(R.id.tv_type);
             ivMeal = itemView.findViewById(R.id.iv_meal);
             tvMeal = itemView.findViewById(R.id.tv_meal);
@@ -106,10 +110,15 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.PlanMealVH> {
         public TextView getTvIngredients() {
             return tvIngredients;
         }
+
+        public ImageView getIvDelete() {
+            return ivDelete;
+        }
     }
 
     interface OnPlannedMealClick {
         void onClick(Meal meal);
+        void onDeleteClick(PlannedMeal plannedMeal,int position);
     }
 
     private String getIngredients(List<String> ingredients) {

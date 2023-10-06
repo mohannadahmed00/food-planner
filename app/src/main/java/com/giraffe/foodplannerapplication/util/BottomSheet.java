@@ -116,7 +116,7 @@ public class BottomSheet {
             if (meal != null) {
                 if (isValid(context)) {
                     PlannedMeal plannedMeal = new PlannedMeal(date.getTime(), day, mealType, meal);
-                    onBottomConfirmed.onClick(plannedMeal);
+                    onBottomConfirmed.onClick(plannedMeal,bottomSheetDialog);
                 }
             }
         });
@@ -136,7 +136,7 @@ public class BottomSheet {
     }
 
     public interface OnBottomConfirmed {
-        void onClick(PlannedMeal plannedMeal);
+        void onClick(PlannedMeal plannedMeal,BottomSheetDialog dialog);
     }
 
     private static int getDayNum(String dayStr) {

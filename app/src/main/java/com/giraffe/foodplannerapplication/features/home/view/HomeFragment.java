@@ -88,6 +88,8 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     private int mealType;
 
+    private BottomSheetDialog bottomSheetDialog;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -106,6 +108,9 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         categoriesAdapter = new CategoriesAdapter(categories, this);
         countriesAdapter = new CountriesAdapter(countries, this);
         searchAdapter = new SearchAdapter(meals, this);
+        presenter.getRandomMeal();
+        presenter.getCategories();
+        presenter.getCountries();
     }
 
 
@@ -120,14 +125,16 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         inflateViews(view);
         initClicks();
         handleSearch();
+        if (randomMeal != null) {
+            handleRandomMealImg(randomMeal.getStrMealThumb());
+            handleRandomMealTitle(randomMeal.getStrMeal());
+        }
 
 
         rvCategories.setAdapter(categoriesAdapter);
         rvCountries.setAdapter(countriesAdapter);
         rvSearch.setAdapter(searchAdapter);
-        presenter.getRandomMeal();
-        presenter.getCategories();
-        presenter.getCountries();
+
     }
 
 
@@ -155,12 +162,14 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
             }
         });
         ivFav.setOnClickListener(v -> {
-            if (randomMeal.isSelected()) {
-                randomMeal.setSelected(false);
-                presenter.deleteFavMeal(randomMeal);
-            } else {
-                randomMeal.setSelected(true);
-                presenter.insertFavMeal(randomMeal);
+            if (randomMeal != null) {
+                if (randomMeal.isSelected()) {
+                    randomMeal.setSelected(false);
+                    presenter.deleteFavMeal(randomMeal);
+                } else {
+                    randomMeal.setSelected(true);
+                    presenter.insertFavMeal(randomMeal);
+                }
             }
         });
 
@@ -170,7 +179,9 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
             if (randomMeal != null) {
                 BottomSheet.showBottomSheetDialog(getContext(), randomMeal, new BottomSheet.OnBottomConfirmed() {
                     @Override
-                    public void onClick(PlannedMeal plannedMeal) {
+                    public void onClick(PlannedMeal plannedMeal, BottomSheetDialog dialog) {
+                        bottomSheetDialog = dialog;
+                        //dialog.dismiss();
                         presenter.insertPlannedMeal(plannedMeal);
                         Log.i(TAG, "store " + plannedMeal.getMeal().getStrMeal() + " as " + plannedMeal.getType() + " at " + plannedMeal.getDate().toString());
                     }
@@ -320,7 +331,10 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     public void onFavMealInserted(Completable completable) {
         completable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        () -> ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red)),
+                        () -> {
+                            randomMeal.setSelected(true);
+                            ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
+                        },
                         throwable -> {
                             randomMeal.setSelected(false);
                             Log.i(TAG, throwable.getMessage());
@@ -340,7 +354,11 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     @Override
     public void onPlannedMealInserted(Completable completable) {
         completable.observeOn(AndroidSchedulers.mainThread()).subscribe(
-                () -> Log.i(TAG, "meal has been planned"),
+                () -> {
+                    if (bottomSheetDialog != null) {
+                        bottomSheetDialog.dismiss();
+                    }
+                },
                 throwable -> Log.i(TAG, "meal has not be planned")
         );
     }
