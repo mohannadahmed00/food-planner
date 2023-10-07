@@ -31,19 +31,24 @@ public class HomePresenter {
         view.onGetSearchResult(repo.getSearchResult(word));
     }
 
-    public void insertFavMeal(Meal meal){
+    public void insertFavMeal(Meal meal) {
         view.onFavMealInserted(repo.insertFavMeal(meal));
     }
-    public void deleteFavMeal(Meal meal){
+
+    public void deleteFavMeal(Meal meal) {
         view.onFavMealDeleted(repo.deleteFavMeal(meal));
     }
 
-    public void insertPlannedMeal(PlannedMeal meal){
+    public void insertPlannedMeal(PlannedMeal meal) {
         view.onPlannedMealInserted(repo.insertPlannedMeal(meal));
     }
 
-    public void isLoggedIn(){
+    public void isLoggedIn() {
         view.onGetLoggedInFlag(repo.isLoggedIn());
+    }
+
+    public void getFavorites() {
+        view.onGetFavorites(repo.getFavMeals());
     }
 
 

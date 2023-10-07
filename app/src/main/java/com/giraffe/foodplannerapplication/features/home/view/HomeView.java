@@ -30,6 +30,8 @@ public interface HomeView {
 
     void onGetLoggedInFlag(Observable<Boolean> observable);
 
+    void onGetFavorites(Observable<List<Meal>> observable);
+
 
 
 }

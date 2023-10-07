@@ -70,14 +70,19 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     private BottomSheet bottomSheet;
 
+    private List<Meal> favorites;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        Log.d(TAG, "onAttach");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
+
         presenter = new HomePresenter(this, Repo.getInstance(
                 ApiClient.getInstance(),
                 ConcreteLocalSource.getInstance(getContext())
@@ -85,6 +90,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         categories = new ArrayList<>();
         countries = new ArrayList<>();
         List<Meal> meals = new ArrayList<>();
+        favorites = new ArrayList<>();
         categoriesAdapter = new CategoriesAdapter(categories, this);
         countriesAdapter = new CountriesAdapter(countries, this);
         searchAdapter = new SearchAdapter(meals, this);
@@ -96,24 +102,82 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "onViewCreated");
         inflateViews(view);
         initClicks();
         handleSearch();
+        presenter.getFavorites();
         rvCategories.setAdapter(categoriesAdapter);
         rvCountries.setAdapter(countriesAdapter);
         rvSearch.setAdapter(searchAdapter);
         presenter.isLoggedIn();
-        if (randomMeal!=null) {
+        /*if (randomMeal != null) {
             handleRandomMeal();
-        }
+        }*/
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart");
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState");
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "onDestroyView");
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d(TAG, "onDetach");
+
+    }
 
     @Override
     public void inflateViews(View view) {
@@ -202,6 +266,21 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(color);
         spannableString.setSpan(colorSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvRandom.setText(spannableString);
+        if (!favorites.isEmpty()) {
+            favorites.forEach(
+                    meal -> {
+                        if (meal.getIdMeal().equals(randomMeal.getIdMeal())) {
+                            Log.e(TAG, randomMeal.getStrMeal() + " : red");
+                            randomMeal.setSelected(true);
+                            ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
+                        } else {
+                            Log.e(TAG, randomMeal.getStrMeal() + " : white");
+                            randomMeal.setSelected(false);
+                            ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white));
+                        }
+                    }
+            );
+        }
     }
 
     @Override
@@ -336,6 +415,29 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
                     ivFav.setVisibility(View.INVISIBLE);
                     Log.i(TAG, throwable.getMessage());
                 });
+    }
+
+    @Override
+    public void onGetFavorites(Observable<List<Meal>> observable) {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        meals -> {
+                            this.favorites.addAll(meals);
+                            if (randomMeal != null) {
+                                Log.e(TAG, "update random meal");
+                                handleRandomMeal();
+                                /*meals.stream().forEach(
+                                        meal -> {
+                                            if (meal.getIdMeal().equals(randomMeal.getIdMeal())) {
+                                                randomMeal.setSelected(true);
+                                                ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
+                                            }
+                                        }
+                                );*/
+                            }
+                        },
+                        throwable -> Log.e(TAG, throwable.getMessage())
+                );
     }
 
     public String getCountryCode(String country) {
