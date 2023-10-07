@@ -17,4 +17,6 @@ public interface SettingsView {
     void onFavoritesDeleted(Completable completable);
     void onPlannedDeleted(Completable completable);
 
+    void onDataBackedUp(Completable completable);
+
 }

@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".features.settings.view.SettingsFragment">
 
+    <Button
+        android:id="@+id/btn_backup"
+        style="@style/green_button"
+        android:layout_width="0dp"
+        android:visibility="invisible"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_effect"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_logout"
+        android:text="Backup"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/btn_logout"
+        app:layout_constraintStart_toStartOf="@+id/btn_logout" />
+
 
     <Button
         android:id="@+id/btn_logout"
@@ -19,6 +33,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btn_backup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

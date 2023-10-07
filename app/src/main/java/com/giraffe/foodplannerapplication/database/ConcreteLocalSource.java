@@ -58,6 +58,11 @@ public class ConcreteLocalSource implements LocalSource {
         return planDAO.getMeals(day).subscribeOn(Schedulers.io());
     }
 
+    @Override
+    public Observable<List<PlannedMeal>> getAllPlannedMeals() {
+        return planDAO.getAllMeals().subscribeOn(Schedulers.io());
+    }
+
 
     @Override
     public Completable insertFavMeal(Meal meal) {

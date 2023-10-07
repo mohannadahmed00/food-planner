@@ -6,15 +6,16 @@ import androidx.room.TypeConverters;
 
 @Entity(tableName = "planned_meals_table", primaryKeys = {"day", "type"})
 public class PlannedMeal {
-    private final Long date;
+    private  Long date;
 
-    private final int day;
+    private  int day;
 
-    private final int type;
+    private  int type;
 
     @TypeConverters(MealConverter.class)
-    private final Meal meal;
+    private  Meal meal;
 
+    public PlannedMeal(){}
     public PlannedMeal(Long date, int day, int type, Meal meal) {
         this.date = date;
         this.day = day;
@@ -36,6 +37,22 @@ public class PlannedMeal {
 
     public Meal getMeal() {
         return meal;
+    }
+
+    public void setDate(Long date) {
+        this.date = date;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public void setMeal(Meal meal) {
+        this.meal = meal;
     }
 }
 

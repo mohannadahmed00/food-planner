@@ -16,6 +16,8 @@ import io.reactivex.rxjava3.core.Observable;
 
 @Dao
 public interface PlanDAO {
+    @Query("SELECT * FROM planned_meals_table")
+    Observable<List<PlannedMeal>> getAllMeals();
     @Query("SELECT * FROM planned_meals_table where day = :day order by type ASC")
     Observable<List<PlannedMeal>> getMeals(int day);
 

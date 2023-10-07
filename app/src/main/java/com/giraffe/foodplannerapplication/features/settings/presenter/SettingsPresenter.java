@@ -16,6 +16,10 @@ public class SettingsPresenter {
         view.onLogout(repo.logout());
     }
 
+    public void backup(){
+        view.onDataBackedUp(repo.backUp());
+    }
+
     public void isLoggedIn() {
         view.onGetLoggedInFlag(repo.isLoggedIn());
     }

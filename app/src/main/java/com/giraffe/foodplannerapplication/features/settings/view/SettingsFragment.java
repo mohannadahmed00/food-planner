@@ -24,8 +24,8 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 
 public class SettingsFragment extends Fragment implements SettingsView {
-    private static final String TAG = "SettingsFragment";
-    private Button btnLogout;
+    public static final String TAG = "SettingsFragment";
+    private Button btnLogout, btnBackup;
     private SettingsPresenter presenter;
 
     @Override
@@ -54,6 +54,7 @@ public class SettingsFragment extends Fragment implements SettingsView {
     @Override
     public void initViews(View view) {
         btnLogout = view.findViewById(R.id.btn_logout);
+        btnBackup = view.findViewById(R.id.btn_backup);
 
     }
 
@@ -69,18 +70,23 @@ public class SettingsFragment extends Fragment implements SettingsView {
                         () -> presenter.deleteFavoriteMeals(), throwable -> Log.i(TAG, throwable.getMessage())
                 );
     }
+
     @Override
     public void onGetLoggedInFlag(Observable<Boolean> observable) {
         observable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(isLoggedIn -> {
                     if (isLoggedIn) {
+                        btnBackup.setVisibility(View.VISIBLE);
                         btnLogout.setText(R.string.logout);
+                        btnBackup.setOnClickListener(v -> presenter.backup());
                         btnLogout.setOnClickListener(v -> presenter.logout());
                     } else {
+                        btnBackup.setVisibility(View.INVISIBLE);
                         btnLogout.setText(R.string.login);
                         btnLogout.setOnClickListener(v -> Navigation.findNavController(v).setGraph(R.navigation.auth_graph));
                     }
                 }, throwable -> {
+                    btnBackup.setVisibility(View.INVISIBLE);
                     btnLogout.setText(R.string.login);
                     btnLogout.setOnClickListener(v -> Navigation.findNavController(v).setGraph(R.navigation.auth_graph));
                     Log.i(TAG, throwable.getMessage());
@@ -104,5 +110,12 @@ public class SettingsFragment extends Fragment implements SettingsView {
                             Navigation.findNavController(requireView()).setGraph(R.navigation.auth_graph);
                         }, throwable -> Log.i(TAG, throwable.getMessage())
                 );
+    }
+
+    @Override
+    public void onDataBackedUp(Completable completable) {
+        completable.subscribe(
+                () -> Log.i(TAG, "Data has been backed up"), throwable -> Log.e(TAG, throwable.getMessage())
+        );
     }
 }
