@@ -60,41 +60,46 @@ public class Repo implements RepoInterface {
     }
 
     @Override
-    public void createAccount(String email, String password, NetworkCallback<Boolean> callback) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        mAuth.signOut();
-                        callback.onSuccess(true);
-                    } else {
-                        if (task.getException() != null) {
-                            callback.onFailure(task.getException().getMessage());
-                        }
-                    }
-                });
+    public Completable createAccount(String email, String password) {
+        return Completable.create(
+                emitter -> mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                mAuth.signOut();
+                                emitter.onComplete();
+                            } else {
+                                if (task.getException() != null) {
+                                    emitter.onError(task.getException());
+                                }
+                            }
+                        })
+        ).subscribeOn(Schedulers.io());
+
     }
 
     @Override
-    public void login(String email, String password, NetworkCallback<Boolean> callback) {
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        callback.onSuccess(true);
-                    } else {
-                        if (task.getException() != null) {
-                            callback.onFailure(task.getException().getMessage());
-                        }
-                    }
-                });
+    public Completable login(String email, String password) {
+        return Completable.create(
+                emitter -> mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                emitter.onComplete();
+                            } else {
+                                if (task.getException() != null) {
+                                    emitter.onError(task.getException());
+                                }
+                            }
+                        })
+        ).subscribeOn(Schedulers.io());
     }
 
     @Override
     public Completable logout() {
         mAuth.signOut();
         return Completable.create(emitter -> {
-            if (mAuth.getCurrentUser() == null){
+            if (mAuth.getCurrentUser() == null) {
                 emitter.onComplete();
-            }else {
+            } else {
                 emitter.onError(new Throwable("something went wrong"));
             }
         }).subscribeOn(Schedulers.io());

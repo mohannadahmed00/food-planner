@@ -19,9 +19,9 @@ public interface RepoInterface {
 
     Observable<Meal> getMealById(String mealId);
 
-    void createAccount(String email, String password, NetworkCallback<Boolean> callback);
+    Completable createAccount(String email, String password);
 
-    void login(String email, String password, NetworkCallback<Boolean> callback);
+    Completable login(String email, String password);
 
     Completable logout();
 

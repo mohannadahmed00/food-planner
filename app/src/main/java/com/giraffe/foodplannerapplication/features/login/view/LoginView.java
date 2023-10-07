@@ -9,7 +9,7 @@ public interface LoginView {
 
     void initClicks();
 
-    void onLogin(Boolean isLoggedIn);
+    void onLogin(Completable completable);
 
     void onGoogleLogin(Completable completable);
 }

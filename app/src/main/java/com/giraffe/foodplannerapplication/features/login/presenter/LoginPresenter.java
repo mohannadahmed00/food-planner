@@ -15,17 +15,7 @@ public class LoginPresenter {
     }
 
     public void login(String email, String password) {
-        repo.login(email, password, new NetworkCallback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean response) {
-                view.onLogin(true);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                view.onLogin(false);
-            }
-        });
+        view.onLogin(repo.login(email, password));
     }
 
     public void loginWithGoogle(String idToken){

@@ -15,16 +15,6 @@ public class SignUpPresenter {
     }
 
     public void createAccount(String email, String password) {
-        repo.createAccount(email, password, new NetworkCallback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean response) {
-                view.onCreateAccount(true);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                view.onCreateAccount(false);
-            }
-        });
+        view.onCreateAccount(repo.createAccount(email, password));
     }
 }

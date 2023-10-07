@@ -176,13 +176,16 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     @Override
-    public void onLogin(Boolean isLoggedIn) {
+    public void onLogin(Completable completable) {
         dismissDialog();
-        if (isLoggedIn) {
-            Navigation.findNavController(requireView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainGraph());
-        } else {
-            Toast.makeText(getContext(), R.string.please_enter_a_valid_username_and_password, Toast.LENGTH_SHORT).show();
-        }
+        completable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> Navigation.findNavController(requireView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainGraph()),
+                        throwable -> {
+                            Log.e(TAG, throwable.getMessage());
+                            Toast.makeText(getContext(), R.string.please_enter_a_valid_username_and_password, Toast.LENGTH_SHORT).show();
+                        }
+                );
     }
 
     @Override

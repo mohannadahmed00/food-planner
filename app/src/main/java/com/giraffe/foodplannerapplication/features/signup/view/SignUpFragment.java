@@ -9,6 +9,7 @@ import androidx.navigation.Navigation;
 
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,9 @@ import com.giraffe.foodplannerapplication.util.LoadingDialog;
 import com.giraffe.foodplannerapplication.util.NetworkConnection;
 
 import java.util.regex.Pattern;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
 
 public class SignUpFragment extends Fragment implements SignUpView {
     private final static String TAG = "SignUpFragment";
@@ -116,13 +120,16 @@ public class SignUpFragment extends Fragment implements SignUpView {
     }
 
     @Override
-    public void onCreateAccount(Boolean isRegistered) {
+    public void onCreateAccount(Completable completable) {
         dismissDialog();
-        if (isRegistered) {
-            Navigation.findNavController(requireView()).navigateUp();
-        } else {
-            Toast.makeText(getContext(), R.string.the_email_address_is_already_in_use_by_another_account, Toast.LENGTH_SHORT).show();
-        }
+        completable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> Navigation.findNavController(requireView()).navigateUp(),
+                        throwable -> {
+                            Log.e(TAG, throwable.getMessage());
+                            Toast.makeText(getContext(), R.string.the_email_address_is_already_in_use_by_another_account, Toast.LENGTH_SHORT).show();
+                        }
+                );
     }
 
     boolean isValidData() {
