@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giraffe.foodplannerapplication.R;
@@ -32,6 +34,8 @@ import io.reactivex.rxjava3.core.Observable;
 public class FavoritesFragment extends Fragment implements FavoritesView, FavoritesAdapter.OnFavClick {
     private static final String TAG = "FavoritesFragment";
 
+    private TextView tvLogin;
+    private Button btnLogin;
     private RecyclerView recyclerView;
     private FavoritesAdapter adapter;
     private List<Meal> favourites;
@@ -46,7 +50,7 @@ public class FavoritesFragment extends Fragment implements FavoritesView, Favori
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         favourites = new ArrayList<>();
-        adapter = new FavoritesAdapter(favourites,this);
+        adapter = new FavoritesAdapter(favourites, this);
         presenter = new FavoritesPresenter(this, Repo.getInstance(
                 ApiClient.getInstance(),
                 ConcreteLocalSource.getInstance(getContext())
@@ -81,9 +85,14 @@ public class FavoritesFragment extends Fragment implements FavoritesView, Favori
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        tvLogin = view.findViewById(R.id.tv_login);
+        btnLogin = view.findViewById(R.id.btn_login);
         recyclerView = view.findViewById(R.id.rv_favorites);
         recyclerView.setAdapter(adapter);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+        btnLogin.setOnClickListener(v -> Navigation.findNavController(v).setGraph(R.navigation.auth_graph));
+        presenter.isLoggedIn();
+
     }
 
     @Override
@@ -98,6 +107,27 @@ public class FavoritesFragment extends Fragment implements FavoritesView, Favori
             favourites.remove(position);
             adapter.notifyDataSetChanged();
         });
+    }
+
+    @Override
+    public void onGetLoggedInFlag(Observable<Boolean> observable) {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isLoggedIn -> {
+                    if (isLoggedIn) {
+                        tvLogin.setVisibility(View.INVISIBLE);
+                        btnLogin.setVisibility(View.INVISIBLE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    } else {
+                        tvLogin.setVisibility(View.VISIBLE);
+                        btnLogin.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.INVISIBLE);
+                    }
+                }, throwable -> {
+                    tvLogin.setVisibility(View.VISIBLE);
+                    btnLogin.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    Log.i(TAG, throwable.getMessage());
+                });
     }
 
     @Override

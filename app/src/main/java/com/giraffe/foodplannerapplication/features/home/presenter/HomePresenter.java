@@ -42,5 +42,9 @@ public class HomePresenter {
         view.onPlannedMealInserted(repo.insertPlannedMeal(meal));
     }
 
+    public void isLoggedIn(){
+        view.onGetLoggedInFlag(repo.isLoggedIn());
+    }
+
 
 }

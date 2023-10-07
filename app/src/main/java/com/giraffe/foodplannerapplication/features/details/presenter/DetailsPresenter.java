@@ -29,4 +29,8 @@ public class DetailsPresenter {
     public void insertPlannedMeal(PlannedMeal meal) {
         view.onPlannedMealInserted(repo.insertPlannedMeal(meal));
     }
+
+    public void isLoggedIn(){
+        view.onGetLoggedInFlag(repo.isLoggedIn());
+    }
 }

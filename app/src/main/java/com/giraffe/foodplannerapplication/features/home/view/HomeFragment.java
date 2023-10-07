@@ -1,8 +1,6 @@
 package com.giraffe.foodplannerapplication.features.home.view;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,12 +20,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.giraffe.foodplannerapplication.R;
@@ -36,19 +31,13 @@ import com.giraffe.foodplannerapplication.features.home.presenter.HomePresenter;
 import com.giraffe.foodplannerapplication.models.Category;
 import com.giraffe.foodplannerapplication.models.Country;
 import com.giraffe.foodplannerapplication.models.Meal;
-import com.giraffe.foodplannerapplication.models.PlannedMeal;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
 import com.giraffe.foodplannerapplication.util.BottomSheet;
-import com.giraffe.foodplannerapplication.util.Filter.view.FilterDialog;
+import com.giraffe.foodplannerapplication.features.home.Filter.view.FilterDialog;
 import com.giraffe.foodplannerapplication.util.LoadingDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -59,7 +48,6 @@ import io.reactivex.rxjava3.core.Observable;
 
 public class HomeFragment extends Fragment implements HomeView, OnFilterClick, CategoriesAdapter.OnCategoryClick, CountriesAdapter.OnCountryClick, SearchAdapter.OnSearchClick {
     public final static String TAG = "HomeFragment";
-
     private HomePresenter presenter;
 
     private ImageView ivFilter, ivRandom, ivFav, ivAdd;
@@ -69,26 +57,18 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
 
     private View viewBlur;
 
-    private String category, country, ingredient, selectedDate;
+    private String category, country, ingredient;
     private RecyclerView rvSearch, rvCategories, rvCountries;
     private CategoriesAdapter categoriesAdapter;
     private CountriesAdapter countriesAdapter;
     private SearchAdapter searchAdapter;
 
-
     private List<Category> categories;
     private List<Country> countries;
-    private List<Meal> meals;
 
     private Meal randomMeal;
 
-    private ChipGroup cgType;
-    private TextView tvWeekDay;
-    private Button btnConfirm;
-
-    private int mealType;
-
-    private BottomSheetDialog bottomSheetDialog;
+    private BottomSheet bottomSheet;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -104,7 +84,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         ));
         categories = new ArrayList<>();
         countries = new ArrayList<>();
-        meals = new ArrayList<>();
+        List<Meal> meals = new ArrayList<>();
         categoriesAdapter = new CategoriesAdapter(categories, this);
         countriesAdapter = new CountriesAdapter(countries, this);
         searchAdapter = new SearchAdapter(meals, this);
@@ -125,16 +105,13 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         inflateViews(view);
         initClicks();
         handleSearch();
-        if (randomMeal != null) {
-            handleRandomMealImg(randomMeal.getStrMealThumb());
-            handleRandomMealTitle(randomMeal.getStrMeal());
-        }
-
-
         rvCategories.setAdapter(categoriesAdapter);
         rvCountries.setAdapter(countriesAdapter);
         rvSearch.setAdapter(searchAdapter);
-
+        presenter.isLoggedIn();
+        if (randomMeal!=null) {
+            handleRandomMeal();
+        }
     }
 
 
@@ -174,67 +151,53 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         });
 
         ivAdd.setOnClickListener(v -> {
-            //showDatePickerDialog(getContext());
-            //showBottomSheetDialog();
             if (randomMeal != null) {
-                BottomSheet.showBottomSheetDialog(getContext(), randomMeal, new BottomSheet.OnBottomConfirmed() {
-                    @Override
-                    public void onClick(PlannedMeal plannedMeal, BottomSheetDialog dialog) {
-                        bottomSheetDialog = dialog;
-                        //dialog.dismiss();
-                        presenter.insertPlannedMeal(plannedMeal);
-                        Log.i(TAG, "store " + plannedMeal.getMeal().getStrMeal() + " as " + plannedMeal.getType() + " at " + plannedMeal.getDate().toString());
-                    }
+                bottomSheet = BottomSheet.getInstance(getContext(), randomMeal, (plannedMeal) -> {
+                    Log.i(TAG, "planned: " + plannedMeal.getMeal().getStrMeal());
+                    presenter.insertPlannedMeal(plannedMeal);
                 });
+                bottomSheet.show();
             }
-            /*PlannedMeal plannedMeal= new PlannedMeal(PlannedMeal.MealType.BREAKFAST, new Date().getTime(),randomMeal);
-            presenter.insertPlannedMeal(plannedMeal);*/
         });
     }
 
     void handleSearch() {
         Observable
-                .create(emitter -> {
-                    edtSearch.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        }
+                .create(emitter -> edtSearch.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
 
-                        @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                            if (charSequence.length() < 2) {
-                                viewBlur.setVisibility(View.INVISIBLE);
-                                rvSearch.setVisibility(View.INVISIBLE);
-                            }
-                            emitter.onNext(charSequence.toString());
-                            //}
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        if (charSequence.length() < 2) {
+                            viewBlur.setVisibility(View.INVISIBLE);
+                            rvSearch.setVisibility(View.INVISIBLE);
                         }
+                        emitter.onNext(charSequence.toString());
+                        //}
+                    }
 
-                        @Override
-                        public void afterTextChanged(Editable editable) {
-                        }
-                    });
-                })
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                    }
+                }))
                 .debounce(1, TimeUnit.SECONDS)
                 .filter(o -> o.toString().length() > 2)
                 .distinctUntilChanged()
                 .subscribe(s -> {
-                    Log.i(TAG, "search: " + s);
                     showDialog();
                     presenter.getSearchResult(s.toString());
                 }, throwable -> Log.i(TAG, throwable.getMessage()));
 
     }
 
-    void handleRandomMealImg(String imgUrl) {
-        Glide.with(requireContext()).load(imgUrl).into(ivRandom);
-    }
-
-    void handleRandomMealTitle(String mealTitle) {
-        String title = "What about trying " + mealTitle + " today?";
+    void handleRandomMeal() {
+        Glide.with(requireContext()).load(randomMeal.getStrMealThumb()).into(ivRandom);
+        String title = "What about trying " + randomMeal.getStrMeal() + " today?";
         Spannable spannableString = new SpannableString(title);
-        int startIndex = title.indexOf(mealTitle);
-        int endIndex = startIndex + mealTitle.length();
+        int startIndex = title.indexOf(randomMeal.getStrMeal());
+        int endIndex = startIndex + randomMeal.getStrMeal().length();
         int color = ContextCompat.getColor(requireContext(), R.color.yellow);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(color);
         spannableString.setSpan(colorSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -246,8 +209,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
         observable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(meal -> {
                     this.randomMeal = meal;
-                    handleRandomMealTitle(meal.getStrMeal());
-                    handleRandomMealImg(meal.getStrMealThumb());
+                    handleRandomMeal();
                 }, throwable -> Log.i(TAG, throwable.getMessage()));
     }
 
@@ -310,7 +272,6 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     public void onClick(Category category) {
         HomeFragmentDirections.ActionHomeFragmentToMealsFragment action = HomeFragmentDirections.actionHomeFragmentToMealsFragment(categoriesAdapter.getList(), "category", this.categories.indexOf(category));
         Navigation.findNavController(requireView()).navigate(action);
-        Log.i(TAG, category.getStrCategory());
     }
 
     @Override
@@ -354,15 +315,28 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
     @Override
     public void onPlannedMealInserted(Completable completable) {
         completable.observeOn(AndroidSchedulers.mainThread()).subscribe(
-                () -> {
-                    if (bottomSheetDialog != null) {
-                        bottomSheetDialog.dismiss();
-                    }
-                },
+                () -> bottomSheet.dismiss(),
                 throwable -> Log.i(TAG, "meal has not be planned")
         );
     }
 
+    @Override
+    public void onGetLoggedInFlag(Observable<Boolean> observable) {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isLoggedIn -> {
+                    if (isLoggedIn) {
+                        ivAdd.setVisibility(View.VISIBLE);
+                        ivFav.setVisibility(View.VISIBLE);
+                    } else {
+                        ivAdd.setVisibility(View.INVISIBLE);
+                        ivFav.setVisibility(View.INVISIBLE);
+                    }
+                }, throwable -> {
+                    ivAdd.setVisibility(View.INVISIBLE);
+                    ivFav.setVisibility(View.INVISIBLE);
+                    Log.i(TAG, throwable.getMessage());
+                });
+    }
 
     public String getCountryCode(String country) {
         switch (country) {

@@ -1,5 +1,7 @@
 package com.giraffe.foodplannerapplication.features.splash.presenter;
 
+import android.util.Log;
+
 import com.giraffe.foodplannerapplication.features.splash.view.SplashView;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 
@@ -27,6 +29,10 @@ public class SplashPresenter {
 
     public void getIngredients() {
         repo.getIngredients().subscribe();
+    }
+
+    public void isFirstTime(){
+        view.onGetFirstTimeFlag(repo.isFirstTime());
     }
 
 }

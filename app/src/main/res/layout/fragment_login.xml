@@ -12,14 +12,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         android:text="Hello there !\nWelcome Back"
         android:textColor="@color/orange"
         android:textSize="42sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tv_skip" />
 
     <TextView
         android:id="@+id/tv_email"
@@ -71,24 +71,13 @@
         style="@style/edit_text_style"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingEnd="56dp"
         android:background="@drawable/edt_rounded"
         android:hint="@string/enter_your_password"
         android:inputType="textPassword"
+        android:paddingEnd="56dp"
         app:layout_constraintEnd_toEndOf="@+id/edt_email"
         app:layout_constraintStart_toStartOf="@+id/tv_password"
         app:layout_constraintTop_toBottomOf="@+id/tv_password" />
-
-    <TextView
-        android:id="@+id/tv_password_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="password error"
-        android:textColor="@color/red"
-        android:textSize="16sp"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="@+id/edt_password"
-        app:layout_constraintTop_toBottomOf="@+id/edt_password" />
 
 
     <Button
@@ -102,7 +91,19 @@
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_password_error" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_password" />
+
+    <Button
+        android:id="@+id/btn_google"
+        style="@style/red_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_effect"
+        android:text="Login with Google"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/btn_login"
+        app:layout_constraintStart_toStartOf="@+id/btn_login"
+        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
 
     <TextView
         android:id="@+id/tv_not_have_account"
@@ -116,7 +117,7 @@
         app:layout_constraintEnd_toStartOf="@id/tv_sign_up"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_login"
+        app:layout_constraintTop_toBottomOf="@+id/btn_google"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
@@ -141,5 +142,21 @@
         app:layout_constraintBottom_toBottomOf="@+id/edt_password"
         app:layout_constraintEnd_toEndOf="@+id/edt_password"
         app:layout_constraintTop_toTopOf="@+id/edt_password" />
+
+    <TextView
+        android:id="@+id/tv_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/skip"
+        android:textColor="@color/orange"
+        android:textSize="22sp"
+
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

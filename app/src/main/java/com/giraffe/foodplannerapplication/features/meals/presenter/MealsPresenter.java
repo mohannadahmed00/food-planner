@@ -44,4 +44,8 @@ public class MealsPresenter {
     public void deleteMeal(Meal meal) {
         view.onMealDeleted(repo.deleteFavMeal(meal));
     }
+
+    public void isLoggedIn(){
+        view.onGetLoggedInFlag(repo.isLoggedIn());
+    }
 }

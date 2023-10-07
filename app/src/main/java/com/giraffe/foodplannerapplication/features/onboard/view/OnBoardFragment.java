@@ -13,14 +13,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.giraffe.foodplannerapplication.R;
+import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
+import com.giraffe.foodplannerapplication.features.onboard.presenter.OnBoardPresenter;
+import com.giraffe.foodplannerapplication.models.repository.Repo;
+import com.giraffe.foodplannerapplication.network.ApiClient;
 
 import java.util.ArrayList;
 
-public class OnBoardFragment extends Fragment implements OnBoardClickListener {
+public class OnBoardFragment extends Fragment implements OnBoardClickListener,OnBoardView {
     ViewPager viewPager;
     OnBoardPagerAdapter adapter;
 
     ArrayList<OnBoardData> list;
+
+    OnBoardPresenter presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +35,11 @@ public class OnBoardFragment extends Fragment implements OnBoardClickListener {
         list.add(new OnBoardData(R.raw.on_board_1, "Various meals throughout the week", "Users can easily create personalized meal plans by selecting recipes from a vast database."));
         list.add(new OnBoardData(R.raw.on_board_2, "Easy meals to prepare step by step", "The app provides smart grocery lists based on the selected meals, ensuring users have all the necessary ingredients on hand."));
         adapter = new OnBoardPagerAdapter(requireContext(), list, this);
+        presenter = new OnBoardPresenter(this, Repo.getInstance(
+                ApiClient.getInstance(),
+                ConcreteLocalSource.getInstance(getContext())
+        ));
+        presenter.setFirstTime();
     }
 
     @Override

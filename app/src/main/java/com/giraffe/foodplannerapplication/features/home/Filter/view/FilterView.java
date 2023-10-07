@@ -1,4 +1,4 @@
-package com.giraffe.foodplannerapplication.util.Filter.view;
+package com.giraffe.foodplannerapplication.features.home.Filter.view;
 
 import com.giraffe.foodplannerapplication.models.Category;
 import com.giraffe.foodplannerapplication.models.Country;

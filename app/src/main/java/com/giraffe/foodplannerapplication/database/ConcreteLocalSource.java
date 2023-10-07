@@ -1,11 +1,7 @@
 package com.giraffe.foodplannerapplication.database;
 
 import android.content.Context;
-import android.util.Log;
 
-import androidx.lifecycle.LiveData;
-
-import com.giraffe.foodplannerapplication.features.splash.view.SplashFragment;
 import com.giraffe.foodplannerapplication.models.CategoriesResponse;
 import com.giraffe.foodplannerapplication.models.Category;
 import com.giraffe.foodplannerapplication.models.CountriesResponse;
@@ -20,27 +16,21 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ConcreteLocalSource implements LocalSource {
-    private MealDAO productDAO;
-    private PlanDAO planDAO;
+    private final MealDAO mealDAO;
+    private final PlanDAO planDAO;
     private final SharedHelper shared;
     private static ConcreteLocalSource localSource = null;
-    //private final Observable<List<Meal>> favMeals;
-    //private final Observable<List<PlannedMeal>> plannedMeals;
 
 
     private ConcreteLocalSource(Context context) {
         AppDataBase dataBase = AppDataBase.getInstance(context.getApplicationContext());
         shared = SharedHelper.getInstance(context);
 
-        productDAO = dataBase.getMealDAO();
+        mealDAO = dataBase.getMealDAO();
         planDAO = dataBase.getPlanDAO();
-
-        //favMeals = productDAO.getMeals().subscribeOn(Schedulers.io());
-        //plannedMeals = planDAO.getMeals().subscribeOn(Schedulers.io());
     }
 
     public static ConcreteLocalSource getInstance(Context context) {
@@ -54,13 +44,13 @@ public class ConcreteLocalSource implements LocalSource {
     @Override
     public Completable insertPlannedMeal(PlannedMeal meal) {
         return planDAO.insertMeal(meal).subscribeOn(Schedulers.io());
-        //new Thread(()-> productDAO.insertMeal(meal)).start();
+        //new Thread(()-> mealDAO.insertMeal(meal)).start();
     }
 
     @Override
     public Completable deletePlannedMeal(PlannedMeal meal) {
         return planDAO.deleteMeal(meal).subscribeOn(Schedulers.io());
-        //new Thread(()-> productDAO.deleteMeal(meal)).start();
+        //new Thread(()-> mealDAO.deleteMeal(meal)).start();
     }
 
     @Override
@@ -71,21 +61,30 @@ public class ConcreteLocalSource implements LocalSource {
 
     @Override
     public Completable insertFavMeal(Meal meal) {
-        return productDAO.insertMeal(meal).subscribeOn(Schedulers.io());
-        //new Thread(()-> productDAO.insertMeal(meal)).start();
+        return mealDAO.insertMeal(meal).subscribeOn(Schedulers.io());
+        //new Thread(()-> mealDAO.insertMeal(meal)).start();
     }
 
     @Override
     public Completable deleteFavMeal(Meal meal) {
-        return productDAO.deleteMeal(meal).subscribeOn(Schedulers.io());
-        //new Thread(()-> productDAO.deleteMeal(meal)).start();
+        return mealDAO.deleteMeal(meal).subscribeOn(Schedulers.io());
+        //new Thread(()-> mealDAO.deleteMeal(meal)).start();
     }
 
     @Override
     public Observable<List<Meal>> getFavMeals() {
-        return productDAO.getMeals().subscribeOn(Schedulers.io());
+        return mealDAO.getMeals().subscribeOn(Schedulers.io());
     }
 
+    @Override
+    public Completable deletePlannedMeals() {
+        return planDAO.deleteAllRecords().subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Completable deleteFavoriteMeals() {
+        return mealDAO.deleteAllRecords().subscribeOn(Schedulers.io());
+    }
 
     //=================shared preferences functions=================
 
@@ -112,11 +111,20 @@ public class ConcreteLocalSource implements LocalSource {
     }
 
     @Override
+    public void setFirstTime() {
+        shared.store(SharedKeys.firstTime, "true");
+    }
+
+    @Override
+    public Observable<Boolean> isFirstTime() {
+        return Observable.just(shared.read(SharedKeys.firstTime) == null).subscribeOn(Schedulers.io());
+    }
+
+    @Override
     public List<Category> readCategories() {
         Gson gson = new Gson();
         String json = shared.read(SharedKeys.categories);
         if (json != null) {
-            Log.i(SplashFragment.TAG, json);
             CategoriesResponse response = gson.fromJson(json, CategoriesResponse.class);
             return response.getCategories();
         }

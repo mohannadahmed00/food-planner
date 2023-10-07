@@ -22,9 +22,12 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealVH> {
     List<Meal> meals;
     OnMealClick mealClick;
 
-    public MealsAdapter(List<Meal> meals, OnMealClick mealClick) {
+    boolean isLoggedIn;
+
+    public MealsAdapter(List<Meal> meals, OnMealClick mealClick,boolean isLoggedIn) {
         this.meals = meals;
         this.mealClick = mealClick;
+        this.isLoggedIn = isLoggedIn;
     }
 
     public void setList(List<Meal> meals) {
@@ -59,6 +62,13 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealVH> {
         Meal meal = meals.get(position);
         holder.getTvItem().setText(meal.getStrMeal());
         Glide.with(holder.getView().getContext()).load(meal.getStrMealThumb()).into(holder.getIvItem());
+
+        if (isLoggedIn){
+            holder.getIvFav().setVisibility(View.VISIBLE);
+        }else {
+            holder.getIvFav().setVisibility(View.INVISIBLE);
+        }
+
         holder.getView().setOnClickListener(v -> mealClick.onClick(meal));
         if (meal.isSelected()){
             holder.getIvFav().setColorFilter(ContextCompat.getColor(holder.getView().getContext(), R.color.red));

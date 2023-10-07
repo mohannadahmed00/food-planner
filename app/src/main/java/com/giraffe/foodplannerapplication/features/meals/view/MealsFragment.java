@@ -38,7 +38,7 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
     private Country country;
     private MealsPresenter presenter;
 
-    private final MealsAdapter adapter;
+    private MealsAdapter adapter;
 
     private final List<Meal> meals, favMeals;
     private RecyclerView rvMeals;
@@ -62,7 +62,7 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
         }
         meals = new ArrayList<>();
         favMeals = new ArrayList<>();
-        adapter = new MealsAdapter(meals, this);
+
     }
 
     @Override
@@ -90,7 +90,8 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
         super.onViewCreated(view, savedInstanceState);
         //presenter.getFavMeals();
         inflateViews(view);
-        rvMeals.setAdapter(adapter);
+
+        presenter.isLoggedIn();
     }
 
     @Override
@@ -165,6 +166,21 @@ public class MealsFragment<T> extends Fragment implements MealsView, MealsAdapte
                         () -> {
                         },
                         throwable -> Log.i(TAG, throwable.getMessage())
+                );
+    }
+
+    @Override
+    public void onGetLoggedInFlag(Observable<Boolean> observable) {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        isLoggedIn ->{
+                            adapter = new MealsAdapter(meals, this,isLoggedIn);
+                            rvMeals.setAdapter(adapter);
+
+                        } ,throwable -> {
+
+                            Log.i(TAG,throwable.getMessage());
+                        }
                 );
     }
 

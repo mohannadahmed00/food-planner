@@ -19,4 +19,8 @@ public class FavoritesPresenter {
     public void deleteFavorite(Meal meal){
         view.onDeleteFavorites(repo.deleteFavMeal(meal));
     }
+
+    public void isLoggedIn(){
+        view.onGetLoggedInFlag(repo.isLoggedIn());
+    }
 }

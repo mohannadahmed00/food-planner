@@ -21,4 +21,6 @@ public interface MealsView {
 
     void onMealInserted(Completable completable);
     void onMealDeleted(Completable completable);
+
+    void onGetLoggedInFlag(Observable<Boolean> observable);
 }

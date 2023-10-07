@@ -11,4 +11,6 @@ public interface FavoritesView {
 
     void onGetFavorites(Observable<List<Meal>> observable);
     void onDeleteFavorites(Completable completable);
+
+    void onGetLoggedInFlag(Observable<Boolean> observable);
 }

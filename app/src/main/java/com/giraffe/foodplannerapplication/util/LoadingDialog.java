@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,16 +36,6 @@ public class LoadingDialog extends DialogFragment {
         return instance;
     }
 
-    public void showLoading() {
-        if (!instance.isVisible()) {
-            instance.show(mFragmentManager, "loading");
-        }
-    }
-
-    public void dismissLoading() {
-        instance.dismiss();
-    }
-
     private LoadingDialog(FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
     }
@@ -62,7 +51,9 @@ public class LoadingDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
         return dialog;
     }
 
@@ -72,7 +63,19 @@ public class LoadingDialog extends DialogFragment {
         if (getDialog() != null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
-            getDialog().getWindow().setLayout(width, height);
+            if (getDialog().getWindow() != null) {
+                getDialog().getWindow().setLayout(width, height);
+            }
         }
+    }
+
+    public void showLoading() {
+        if (!instance.isVisible()) {
+            instance.show(mFragmentManager, "loading");
+        }
+    }
+
+    public void dismissLoading() {
+        instance.dismiss();
     }
 }

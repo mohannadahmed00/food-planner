@@ -1,13 +1,19 @@
 package com.giraffe.foodplannerapplication.util;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 
 import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.models.Meal;
@@ -21,19 +27,48 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class BottomSheet {
-    private static Date date;
+    private Date date;
 
-    private static ChipGroup cgType;
+    private TextView tvWeekDay;
 
-    private static TextView tvWeekDay;
+    private static Meal myMeal;
 
-    private static Button btnConfirm;
-
-    private static int mealType = -1, day = -1;
+    private int mealType, day;
 
     private static final String TAG = "BottomSheet";
+    private BottomSheetDialog bottomSheetDialog;
 
-    private static void showDatePickerDialog(Context context) {
+    private static BottomSheet instance;
+
+    public static BottomSheet getInstance(Context context, Meal meal, OnBottomConfirmed onBottomConfirmed) {
+        myMeal = meal;
+        if (instance == null) {
+            instance = new BottomSheet(context, meal, onBottomConfirmed);
+        }
+        return instance;
+    }
+
+    public void show() {
+        if (!bottomSheetDialog.isShowing()) {
+            bottomSheetDialog.show();
+        }
+    }
+
+    public void dismiss() {
+        if (bottomSheetDialog.isShowing()) {
+            bottomSheetDialog.dismiss();
+        }
+    }
+
+
+    private BottomSheet(Context context, Meal meal, OnBottomConfirmed onBottomConfirmed) {
+        mealType = -1;
+        day = -1;
+        myMeal = meal;
+        createBottomSheetDialog(context, onBottomConfirmed);
+    }
+
+    private void showDatePickerDialog(Context context) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         Date startDate = calendar.getTime();//fri => 6
@@ -47,11 +82,6 @@ public class BottomSheet {
         calendar.add(Calendar.DAY_OF_WEEK, daysUntilNextFriday);
         Date maxDate = calendar.getTime();
         DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
-            /*date = new Date(year, month, dayOfMonth);
-            Date d = new Date(date.getTime());
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String readableDate = sdf.format(d);
-            tvWeekDay.setText(readableDate);*/
             Calendar mCalendar = Calendar.getInstance();
             mCalendar.set(Calendar.HOUR, 0);
             mCalendar.set(Calendar.MINUTE, 0);
@@ -79,15 +109,15 @@ public class BottomSheet {
         datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.orange));
     }
 
-    public static void showBottomSheetDialog(Context context, Meal meal, OnBottomConfirmed onBottomConfirmed) {
+    private void createBottomSheetDialog(Context context, OnBottomConfirmed onBottomConfirmed) {
 
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
+        bottomSheetDialog = new BottomSheetDialog(context);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_layout);
 
 
-        cgType = bottomSheetDialog.findViewById(R.id.cg_type);
+        ChipGroup cgType = bottomSheetDialog.findViewById(R.id.cg_type);
         tvWeekDay = bottomSheetDialog.findViewById(R.id.tv_week_day);
-        btnConfirm = bottomSheetDialog.findViewById(R.id.btn_confirm);
+        Button btnConfirm = bottomSheetDialog.findViewById(R.id.btn_confirm);
 
         cgType.setOnCheckedChangeListener((group, checkedId) -> {
             Chip chip = group.findViewById(checkedId);
@@ -113,17 +143,17 @@ public class BottomSheet {
         tvWeekDay.setOnClickListener(v -> showDatePickerDialog(context));
 
         btnConfirm.setOnClickListener(v -> {
-            if (meal != null) {
+            if (myMeal != null) {
                 if (isValid(context)) {
-                    PlannedMeal plannedMeal = new PlannedMeal(date.getTime(), day, mealType, meal);
-                    onBottomConfirmed.onClick(plannedMeal,bottomSheetDialog);
+                    PlannedMeal plannedMeal = new PlannedMeal(date.getTime(), day, mealType, myMeal);
+                    onBottomConfirmed.onClick(plannedMeal);
                 }
             }
         });
-        bottomSheetDialog.show();
+        //bottomSheetDialog.show();
     }
 
-    private static boolean isValid(Context context) {
+    private boolean isValid(Context context) {
         if (mealType == -1) {
             Toast.makeText(context, "Choose your meal type.", Toast.LENGTH_SHORT).show();
             return false;
@@ -135,11 +165,7 @@ public class BottomSheet {
         return true;
     }
 
-    public interface OnBottomConfirmed {
-        void onClick(PlannedMeal plannedMeal,BottomSheetDialog dialog);
-    }
-
-    private static int getDayNum(String dayStr) {
+    private int getDayNum(String dayStr) {
         switch (dayStr) {
             case "Saturday":
                 return Constants.DAYS.SATURDAY;
@@ -157,6 +183,58 @@ public class BottomSheet {
                 return Constants.DAYS.FRIDAY;
             default:
                 return -1;
+        }
+    }
+
+    public interface OnBottomConfirmed {
+        void onClick(PlannedMeal plannedMeal);
+    }
+
+
+    public static class StartGameDialogFragment extends DialogFragment {
+        OnDialogClicks onDialogClicks;
+
+        public StartGameDialogFragment(OnDialogClicks onDialogClicks) {
+            this.onDialogClicks = onDialogClicks;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction.
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = requireActivity().getLayoutInflater();
+            builder.setView(inflater.inflate(R.layout.game_layout, null))
+                    // Add action buttons
+                    .setPositiveButton("R.string.signin", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            // Sign in the user.
+                        }
+                    })
+                    .setNegativeButton("R.string.cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            StartGameDialogFragment.this.getDialog().cancel();
+                        }
+                    });
+            /*builder.setMessage("R.string.dialog_start_game")
+                    .setPositiveButton("R.string.start", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            onDialogClicks.onYesClick();
+                        }
+                    })
+                    .setNegativeButton("R.string.cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            onDialogClicks.onNoClick();
+                        }
+                    });*/
+            // Create the AlertDialog object and return it.
+            return builder.create();
+        }
+
+        public interface OnDialogClicks {
+            void onYesClick();
+
+            void onNoClick();
         }
     }
 }

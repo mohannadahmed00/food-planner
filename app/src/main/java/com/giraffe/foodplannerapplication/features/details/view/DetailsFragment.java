@@ -59,7 +59,7 @@ public class DetailsFragment extends Fragment implements DetailsView {
 
     private Context context;
 
-    private BottomSheetDialog bottomSheetDialog;
+    private BottomSheet bottomSheet;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -80,6 +80,7 @@ public class DetailsFragment extends Fragment implements DetailsView {
         ingredients = meal.getIngredients();
         adapter = new IngredientsAdapter(ingredients);
         presenter.getMeals();
+        presenter.isLoggedIn();
     }
 
     @Override
@@ -105,6 +106,7 @@ public class DetailsFragment extends Fragment implements DetailsView {
                 youTubePlayer.loadVideo(videoId, 0f);
             }
         });
+        bottomSheet = BottomSheet.getInstance(getContext(), meal, (plannedMeal) -> presenter.insertPlannedMeal(plannedMeal));
         rvIngredients.setAdapter(adapter);
     }
 
@@ -144,14 +146,7 @@ public class DetailsFragment extends Fragment implements DetailsView {
             }*/
         });
         ivAdd.setOnClickListener(v -> {
-            BottomSheet.showBottomSheetDialog(getContext(), meal, new BottomSheet.OnBottomConfirmed() {
-                @Override
-                public void onClick(PlannedMeal plannedMeal, BottomSheetDialog dialog) {
-                    bottomSheetDialog = dialog;
-                    presenter.insertPlannedMeal(plannedMeal);
-                    Log.i(TAG, "store " + plannedMeal.getMeal().getStrMeal() + " as " + plannedMeal.getType() + " at " + plannedMeal.getDate().toString());
-                }
-            });
+            bottomSheet.show();
         });
     }
 
@@ -202,12 +197,28 @@ public class DetailsFragment extends Fragment implements DetailsView {
     @Override
     public void onPlannedMealInserted(Completable completable) {
         completable.observeOn(AndroidSchedulers.mainThread()).subscribe(
-                () -> {
-                    if (bottomSheetDialog != null) {
-                        bottomSheetDialog.dismiss();
-                    }
-                },
+                () -> bottomSheet.dismiss(),
                 throwable -> Log.i(TAG, "meal has not be planned")
         );
+    }
+
+    @Override
+    public void onGetLoggedInFlag(Observable<Boolean> observable) {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        isLoggedIn -> {
+                            if (isLoggedIn) {
+                                ivAdd.setVisibility(View.VISIBLE);
+                                ivFav.setVisibility(View.VISIBLE);
+                            } else {
+                                ivAdd.setVisibility(View.INVISIBLE);
+                                ivFav.setVisibility(View.INVISIBLE);
+                            }
+                        }, throwable -> {
+                            ivAdd.setVisibility(View.INVISIBLE);
+                            ivFav.setVisibility(View.INVISIBLE);
+                            Log.i(TAG, throwable.getMessage());
+                        }
+                );
     }
 }

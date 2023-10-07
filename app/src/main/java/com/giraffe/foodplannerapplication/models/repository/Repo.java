@@ -2,7 +2,10 @@ package com.giraffe.foodplannerapplication.models.repository;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.giraffe.foodplannerapplication.database.LocalSource;
+import com.giraffe.foodplannerapplication.features.login.view.LoginFragment;
 import com.giraffe.foodplannerapplication.features.splash.view.SplashFragment;
 import com.giraffe.foodplannerapplication.models.Category;
 import com.giraffe.foodplannerapplication.models.Country;
@@ -11,7 +14,13 @@ import com.giraffe.foodplannerapplication.models.Meal;
 import com.giraffe.foodplannerapplication.models.PlannedMeal;
 import com.giraffe.foodplannerapplication.network.NetworkCallback;
 import com.giraffe.foodplannerapplication.network.RemoteSource;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.List;
 
@@ -80,16 +89,37 @@ public class Repo implements RepoInterface {
     }
 
     @Override
-    public boolean logout() {
+    public Completable logout() {
         mAuth.signOut();
-        return mAuth.getCurrentUser() == null;
+        return Completable.create(emitter -> {
+            if (mAuth.getCurrentUser() == null){
+                emitter.onComplete();
+            }else {
+                emitter.onError(new Throwable("something went wrong"));
+            }
+        }).subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Completable loginWithGoogle(String idToken) {
+        return Completable.create(emitter -> {
+            AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
+            mAuth.signInWithCredential(firebaseCredential)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            emitter.onComplete();
+                        } else {
+                            emitter.onError(task.getException());
+                            Log.w(LoginFragment.TAG, "signInWithCredential:failure", task.getException());
+                        }
+                    });
+        }).subscribeOn(Schedulers.io());
     }
 
     @Override
     public Observable<List<Category>> getCategories() {
         List<Category> categories = localSource.readCategories();
         if (categories == null || categories.isEmpty()) {
-            Log.i(SplashFragment.TAG, "getCategories from remote");
             return remoteSource.callRequest().getCategories()
                     .subscribeOn(Schedulers.io())
                     .map(categoriesResponse -> {
@@ -105,7 +135,6 @@ public class Repo implements RepoInterface {
     public Observable<List<Country>> getCountries() {
         List<Country> countries = localSource.readCountries();
         if (countries == null || countries.isEmpty()) {
-            Log.i(SplashFragment.TAG, "getCountries from remote");
             return remoteSource.callRequest().getCountries()
                     .subscribeOn(Schedulers.io())
                     .map(countriesResponse -> {
@@ -122,7 +151,6 @@ public class Repo implements RepoInterface {
     public Observable<List<Ingredient>> getIngredients() {
         List<Ingredient> ingredients = localSource.readIngredients();
         if (ingredients == null || ingredients.isEmpty()) {
-            Log.i(SplashFragment.TAG, "getIngredients from remote");
             return remoteSource.callRequest().getIngredients()
                     .subscribeOn(Schedulers.io())
                     .map(ingredientsResponse -> {
@@ -154,11 +182,30 @@ public class Repo implements RepoInterface {
                 .map(mealsResponse -> mealsResponse.getMeals());
     }
 
+    @Override
+    public Completable deletePlannedMeals() {
+        return localSource.deletePlannedMeals();
+    }
+
+    @Override
+    public Completable deleteFavoriteMeals() {
+        return localSource.deleteFavoriteMeals();
+    }
 
     //=================local functions=================
     @Override
-    public boolean isLoggedIn() {
-        return mAuth.getCurrentUser() != null;
+    public Observable<Boolean> isLoggedIn() {
+        return Observable.just(mAuth.getCurrentUser() != null).subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<Boolean> isFirstTime() {
+        return localSource.isFirstTime();
+    }
+
+    @Override
+    public void setFirstTime() {
+        localSource.setFirstTime();
     }
 
     @Override
@@ -190,5 +237,6 @@ public class Repo implements RepoInterface {
     public Completable deletePlannedMeal(PlannedMeal meal) {
         return localSource.deletePlannedMeal(meal);
     }
+
 
 }

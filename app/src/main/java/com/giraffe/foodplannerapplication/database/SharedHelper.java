@@ -3,6 +3,8 @@ package com.giraffe.foodplannerapplication.database;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import io.reactivex.rxjava3.core.Completable;
+
 public class SharedHelper {
     private static SharedHelper instance;
     private static SharedPreferences shared;

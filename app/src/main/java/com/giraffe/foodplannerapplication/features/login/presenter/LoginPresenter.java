@@ -27,4 +27,8 @@ public class LoginPresenter {
             }
         });
     }
+
+    public void loginWithGoogle(String idToken){
+        view.onGoogleLogin(repo.loginWithGoogle(idToken));
+    }
 }

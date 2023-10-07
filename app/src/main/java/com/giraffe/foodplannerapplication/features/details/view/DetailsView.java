@@ -20,4 +20,6 @@ public interface DetailsView {
 
     void onPlannedMealInserted(Completable completable);
 
+    void onGetLoggedInFlag(Observable<Boolean> observable);
+
 }

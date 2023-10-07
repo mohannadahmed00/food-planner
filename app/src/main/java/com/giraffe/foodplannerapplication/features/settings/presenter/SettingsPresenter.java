@@ -15,4 +15,16 @@ public class SettingsPresenter {
     public void logout() {
         view.onLogout(repo.logout());
     }
+
+    public void isLoggedIn() {
+        view.onGetLoggedInFlag(repo.isLoggedIn());
+    }
+
+    public void deletePlannedMeals() {
+        view.onPlannedDeleted(repo.deletePlannedMeals());
+    }
+
+    public void deleteFavoriteMeals() {
+        view.onFavoritesDeleted(repo.deleteFavoriteMeals());
+    }
 }

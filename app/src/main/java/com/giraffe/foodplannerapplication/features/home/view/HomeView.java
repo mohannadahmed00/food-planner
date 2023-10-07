@@ -28,4 +28,8 @@ public interface HomeView {
 
     void onPlannedMealInserted(Completable completable);
 
+    void onGetLoggedInFlag(Observable<Boolean> observable);
+
+
+
 }

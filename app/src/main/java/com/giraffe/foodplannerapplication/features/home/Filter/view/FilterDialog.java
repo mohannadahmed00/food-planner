@@ -1,16 +1,12 @@
-package com.giraffe.foodplannerapplication.util.Filter.view;
+package com.giraffe.foodplannerapplication.features.home.Filter.view;
 
 
 import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -27,11 +23,10 @@ import com.giraffe.foodplannerapplication.models.Country;
 import com.giraffe.foodplannerapplication.models.Ingredient;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
-import com.giraffe.foodplannerapplication.util.Filter.presenter.FilterPresenter;
+import com.giraffe.foodplannerapplication.features.home.Filter.presenter.FilterPresenter;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -46,17 +41,11 @@ public class FilterDialog extends DialogFragment implements FilterView {
 
     private ChipGroup cgCategory, cgCountry, cgIngredient;
 
-    Button btnContinue;
+    private String category, country, ingredient;
 
-    String category, country, ingredient;
+    private final OnFilterClick onFilterClick;
 
-    List<Chip> categories, countries, ingredients;
-
-    OnFilterClick onFilterClick;
-
-    FilterPresenter presenter;
-
-    Handler handler;
+    private FilterPresenter presenter;
 
     public static FilterDialog getInstance(FragmentManager fragmentManager, OnFilterClick onFilterClick, String category, String country, String ingredient) {
         if (instance == null) {
@@ -81,9 +70,6 @@ public class FilterDialog extends DialogFragment implements FilterView {
         presenter = new FilterPresenter(this, Repo.getInstance(
                 ApiClient.getInstance(),
                 ConcreteLocalSource.getInstance(getContext())));
-        categories = new ArrayList<>();
-        countries = new ArrayList<>();
-        ingredients = new ArrayList<>();
     }
 
     @Nullable
@@ -104,7 +90,7 @@ public class FilterDialog extends DialogFragment implements FilterView {
         cgCategory = view.findViewById(R.id.cg_category);
         cgCountry = view.findViewById(R.id.cg_country);
         cgIngredient = view.findViewById(R.id.cg_ingredient);
-        btnContinue = view.findViewById(R.id.btn_continue);
+        Button btnContinue = view.findViewById(R.id.btn_continue);
 
         presenter.getCategories();
         presenter.getCountries();
@@ -147,10 +133,7 @@ public class FilterDialog extends DialogFragment implements FilterView {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        return dialog;
+        return super.onCreateDialog(savedInstanceState);
     }
 
     @Override
@@ -159,7 +142,9 @@ public class FilterDialog extends DialogFragment implements FilterView {
         if (getDialog() != null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
-            getDialog().getWindow().setLayout(width, height);
+            if (getDialog().getWindow() != null) {
+                getDialog().getWindow().setLayout(width, height);
+            }
         }
     }
 
@@ -174,7 +159,7 @@ public class FilterDialog extends DialogFragment implements FilterView {
                         chip.setChecked(true);
                     }
                     cgCategory.addView(chip);
-                },throwable -> Log.i(TAG,throwable.getMessage()));
+                }, throwable -> Log.i(TAG, throwable.getMessage()));
     }
 
     @Override
@@ -188,18 +173,7 @@ public class FilterDialog extends DialogFragment implements FilterView {
                         chip.setChecked(true);
                     }
                     cgCountry.addView(chip);
-                },throwable -> Log.i(TAG,throwable.getMessage()));
-        /*List<Chip> chips = countries.stream().map(e -> createChip(e.getStrArea())).collect(Collectors.toList());
-        for (Chip chip : chips) {
-            if (country != null && chip.getText().toString().trim().equals(country)) {
-                chip.setChecked(true);
-            }
-            cgCountry.addView(chip);
-        }*/
-        /*new Thread(()->{
-            this.countries = countries.stream().map(e->createChip(e.getStrArea())).collect(Collectors.toList());
-            handler.sendEmptyMessage(1);
-        }).start();*/
+                }, throwable -> Log.i(TAG, throwable.getMessage()));
     }
 
     @Override
@@ -213,7 +187,7 @@ public class FilterDialog extends DialogFragment implements FilterView {
                         chip.setChecked(true);
                     }
                     cgIngredient.addView(chip);
-                },throwable -> Log.i(TAG,throwable.getMessage()));
+                }, throwable -> Log.i(TAG, throwable.getMessage()));
     }
 
     public void showFilter() {

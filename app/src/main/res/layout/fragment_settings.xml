@@ -6,21 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".features.settings.view.SettingsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/settings"
-        android:textColor="@color/orange"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/btn_logout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_logout"
@@ -29,7 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="70dp"
         android:background="@drawable/ripple_effect"
-        android:text="Logout"
+        android:text="@string/logout"
+        android:textColor="@color/orange"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -7,11 +7,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
@@ -19,7 +19,12 @@ import com.giraffe.foodplannerapplication.features.settings.presenter.SettingsPr
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+
 public class SettingsFragment extends Fragment implements SettingsView {
+    private static final String TAG = "SettingsFragment";
     private Button btnLogout;
     private SettingsPresenter presenter;
 
@@ -42,7 +47,8 @@ public class SettingsFragment extends Fragment implements SettingsView {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        initClicks();
+        //initClicks();
+        presenter.isLoggedIn();
     }
 
     @Override
@@ -53,15 +59,50 @@ public class SettingsFragment extends Fragment implements SettingsView {
 
     @Override
     public void initClicks() {
-        btnLogout.setOnClickListener(v -> presenter.logout());
+        //btnLogout.setOnClickListener(v -> presenter.logout());
     }
 
     @Override
-    public void onLogout(boolean isLoggedOut) {
-        if (isLoggedOut) {
-            Navigation.findNavController(requireView()).setGraph(R.navigation.auth_graph);
-        } else {
-            Toast.makeText(getContext(), R.string.an_unknown_error_occurred, Toast.LENGTH_SHORT).show();
-        }
+    public void onLogout(Completable completable) {
+        completable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> presenter.deleteFavoriteMeals(), throwable -> Log.i(TAG, throwable.getMessage())
+                );
+    }
+    @Override
+    public void onGetLoggedInFlag(Observable<Boolean> observable) {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isLoggedIn -> {
+                    if (isLoggedIn) {
+                        btnLogout.setText(R.string.logout);
+                        btnLogout.setOnClickListener(v -> presenter.logout());
+                    } else {
+                        btnLogout.setText(R.string.login);
+                        btnLogout.setOnClickListener(v -> Navigation.findNavController(v).setGraph(R.navigation.auth_graph));
+                    }
+                }, throwable -> {
+                    btnLogout.setText(R.string.login);
+                    btnLogout.setOnClickListener(v -> Navigation.findNavController(v).setGraph(R.navigation.auth_graph));
+                    Log.i(TAG, throwable.getMessage());
+
+                });
+    }
+
+    @Override
+    public void onFavoritesDeleted(Completable completable) {
+        completable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> presenter.deletePlannedMeals(), throwable -> Log.i(TAG, throwable.getMessage())
+                );
+    }
+
+    @Override
+    public void onPlannedDeleted(Completable completable) {
+        completable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> {
+                            Navigation.findNavController(requireView()).setGraph(R.navigation.auth_graph);
+                        }, throwable -> Log.i(TAG, throwable.getMessage())
+                );
     }
 }

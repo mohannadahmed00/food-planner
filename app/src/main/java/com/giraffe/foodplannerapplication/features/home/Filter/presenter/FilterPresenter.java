@@ -1,14 +1,7 @@
-package com.giraffe.foodplannerapplication.util.Filter.presenter;
+package com.giraffe.foodplannerapplication.features.home.Filter.presenter;
 
-import com.giraffe.foodplannerapplication.models.Category;
-import com.giraffe.foodplannerapplication.models.Country;
-import com.giraffe.foodplannerapplication.models.Ingredient;
+import com.giraffe.foodplannerapplication.features.home.Filter.view.FilterView;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
-import com.giraffe.foodplannerapplication.network.NetworkCallback;
-import com.giraffe.foodplannerapplication.util.Filter.view.FilterView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FilterPresenter {
     FilterView view;
