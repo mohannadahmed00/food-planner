@@ -7,11 +7,11 @@
 
     <ImageView
         android:id="@+id/iv_back"
-        android:padding="16dp"
         android:layout_width="0dp"
         android:layout_height="70dp"
-        android:src="@drawable/ic_arrow_back"
         android:background="@color/yellow"
+        android:padding="16dp"
+        android:src="@drawable/ic_arrow_back"
         app:layout_constraintBottom_toBottomOf="@id/tv_bar"
         app:layout_constraintEnd_toStartOf="@id/tv_bar"
         app:layout_constraintHorizontal_weight="1"
@@ -22,13 +22,15 @@
     <TextView
         android:id="@+id/tv_bar"
         android:layout_width="0dp"
-        android:gravity="center_vertical"
         android:layout_height="70dp"
+        android:background="@color/yellow"
+        android:ellipsize="marquee"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingEnd="16dp"
+        android:textColor="@color/orange"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="@color/orange"
-        android:background="@color/yellow"
-        android:text="Meal's Details"
         app:layout_constraintBottom_toTopOf="@id/scroll_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="5"
@@ -60,7 +62,6 @@
                 app:layout_constraintBottom_toTopOf="@id/tv_info"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/rounded_square" />
 
@@ -71,8 +72,7 @@
                 android:layout_margin="8dp"
                 android:gravity="bottom"
                 android:textColor="@color/white"
-                android:textSize="32sp"
-                android:textStyle="bold"
+                android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_meal"
                 app:layout_constraintEnd_toEndOf="@+id/iv_meal"
                 app:layout_constraintHorizontal_bias="0"
@@ -84,10 +84,9 @@
                 android:id="@+id/tv_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Info"
+                android:text="@string/info"
                 android:textColor="@color/orange"
-                android:textSize="24sp"
-
+                android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@id/tv_category"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/iv_meal"
@@ -98,10 +97,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/gray"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@id/tv_instruction"
                 app:layout_constraintEnd_toStartOf="@id/tv_country"
-
                 app:layout_constraintStart_toStartOf="@+id/tv_info"
                 app:layout_constraintTop_toBottomOf="@+id/tv_info"
                 tools:text="category: desert" />
@@ -111,7 +109,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:textColor="@color/gray"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@id/tv_category"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_category"
@@ -123,9 +121,9 @@
                 android:id="@+id/tv_instruction"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Instructions"
+                android:text="@string/instructions"
                 android:textColor="@color/orange"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@id/tv_steps"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tv_category"
@@ -135,13 +133,13 @@
                 android:id="@+id/tv_steps"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="1-do something\n2-do something\n3-do something\n4-do something"
                 android:textColor="@color/gray"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@id/wv_instructions"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tv_instruction"
-                app:layout_constraintTop_toBottomOf="@+id/tv_instruction" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_instruction"
+                tools:text="1-do something\n2-do something\n3-do something\n4-do something" />
 
 
             <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -162,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/ingredient"
                 android:textColor="@color/orange"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@id/rv_ingredients"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/wv_instructions"
@@ -174,8 +172,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:text="@string/ingredient"
-                android:textColor="@color/orange"
-                android:textSize="24sp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -188,8 +184,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:visibility="invisible"
                 android:src="@drawable/ic_favorite"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/iv_meal"
                 app:layout_constraintEnd_toEndOf="@id/iv_meal"
                 app:layout_constraintHorizontal_bias="1"
@@ -199,16 +195,16 @@
 
             <ImageView
                 android:id="@+id/iv_add"
-                android:visibility="invisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintHorizontal_bias="1"
-                app:layout_constraintStart_toStartOf="@id/iv_meal"
                 android:src="@drawable/ic_add_calender"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_fav_details"
                 app:layout_constraintEnd_toStartOf="@+id/iv_fav_details"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@id/iv_meal"
                 app:layout_constraintTop_toTopOf="@+id/iv_fav_details" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

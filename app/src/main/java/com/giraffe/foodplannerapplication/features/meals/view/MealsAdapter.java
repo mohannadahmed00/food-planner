@@ -29,23 +29,31 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealVH> {
         this.mealClick = mealClick;
         this.isLoggedIn = isLoggedIn;
     }
+    public void updateLoginFlag(boolean isLoggedIn){
+        this.isLoggedIn = isLoggedIn;
+        notifyDataSetChanged();
+    }
 
-    public void setList(List<Meal> meals) {
+    public void updateList(List<Meal> meals,boolean isLoggedIn) {
+        this.isLoggedIn = isLoggedIn;
         this.meals.clear();
         this.meals.addAll(meals);
         notifyDataSetChanged();
     }
 
-    public void updateFavorites(List<Meal> allMeals,List<Meal> favMeals){
-        this.meals.clear();
-        meals.addAll(allMeals.stream().map(m -> {
-            favMeals.stream().forEach(f -> {
-                if (f.getIdMeal().equals(m.getIdMeal())) {
-                    m.setSelected(true);
+    public void updateFavorites(List<Meal> favMeals){
+        for (Meal meal:meals) {
+            for (Meal fav:favMeals) {
+                if (meal.getIdMeal().equals(fav.getIdMeal())){
+                    meal.setSelected(true);
+                    break;
+                }else {
+                    meal.setSelected(false);
                 }
-            });
-            return m;
-        }).collect(Collectors.toList()));
+                meal.setSelected(fav.getIdMeal().equals(meal.getIdMeal()));
+            }
+
+        }
         notifyDataSetChanged();
     }
 

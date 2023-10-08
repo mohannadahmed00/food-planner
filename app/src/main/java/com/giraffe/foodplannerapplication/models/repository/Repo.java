@@ -234,7 +234,6 @@ public class Repo implements RepoInterface {
                                             emitter.onError(throwable);
                                         }
                                 );
-
                             } else {
                                 if (task.getException() != null) {
                                     emitter.onError(task.getException());
@@ -336,7 +335,13 @@ public class Repo implements RepoInterface {
             mAuth.signInWithCredential(firebaseCredential)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            emitter.onComplete();
+                            getBackupData().subscribe(
+                                    () -> emitter.onComplete(),
+                                    throwable -> {
+                                        Log.e(LoginFragment.TAG, throwable.getMessage());
+                                        emitter.onError(throwable);
+                                    }
+                            );
                         } else {
                             emitter.onError(task.getException());
                             Log.w(LoginFragment.TAG, "signInWithCredential:failure", task.getException());

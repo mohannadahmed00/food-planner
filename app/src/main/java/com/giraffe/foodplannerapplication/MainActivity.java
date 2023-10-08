@@ -1,6 +1,9 @@
 package com.giraffe.foodplannerapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -19,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bottomNavigationView = findViewById(R.id.bottom_nav_view);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        bottomNavigationView = findViewById(R.id.bottom_nav_view);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         navController.addOnDestinationChangedListener((navController, navDestination, bundle) -> {
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
                 hideBottomNav();
             }
         });
+
     }
 
     private void showBottomNav() {
@@ -39,5 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void hideBottomNav() {
         bottomNavigationView.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBundle("nav_state",navController.saveState());
     }
 }

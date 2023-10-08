@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.giraffe.foodplannerapplication.R;
@@ -270,11 +271,11 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
             favorites.forEach(
                     meal -> {
                         if (meal.getIdMeal().equals(randomMeal.getIdMeal())) {
-                            Log.e(TAG, randomMeal.getStrMeal() + " : red");
+                            Log.i(TAG, randomMeal.getStrMeal() + " : red");
                             randomMeal.setSelected(true);
                             ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
                         } else {
-                            Log.e(TAG, randomMeal.getStrMeal() + " : white");
+                            Log.i(TAG, randomMeal.getStrMeal() + " : white");
                             randomMeal.setSelected(false);
                             ivFav.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white));
                         }
@@ -323,7 +324,13 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
                             searchAdapter.setList(meals);
                         }
                     }
-                }, throwable -> Log.i(TAG, throwable.getMessage()));
+                }, throwable -> {
+                    dismissDialog();
+                    Toast.makeText(requireContext(), "no result", Toast.LENGTH_SHORT).show();
+                    viewBlur.setVisibility(View.INVISIBLE);
+                    rvSearch.setVisibility(View.INVISIBLE);
+                    Log.e(TAG, throwable.getMessage());
+                });
     }
 
     @Override
@@ -424,7 +431,7 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
                         meals -> {
                             this.favorites.addAll(meals);
                             if (randomMeal != null) {
-                                Log.e(TAG, "update random meal");
+                                Log.i(TAG, "update random meal");
                                 handleRandomMeal();
                                 /*meals.stream().forEach(
                                         meal -> {
@@ -436,7 +443,9 @@ public class HomeFragment extends Fragment implements HomeView, OnFilterClick, C
                                 );*/
                             }
                         },
-                        throwable -> Log.e(TAG, throwable.getMessage())
+                        throwable -> {
+                            Log.e(TAG, throwable.getMessage());
+                        }
                 );
     }
 

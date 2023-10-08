@@ -1,5 +1,6 @@
 package com.giraffe.foodplannerapplication.features.settings.view;
 
+import android.animation.Animator;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,16 +9,22 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.giraffe.foodplannerapplication.R;
 import com.giraffe.foodplannerapplication.database.ConcreteLocalSource;
 import com.giraffe.foodplannerapplication.features.settings.presenter.SettingsPresenter;
 import com.giraffe.foodplannerapplication.models.repository.Repo;
 import com.giraffe.foodplannerapplication.network.ApiClient;
+import com.giraffe.foodplannerapplication.util.NetworkConnection;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
@@ -27,6 +34,8 @@ public class SettingsFragment extends Fragment implements SettingsView {
     public static final String TAG = "SettingsFragment";
     private Button btnLogout, btnBackup;
     private SettingsPresenter presenter;
+
+    private LottieAnimationView lvDone;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,11 +57,33 @@ public class SettingsFragment extends Fragment implements SettingsView {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
         //initClicks();
+        lvDone.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(@NonNull Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(@NonNull Animator animator) {
+                lvDone.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(@NonNull Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(@NonNull Animator animator) {
+
+            }
+        });
         presenter.isLoggedIn();
     }
 
     @Override
     public void initViews(View view) {
+        lvDone = view.findViewById(R.id.lv_done);
         btnLogout = view.findViewById(R.id.btn_logout);
         btnBackup = view.findViewById(R.id.btn_backup);
 
@@ -78,7 +109,11 @@ public class SettingsFragment extends Fragment implements SettingsView {
                     if (isLoggedIn) {
                         btnBackup.setVisibility(View.VISIBLE);
                         btnLogout.setText(R.string.logout);
-                        btnBackup.setOnClickListener(v -> presenter.backup());
+                        btnBackup.setOnClickListener(v -> {
+                            if (isConnected()) {
+                                presenter.backup();
+                            }
+                        });
                         btnLogout.setOnClickListener(v -> presenter.logout());
                     } else {
                         btnBackup.setVisibility(View.INVISIBLE);
@@ -115,7 +150,20 @@ public class SettingsFragment extends Fragment implements SettingsView {
     @Override
     public void onDataBackedUp(Completable completable) {
         completable.subscribe(
-                () -> Log.i(TAG, "Data has been backed up"), throwable -> Log.e(TAG, throwable.getMessage())
+                () -> {
+                    lvDone.setVisibility(View.VISIBLE);
+                    lvDone.playAnimation();
+                    Log.i(TAG, "Data has been backed up");
+                }, throwable -> Log.e(TAG, throwable.getMessage())
         );
+    }
+
+    private boolean isConnected() {
+        if (NetworkConnection.isConnected(requireContext())) {
+            return true;
+        } else {
+            Toast.makeText(getContext(), R.string.check_your_internet_connection_and_try_again, Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 }

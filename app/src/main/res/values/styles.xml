@@ -5,21 +5,21 @@
     <style name="yellow_button">
         <item name="android:gravity">center</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/orange</item>
         <item name="backgroundTint">@color/yellow</item>
     </style>
 
     <style name="red_button">
         <item name="android:gravity">center</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
         <item name="backgroundTint">@color/red</item>
     </style>
 
     <style name="green_button">
         <item name="android:gravity">center</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
         <item name="backgroundTint">@color/green</item>
     </style>
 

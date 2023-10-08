@@ -6,19 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".features.settings.view.SettingsFragment">
 
+
     <Button
         android:id="@+id/btn_backup"
         style="@style/green_button"
         android:layout_width="0dp"
-        android:visibility="invisible"
         android:layout_height="wrap_content"
         android:background="@drawable/ripple_effect"
-        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/backup"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/btn_logout"
-        android:text="Backup"
-        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/btn_logout"
-        app:layout_constraintStart_toStartOf="@+id/btn_logout" />
+        app:layout_constraintStart_toStartOf="@+id/btn_logout"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <Button
@@ -29,10 +29,24 @@
         android:layout_marginHorizontal="70dp"
         android:background="@drawable/ripple_effect"
         android:text="@string/logout"
-        android:textColor="@color/orange"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_backup" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lv_done"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:background="@color/trans_light_gray"
+        android:paddingHorizontal="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/done" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

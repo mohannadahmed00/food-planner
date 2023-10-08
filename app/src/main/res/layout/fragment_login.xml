@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="32dp"
-        android:text="Hello there !\nWelcome Back"
+        android:text="@string/hello_there_nwelcome_back"
         android:textColor="@color/orange"
         android:textSize="42sp"
         android:textStyle="bold"
@@ -28,7 +28,7 @@
         android:layout_marginTop="50dp"
         android:text="@string/email"
         android:textColor="@color/orange"
-        android:textSize="22sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/edt_email"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:text="@string/password"
         android:textColor="@color/orange"
-        android:textSize="22sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/edt_email"
         app:layout_constraintTop_toBottomOf="@+id/tv_email_error" />
 
@@ -98,9 +98,9 @@
         style="@style/red_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/ripple_effect"
-        android:text="Login with Google"
         android:layout_marginTop="16dp"
+        android:background="@drawable/ripple_effect"
+        android:text="@string/login_with_google"
         app:layout_constraintEnd_toEndOf="@+id/btn_login"
         app:layout_constraintStart_toStartOf="@+id/btn_login"
         app:layout_constraintTop_toBottomOf="@+id/btn_login" />

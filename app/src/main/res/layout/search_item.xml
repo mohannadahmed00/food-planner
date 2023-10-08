@@ -11,8 +11,7 @@
         android:background="@drawable/edt_rounded"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:padding="15dp"
-        android:text="Beef"
+        android:padding="16dp"
         android:textColor="@color/orange"
         android:textSize="16sp"
         android:textStyle="bold" />

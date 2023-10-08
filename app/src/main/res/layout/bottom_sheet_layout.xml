@@ -12,7 +12,7 @@
         android:layout_margin="16dp"
         android:text="Select meal type:"
         android:textColor="@color/orange"
-        android:textSize="22sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/cg_type"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
@@ -22,7 +22,6 @@
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/cg_type"
-        app:selectionRequired="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -30,6 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_type"
+        app:selectionRequired="true"
         app:singleSelection="true">
 
         <com.google.android.material.chip.Chip
@@ -42,13 +42,13 @@
             style="@style/Widget.Material3.Chip.Filter.Elevated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lunch" />
+            android:text="@string/lunch" />
 
         <com.google.android.material.chip.Chip
             style="@style/Widget.Material3.Chip.Filter.Elevated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dinner" />
+            android:text="@string/dinner" />
     </com.google.android.material.chip.ChipGroup>
 
     <TextView
@@ -56,9 +56,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Select date of meal:"
+        android:text="@string/select_date_of_meal"
         android:textColor="@color/orange"
-        android:textSize="22sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/tv_week_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
@@ -69,10 +69,10 @@
         android:id="@+id/tv_week_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Wed 22/5/2023"
+        android:layout_margin="18dp"
+        android:text="@string/day_month"
         android:textColor="@color/gray"
-        android:textSize="22sp"
+        android:textSize="16sp"
 
         app:layout_constraintBottom_toTopOf="@id/btn_confirm"
         app:layout_constraintEnd_toEndOf="parent"

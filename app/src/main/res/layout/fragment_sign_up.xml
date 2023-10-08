@@ -28,7 +28,7 @@
         android:layout_marginTop="50dp"
         android:text="@string/email"
         android:textColor="@color/orange"
-        android:textSize="22sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/edt_email"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -49,7 +49,6 @@
         android:id="@+id/tv_email_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="email error"
         android:textColor="@color/red"
         android:textSize="16sp"
         android:visibility="invisible"
@@ -62,7 +61,7 @@
         android:layout_height="wrap_content"
         android:text="@string/password"
         android:textColor="@color/orange"
-        android:textSize="22sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/edt_email"
         app:layout_constraintTop_toBottomOf="@+id/tv_email_error" />
 
@@ -83,9 +82,7 @@
         android:id="@+id/tv_password_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="password error"
         android:textColor="@color/red"
-        android:textSize="16sp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/edt_password"
         app:layout_constraintTop_toBottomOf="@+id/edt_password" />
@@ -96,7 +93,7 @@
         android:layout_height="wrap_content"
         android:text="@string/confirm_password"
         android:textColor="@color/orange"
-        android:textSize="22sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/edt_password"
         app:layout_constraintTop_toBottomOf="@+id/tv_password_error" />
 
@@ -117,7 +114,6 @@
         android:id="@+id/tv_confirm_password_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="confirm password error"
         android:textColor="@color/red"
         android:textSize="16sp"
         android:visibility="invisible"

@@ -171,7 +171,11 @@ public class LoginFragment extends Fragment implements LoginView {
                 }
             }
         });
-        btnGoogle.setOnClickListener(v -> signInWithGoogle());
+        btnGoogle.setOnClickListener(v -> {
+            if (isConnected()) {
+                signInWithGoogle();
+            }
+        });
         tvSignUp.setOnClickListener(v -> Navigation.findNavController(v).navigate(LoginFragmentDirections.actionLoginFragmentToSignUpFragment()));
     }
 

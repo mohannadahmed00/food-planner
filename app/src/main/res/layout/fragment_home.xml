@@ -3,20 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context=".features.home.view.HomeFragment">
 
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/view_bottom_blank"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <View
-                android:id="@+id/view_blank1"
+                android:id="@+id/view_top_blank"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 app:layout_constraintBottom_toTopOf="@id/iv_random"
@@ -29,23 +31,22 @@
                 android:layout_width="0dp"
                 android:layout_height="200dp"
                 android:layout_margin="16dp"
-
                 android:foreground="@drawable/text_protection"
                 android:scaleType="centerCrop"
                 android:src="@drawable/gray_background"
                 app:layout_constraintBottom_toTopOf="@id/tv_category"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_blank1"
+                app:layout_constraintTop_toBottomOf="@id/view_top_blank"
                 app:shapeAppearanceOverlay="@style/rounded_square" />
 
             <ImageView
                 android:id="@+id/iv_fav"
-                android:visibility="invisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:src="@drawable/ic_favorite"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/iv_random"
                 app:layout_constraintEnd_toEndOf="@id/iv_random"
                 app:layout_constraintHorizontal_bias="1"
@@ -55,16 +56,16 @@
 
             <ImageView
                 android:id="@+id/iv_add"
-                android:visibility="invisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintHorizontal_bias="1"
-                app:layout_constraintStart_toStartOf="@id/iv_random"
                 android:src="@drawable/ic_add_calender"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_fav"
                 app:layout_constraintEnd_toStartOf="@+id/iv_fav"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@id/iv_random"
                 app:layout_constraintTop_toTopOf="@+id/iv_fav" />
 
             <TextView
@@ -74,8 +75,7 @@
                 android:layout_margin="8dp"
                 android:gravity="bottom"
                 android:textColor="@color/white"
-                android:textSize="32sp"
-                android:textStyle="bold"
+                android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_random"
                 app:layout_constraintEnd_toEndOf="@+id/iv_random"
                 app:layout_constraintHorizontal_bias="0"
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/category"
                 android:textColor="@color/orange"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@id/rv_category"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/iv_random"
@@ -117,7 +117,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/country"
                 android:textColor="@color/orange"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@id/rv_country"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tv_category"
@@ -136,13 +136,6 @@
                 app:layout_constraintVertical_weight="1"
                 app:spanCount="2"
                 tools:listitem="@layout/grid_item" />
-
-            <View
-                android:id="@+id/view_blank"
-                android:layout_width="match_parent"
-                android:layout_height="86dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_country" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -166,7 +159,7 @@
         android:orientation="vertical"
         android:visibility="invisible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/view_blank3"
+        app:layout_constraintBottom_toTopOf="@id/view_bottom_blank"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edt_search"
@@ -174,7 +167,7 @@
         tools:listitem="@layout/search_item" />
 
     <View
-        android:id="@+id/view_blank3"
+        android:id="@+id/view_bottom_blank"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         app:layout_constraintBottom_toBottomOf="parent"
